@@ -1,0 +1,38 @@
+# NEXT POINTER — Multi-task queue for parallel actionable work and file hints.
+# The AI should read this first, then confirm against Tasklist.md, then proceed.
+# GUIDANCE: Up to 3 main tasks + 1 quick/hot task can be worked simultaneously.
+#
+# META-SYSTEM HEALTH ENFORCEMENT (Anti-Stuck Rules):
+# - META.ROUTER.SYNC: 5+ code changes without router updates
+# - META.BIBLE.CONSOLIDATE: 10+ changes without Bible documentation
+# - META.TASKLIST.ARCHIVE: 20+ DONE tasks accumulating
+# - META.PROMPT.COMPRESS: Prompt.md >300 lines
+
+guidance_when_none: |
+  Run the Preflight policy: If no READY exists, promote the oldest eligible PROPOSED;
+  if none exist, inject META.UNBLOCK.READY_SEED.
+  Set next main_tasks entry to that choice, bump timestamp_utc, write rationale in note.
+
+auto_promote_if_empty: true
+
+# Main task queue (up to 3 concurrent tasks)
+main_tasks:
+  - id: SM.INIT.AUTO_START
+    status: READY
+    priority: P0-CRITICAL
+    effort: 1h
+    files_hint:
+      - server.js
+      - services.json
+      - package.json
+    description: "Make service-manager an auto-starting silent Windows service using node-windows or scheduled task automation."
+
+# Quick/hot task slot (< 30 min work)
+quick_task: null
+
+# Timestamp and rationale
+timestamp_utc: "2026-04-18T00:00:00Z"
+note: |
+  === 2026-04-18 INITIAL SETUP ===
+  Meta-router, patch system, and bible-docs bootstrapped.
+  First task: auto-starting silent service implementation.

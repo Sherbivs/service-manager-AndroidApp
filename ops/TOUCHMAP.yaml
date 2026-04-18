@@ -1,0 +1,14 @@
+# TOUCHMAP — File ownership per task.
+# Maps tasks to the files they are expected to touch.
+# AI agents check this before editing to stay in scope.
+updated_utc: 2026-04-18T00:00:00Z
+
+tasks:
+  SM.INIT.AUTO_START:
+    files:
+      - server.js
+      - services.json
+      - package.json
+      - install-service.js
+      - uninstall-service.js
+    notes: "Auto-starting silent service setup"

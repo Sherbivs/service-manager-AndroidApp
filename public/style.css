@@ -43,6 +43,7 @@
 html {
   font-size: 100%;
   -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
@@ -66,6 +67,7 @@ body {
   position: sticky;
   top: 0;
   z-index: 100;
+  -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
 }
 

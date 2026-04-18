@@ -1,0 +1,48 @@
+# Canonical AI routing map — single source of "where to look / where to write".
+# All paths are repo-relative. Case-sensitive.
+# Tailored from SensaiOS ops/ROUTER.yaml for Service Manager.
+version: 1
+updated_utc: 2026-04-18T00:00:00Z
+
+meta_files:
+  - Patch.md
+  - Tasklist.md
+  - Prompt.md
+  - AGENTS.md
+  - ops/ROUTER.yaml
+  - ops/NEXT.yaml
+  - ops/TOUCHMAP.yaml
+  - masterroutetable.md
+
+entrypoints:
+  node_start: server.js
+  package: package.json
+  config: services.json
+
+categories:
+  contract:
+    - Patch.md
+  tasks:
+    - Tasklist.md
+    - ops/NEXT.yaml
+    - ops/TOUCHMAP.yaml
+  prompt:
+    - Prompt.md
+  infra_docs:
+    - AGENTS.md
+    - README.md
+    - docs/architecture-bible/INDEX.md
+    - docs/operations-bible/INDEX.md
+    - docs/development-bible/INDEX.md
+    - docs/ROUTER.md
+  server:
+    - server.js
+  dashboard:
+    - public/index.html
+    - public/app.js
+    - public/style.css
+  config:
+    - services.json
+  ai_instructions:
+    - .github/copilot-instructions.md
+    - .github/instructions/*.md
