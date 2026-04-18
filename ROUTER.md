@@ -13,6 +13,10 @@ Areas:
 - server.js — Express API server, process registry, health checks, auto-restart engine
 - services.json — Service configuration (port, service definitions)
 - package.json — Dependencies and npm scripts
+- service-install.js — Installs Service Manager as a Windows service + tray auto-start
+- service-uninstall.js — Removes Windows service + tray auto-start
+- tray.ps1 — PowerShell system tray icon (green/red status indicator)
+- launch-tray.vbs — Silent VBS launcher for tray.ps1
 - AGENTS.md — Agent operations guide
 - Patch.md — AI Project Manager Contract
 - Prompt.md — Current state, PATCHSET echo
