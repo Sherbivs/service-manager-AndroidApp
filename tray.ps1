@@ -143,18 +143,18 @@ function Update-Status {
             $tray.Icon = $iconGreen   # Server online but no services running
         }
 
-        $tray.Text = "Service Manager — $running/$total running"
+        $tray.Text = "Service Manager - $running/$total running"
 
         if ($script:prevOnline -eq $false) {
             $tray.ShowBalloonTip(3000, "Service Manager",
-                "Connected — $running/$total services running",
+                "Connected - $running/$total services running",
                 [System.Windows.Forms.ToolTipIcon]::Info)
         }
         $script:prevOnline = $true
     }
     catch {
         $tray.Icon = $iconRed
-        $tray.Text = "Service Manager — Offline"
+        $tray.Text = "Service Manager - Offline"
 
         if ($script:prevOnline -eq $true) {
             $tray.ShowBalloonTip(3000, "Service Manager",

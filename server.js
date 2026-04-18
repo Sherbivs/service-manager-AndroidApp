@@ -14,6 +14,8 @@ const os = require('os');
 const CONFIG_PATH = path.join(__dirname, 'services.json');
 const LOG_PATH = path.join(__dirname, 'service-manager.log');
 const MAX_LOG_SIZE = 2 * 1024 * 1024; // 2 MB
+const DEFAULT_HEALTH_INTERVAL = 5000;
+const MAX_HEALTH_HISTORY = 60; // ~5 min at 5s intervals
 
 /* --------------------------------------------------------------------------
    Logging
@@ -39,42 +41,106 @@ function loadConfig() {
 }
 
 /* --------------------------------------------------------------------------
-   Process Registry
+   Process Registry & Health History
    -------------------------------------------------------------------------- */
 
 const registry = new Map();
+const healthHistory = new Map(); // id -> { checks: [], consecutiveFailures: 0 }
 
 /* --------------------------------------------------------------------------
-   Health Check
+   Health Check (Enhanced - returns latency, status code, reachability)
    -------------------------------------------------------------------------- */
 
 function checkHealth(url, timeout = 4000) {
   return new Promise((resolve) => {
+    const start = Date.now();
     try {
       const mod = url.startsWith('https') ? require('https') : http;
       const req = mod.get(url, { timeout }, (res) => {
         res.resume();
-        resolve(true);
+        const latency = Date.now() - start;
+        resolve({ reachable: true, statusCode: res.statusCode, latency, timestamp: Date.now() });
       });
-      req.on('error', () => resolve(false));
-      req.on('timeout', () => { req.destroy(); resolve(false); });
+      req.on('error', () => resolve({ reachable: false, statusCode: null, latency: Date.now() - start, timestamp: Date.now() }));
+      req.on('timeout', () => { req.destroy(); resolve({ reachable: false, statusCode: null, latency: Date.now() - start, timestamp: Date.now() }); });
     } catch {
-      resolve(false);
+      resolve({ reachable: false, statusCode: null, latency: Date.now() - start, timestamp: Date.now() });
     }
   });
 }
 
+function isHealthy(check, expectedStatus) {
+  if (!check.reachable) return false;
+  if (expectedStatus && expectedStatus.length > 0) {
+    return expectedStatus.includes(check.statusCode);
+  }
+  return check.statusCode >= 200 && check.statusCode < 400;
+}
+
 /* --------------------------------------------------------------------------
-   Service Status
+   Background Health Monitor
+   -------------------------------------------------------------------------- */
+
+let healthInterval = null;
+
+async function runHealthChecks() {
+  let config;
+  try { config = loadConfig(); } catch { return; }
+
+  for (const service of config.services) {
+    if (!service.healthCheck) continue;
+
+    const check = await checkHealth(service.healthCheck);
+    check.healthy = isHealthy(check, service.expectedStatus);
+
+    const history = healthHistory.get(service.id) || { checks: [], consecutiveFailures: 0 };
+    history.checks.push(check);
+    if (history.checks.length > MAX_HEALTH_HISTORY) history.checks.shift();
+
+    if (!check.healthy) {
+      history.consecutiveFailures++;
+      const maxFail = service.maxHealthFailures || 5;
+      const entry = registry.get(service.id);
+
+      if (history.consecutiveFailures >= maxFail && entry?.autoRestartEnabled && !entry._healthRestarting) {
+        entry._healthRestarting = true;
+        log(`[${service.id}] Health failed ${history.consecutiveFailures}x - restarting`);
+        stopService(service.id);
+        setTimeout(() => {
+          startService(service);
+          history.consecutiveFailures = 0;
+        }, service.restartDelay || 5000);
+      }
+    } else {
+      history.consecutiveFailures = 0;
+    }
+
+    healthHistory.set(service.id, history);
+  }
+}
+
+function startHealthMonitor(intervalMs) {
+  if (healthInterval) clearInterval(healthInterval);
+  healthInterval = setInterval(runHealthChecks, intervalMs);
+  runHealthChecks();
+}
+
+/* --------------------------------------------------------------------------
+   Service Status (Enhanced - includes latency, health %, metrics)
    -------------------------------------------------------------------------- */
 
 async function getStatus(service) {
   const entry = registry.get(service.id);
   const managed = !!(entry && entry.proc && !entry.proc.killed);
-  let alive = false;
+  const history = healthHistory.get(service.id);
+  const lastCheck = history?.checks?.length ? history.checks[history.checks.length - 1] : null;
 
-  if (service.healthCheck) {
-    alive = await checkHealth(service.healthCheck);
+  let alive = false;
+  if (lastCheck) {
+    alive = lastCheck.reachable;
+  } else if (service.healthCheck) {
+    const check = await checkHealth(service.healthCheck);
+    alive = check.reachable;
   } else if (managed) {
     alive = true;
   }
@@ -82,6 +148,19 @@ async function getStatus(service) {
   let status = 'stopped';
   if (alive) status = 'running';
   else if (managed) status = 'starting';
+
+  // Compute rolling metrics
+  let healthPercent = null;
+  let avgLatency = null;
+
+  if (history?.checks?.length > 0) {
+    const checks = history.checks;
+    healthPercent = Math.round((checks.filter(c => c.healthy).length / checks.length) * 100);
+    const reachable = checks.filter(c => c.reachable);
+    if (reachable.length > 0) {
+      avgLatency = Math.round(reachable.reduce((s, c) => s + c.latency, 0) / reachable.length);
+    }
+  }
 
   return {
     id: service.id,
@@ -96,7 +175,17 @@ async function getStatus(service) {
     managed,
     pid: entry?.proc?.pid || null,
     startedAt: entry?.startedAt || null,
-    restartCount: entry?.restartCount || 0
+    restartCount: entry?.restartCount || 0,
+    lastCheck: lastCheck ? {
+      latency: lastCheck.latency,
+      statusCode: lastCheck.statusCode,
+      healthy: lastCheck.healthy,
+      reachable: lastCheck.reachable,
+      timestamp: lastCheck.timestamp
+    } : null,
+    healthPercent,
+    avgLatency,
+    consecutiveFailures: history?.consecutiveFailures || 0
   };
 }
 
@@ -152,8 +241,11 @@ function startService(service) {
     log(`[${service.id}] Process error: ${err.message}`);
   });
 
+  // Reset health tracking on fresh start
+  healthHistory.set(service.id, { checks: [], consecutiveFailures: 0 });
+
   registry.set(service.id, entry);
-  log(`Started ${service.name} — PID ${proc.pid}`);
+  log(`Started ${service.name} - PID ${proc.pid}`);
   return { success: true, pid: proc.pid };
 }
 
@@ -236,6 +328,35 @@ app.post('/api/services/:id/restart', async (req, res) => {
   }
 });
 
+// --- API: Health history for a service ---
+app.get('/api/services/:id/health', (req, res) => {
+  const history = healthHistory.get(req.params.id);
+  if (!history) return res.json({ checks: [], consecutiveFailures: 0 });
+  res.json(history);
+});
+
+// --- API: Start all services ---
+app.post('/api/services/start-all', (req, res) => {
+  try {
+    const config = loadConfig();
+    const results = config.services.map(s => ({ id: s.id, ...startService(s) }));
+    res.json({ success: true, results });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// --- API: Stop all services ---
+app.post('/api/services/stop-all', (_req, res) => {
+  try {
+    const config = loadConfig();
+    const results = config.services.map(s => ({ id: s.id, ...stopService(s.id) }));
+    res.json({ success: true, results });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // --- API: System info ---
 app.get('/api/system', (_req, res) => {
   const ifaces = os.networkInterfaces();
@@ -282,21 +403,58 @@ app.listen(PORT, '0.0.0.0', async () => {
     .find(i => i.family === 'IPv4' && !i.internal)?.address || '127.0.0.1';
 
   log('================================================');
-  log(`Service Manager v1.0 — http://0.0.0.0:${PORT}`);
+  log(`Service Manager v1.1 - http://0.0.0.0:${PORT}`);
   log(`Dashboard: http://${localIp}:${PORT}`);
   log(`Managing ${config.services.length} service(s)`);
+  log(`Health monitor: every ${config.healthCheckInterval || DEFAULT_HEALTH_INTERVAL}ms`);
   log('================================================');
 
   // Auto-start services marked autoRestart
   for (const s of config.services.filter(s => s.autoRestart)) {
     if (s.healthCheck) {
-      const alive = await checkHealth(s.healthCheck);
-      if (alive) {
-        log(`${s.name} already running (discovered via health check)`);
+      const check = await checkHealth(s.healthCheck);
+      if (check.reachable && isHealthy(check, s.expectedStatus)) {
+        log(`${s.name} already running (healthy - ${check.latency}ms)`);
         continue;
       }
     }
     log(`Auto-starting: ${s.name}`);
     startService(s);
   }
+
+  // Start background health monitor
+  startHealthMonitor(config.healthCheckInterval || DEFAULT_HEALTH_INTERVAL);
+
+  // Launch system tray icon
+  const trayScript = path.join(__dirname, 'tray.ps1');
+  if (fs.existsSync(trayScript)) {
+    const trayProc = spawn('powershell.exe', [
+      '-ExecutionPolicy', 'Bypass',
+      '-WindowStyle', 'Hidden',
+      '-File', trayScript
+    ], { cwd: __dirname, stdio: 'ignore', detached: true, windowsHide: true });
+    trayProc.unref();
+    log('System tray icon launched');
+  }
 });
+
+/* --------------------------------------------------------------------------
+   Graceful Shutdown
+   -------------------------------------------------------------------------- */
+
+function gracefulShutdown(signal) {
+  log(`Received ${signal} - shutting down`);
+  if (healthInterval) clearInterval(healthInterval);
+
+  for (const [id, entry] of registry) {
+    if (entry?.proc) {
+      entry.autoRestartEnabled = false;
+      try { exec(`taskkill /PID ${entry.proc.pid} /T /F`); } catch { /* best effort */ }
+    }
+  }
+
+  setTimeout(() => process.exit(0), 2000);
+}
+
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));

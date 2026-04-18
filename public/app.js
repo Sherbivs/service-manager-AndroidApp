@@ -15,7 +15,9 @@ const ICONS = {
   play:    '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>',
   stop:    '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>',
   restart: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>',
-  link:    '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>'
+  link:    '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>',
+  startAll:'<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="1 3 11 12 1 21"/><polygon points="13 3 23 12 13 21"/></svg>',
+  stopAll: '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="4" width="7" height="16" rx="1"/><rect x="15" y="4" width="7" height="16" rx="1"/></svg>'
 };
 
 /* --------------------------------------------------------------------------
@@ -59,6 +61,7 @@ async function fetchServices() {
     services = await api('/services');
     setConnected(true);
     renderServices();
+    renderSummary();
   } catch {
     setConnected(false);
   }
@@ -100,14 +103,74 @@ async function doAction(id, action) {
     showToast(`${capitalize(action)} failed: Connection error`, 'error');
   }
 
-  // Brief delay then refresh
   await new Promise(r => setTimeout(r, 1200));
+  await fetchServices();
+}
+
+async function doStartAll() {
+  try {
+    await api('/services/start-all', 'POST');
+    showToast('Starting all services...', 'success');
+  } catch {
+    showToast('Start all failed', 'error');
+  }
+  await new Promise(r => setTimeout(r, 2000));
+  await fetchServices();
+}
+
+async function doStopAll() {
+  try {
+    await api('/services/stop-all', 'POST');
+    showToast('Stopping all services...', 'success');
+  } catch {
+    showToast('Stop all failed', 'error');
+  }
+  await new Promise(r => setTimeout(r, 1500));
   await fetchServices();
 }
 
 /* --------------------------------------------------------------------------
    Render
    -------------------------------------------------------------------------- */
+
+function renderSummary() {
+  const el = document.getElementById('status-summary');
+  if (!el || !services.length) { if (el) el.innerHTML = ''; return; }
+
+  const total = services.length;
+  const running = services.filter(s => s.status === 'running').length;
+  const stopped = services.filter(s => s.status === 'stopped').length;
+  const starting = services.filter(s => s.status === 'starting').length;
+  const degraded = services.filter(s => s.status === 'running' && s.lastCheck && !s.lastCheck.healthy).length;
+  const avgLat = services.filter(s => s.avgLatency != null);
+  const latency = avgLat.length ? Math.round(avgLat.reduce((a, s) => a + s.avgLatency, 0) / avgLat.length) : null;
+
+  el.innerHTML = `
+    <span class="summary__item summary__item--running">
+      <span class="summary__dot summary__dot--running"></span>
+      ${running} running
+    </span>
+    ${degraded > 0 ? `
+    <span class="summary__item summary__item--degraded">
+      <span class="summary__dot summary__dot--degraded"></span>
+      ${degraded} degraded
+    </span>` : ''}
+    ${starting > 0 ? `
+    <span class="summary__item summary__item--starting">
+      <span class="summary__dot summary__dot--starting"></span>
+      ${starting} starting
+    </span>` : ''}
+    <span class="summary__item summary__item--stopped">
+      <span class="summary__dot summary__dot--stopped"></span>
+      ${stopped} stopped
+    </span>
+    ${latency !== null ? `
+    <span class="summary__item">
+      <span class="summary__label">Avg Latency:</span>
+      <span class="summary__value ${latencyClass(latency)}">${latency}ms</span>
+    </span>` : ''}
+  `;
+}
 
 function renderServices() {
   const grid = document.getElementById('services-grid');
@@ -124,11 +187,13 @@ function renderCard(s) {
   const isRunning = s.status === 'running';
   const isStopped = s.status === 'stopped';
   const isStarting = s.status === 'starting';
+  const isDegraded = isRunning && s.lastCheck && !s.lastCheck.healthy;
+  const cardStatus = isDegraded ? 'degraded' : s.status;
 
   return `
-    <div class="card card--${s.status}">
+    <div class="card card--${cardStatus}">
       <div class="card__header">
-        <span class="status-dot status-dot--${s.status}"></span>
+        <span class="status-dot status-dot--${cardStatus}"></span>
         <div>
           <h3 class="card__name">${esc(s.name)}</h3>
           <span class="card__project">${esc(s.project)}</span>
@@ -136,10 +201,13 @@ function renderCard(s) {
       </div>
       ${s.description ? `<p class="card__desc">${esc(s.description)}</p>` : ''}
       <div class="card__meta">
-        <span class="badge badge--${s.status}">${capitalize(s.status)}</span>
+        <span class="badge badge--${cardStatus}">${isDegraded ? 'Degraded' : capitalize(s.status)}</span>
         ${s.pid ? `<span class="badge badge--pid">PID ${s.pid}</span>` : ''}
         ${s.autoRestart ? '<span class="badge badge--info">Auto-restart</span>' : ''}
         ${s.restartCount > 0 ? `<span class="badge badge--info">Restarts: ${s.restartCount}</span>` : ''}
+        ${s.lastCheck && s.lastCheck.reachable ? renderLatencyBadge(s.lastCheck.latency) : ''}
+        ${s.healthPercent !== null ? renderHealthBadge(s.healthPercent) : ''}
+        ${isDegraded && s.lastCheck?.statusCode ? `<span class="badge badge--degraded">HTTP ${s.lastCheck.statusCode}</span>` : ''}
         ${s.startedAt ? `<span class="badge badge--pid">${formatUptime(s.startedAt)}</span>` : ''}
       </div>
       <div class="card__actions">
@@ -163,6 +231,23 @@ function renderCard(s) {
       </div>
     </div>
   `;
+}
+
+function renderLatencyBadge(ms) {
+  return `<span class="badge badge--latency ${latencyClass(ms)}">${ms}ms</span>`;
+}
+
+function renderHealthBadge(pct) {
+  let cls = 'badge--health-good';
+  if (pct < 50) cls = 'badge--health-bad';
+  else if (pct < 90) cls = 'badge--health-warn';
+  return `<span class="badge ${cls}">${pct}%</span>`;
+}
+
+function latencyClass(ms) {
+  if (ms <= 100) return 'latency--good';
+  if (ms <= 300) return 'latency--warn';
+  return 'latency--bad';
 }
 
 function renderSystemBar() {
@@ -233,7 +318,7 @@ function capitalize(str) {
 function formatBytes(bytes) {
   if (bytes < 1024) return bytes + ' B';
   if (bytes < 1048576) return (bytes / 1024).toFixed(0) + ' KB';
-  if (bytes < 1073741824) return (bytes / 1048576).toFixed(1) + ' GB';
+  if (bytes < 1073741824) return (bytes / 1048576).toFixed(1) + ' MB';
   return (bytes / 1073741824).toFixed(1) + ' GB';
 }
 

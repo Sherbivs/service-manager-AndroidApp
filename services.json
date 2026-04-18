@@ -1,5 +1,6 @@
 {
   "port": 3500,
+  "healthCheckInterval": 5000,
   "services": [
     {
       "id": "tcb-shopify-dev",
@@ -14,13 +15,16 @@
         "-File", "C:\\Users\\sherb\\AppData\\Roaming\\npm\\shopify.ps1",
         "theme", "dev",
         "--host=0.0.0.0",
+        "--path", "c:\\Users\\sherb\\OneDrive\\Documents\\Shopify\\TCB Party Rental",
         "--store=tcbpartyrental.myshopify.com"
       ],
       "workingDirectory": "c:\\Users\\sherb\\OneDrive\\Documents\\Shopify\\TCB Party Rental",
       "healthCheck": "http://127.0.0.1:9292",
       "url": "http://192.168.23.83:9292",
       "autoRestart": true,
-      "restartDelay": 8000
+      "restartDelay": 8000,
+      "expectedStatus": [200, 301, 302, 303, 500],
+      "maxHealthFailures": 5
     }
   ]
 }
