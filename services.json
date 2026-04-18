@@ -1,0 +1,26 @@
+{
+  "port": 3500,
+  "services": [
+    {
+      "id": "tcb-shopify-dev",
+      "name": "Shopify Dev Server",
+      "project": "TCB Party Rental",
+      "description": "Local Shopify theme dev server with hot reload, accessible on local network",
+      "type": "web",
+      "command": "pwsh.exe",
+      "args": [
+        "-ExecutionPolicy", "Bypass",
+        "-NonInteractive",
+        "-File", "C:\\Users\\sherb\\AppData\\Roaming\\npm\\shopify.ps1",
+        "theme", "dev",
+        "--host=0.0.0.0",
+        "--store=tcbpartyrental.myshopify.com"
+      ],
+      "workingDirectory": "c:\\Users\\sherb\\OneDrive\\Documents\\Shopify\\TCB Party Rental",
+      "healthCheck": "http://127.0.0.1:9292",
+      "url": "http://192.168.23.83:9292",
+      "autoRestart": true,
+      "restartDelay": 8000
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "service-manager",
+  "version": "1.0.0",
+  "description": "Elastic service management dashboard — manage, monitor, and control local dev services from a single web UI",
+  "private": true,
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.0"
+  }
+}

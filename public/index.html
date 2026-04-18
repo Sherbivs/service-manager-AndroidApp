@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Service Manager</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar__brand">
+      <span class="topbar__icon">⚡</span>
+      <h1 class="topbar__title">Service Manager</h1>
+    </div>
+    <div class="topbar__meta">
+      <span class="topbar__host" id="host-info">—</span>
+      <span class="topbar__dot" id="connection-dot" title="Dashboard connection"></span>
+    </div>
+  </header>
+
+  <div class="system-bar" id="system-bar"></div>
+
+  <main class="dashboard">
+    <div class="dashboard__header">
+      <h2 class="dashboard__title">Services</h2>
+      <div class="dashboard__controls">
+        <span class="refresh-indicator" id="refresh-indicator" title="Auto-refreshes every 5s">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+          <span id="countdown">5s</span>
+        </span>
+        <button class="btn btn--ghost btn--sm" onclick="fetchAll()" title="Refresh now">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="grid" id="services-grid">
+      <div class="card card--loading">
+        <p>Loading services...</p>
+      </div>
+    </div>
+  </main>
+
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
