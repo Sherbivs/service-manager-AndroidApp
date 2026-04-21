@@ -10,10 +10,13 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
+const { DatabaseSync } = require('node:sqlite');
 
-const CONFIG_PATH = path.join(__dirname, 'services.json');
-const LOG_PATH = path.join(__dirname, 'service-manager.log');
-const MAX_LOG_SIZE = 2 * 1024 * 1024; // 2 MB
+const CONFIG_PATH    = path.join(__dirname, 'services.json');
+const LOG_PATH       = path.join(__dirname, 'service-manager.log');
+const ARCHIVE_DB_PATH = path.join(__dirname, 'logs-archive.db');
+const MAX_LOG_SIZE   = 2 * 1024 * 1024; // 2 MB
+const MAX_LOG_LINES  = 1000;            // lines kept in live log file
 const DEFAULT_HEALTH_INTERVAL = 5000;
 const MAX_HEALTH_HISTORY = 60; // ~5 min at 5s intervals
 
@@ -37,6 +40,27 @@ const MAX_HEALTH_HISTORY = 60; // ~5 min at 5s intervals
 })();
 
 /* --------------------------------------------------------------------------
+   Log Archive — SQLite (node:sqlite built-in, Node 22+, zero extra deps)
+   -------------------------------------------------------------------------- */
+
+let archiveDb = null;
+try {
+  archiveDb = new DatabaseSync(ARCHIVE_DB_PATH);
+  archiveDb.exec(`
+    CREATE TABLE IF NOT EXISTS log_archive (
+      id          INTEGER PRIMARY KEY AUTOINCREMENT,
+      service_id  TEXT    NOT NULL,
+      line        TEXT    NOT NULL,
+      archived_at INTEGER NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_la_service ON log_archive(service_id);
+    CREATE INDEX IF NOT EXISTS idx_la_time    ON log_archive(service_id, archived_at);
+  `);
+} catch (err) {
+  console.error('[archive] Failed to open log archive DB:', err.message);
+}
+
+/* --------------------------------------------------------------------------
    Logging
    -------------------------------------------------------------------------- */
 
@@ -57,6 +81,55 @@ function log(msg) {
 
 function loadConfig() {
   return JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf8'));
+}
+
+/* --------------------------------------------------------------------------
+   Log Rotation — trims log file to MAX_LOG_LINES, archives excess to SQLite
+   -------------------------------------------------------------------------- */
+
+function rotateServiceLog(service) {
+  if (!service.logFile || !archiveDb) return;
+  const logPath = service.logFile;
+  if (!fs.existsSync(logPath)) return;
+  try {
+    const content = fs.readFileSync(logPath, 'utf8');
+    // Keep only timestamped event lines — strips ASCII box art, blank lines, bare URLs
+    const lines = content.split('\n')
+      .filter(l => l.trim() && /\d{2}:\d{2}:\d{2}/.test(l));
+    if (lines.length <= MAX_LOG_LINES) return;
+
+    const toArchive = lines.slice(0, lines.length - MAX_LOG_LINES);
+    const toKeep    = lines.slice(-MAX_LOG_LINES);
+
+    const insert = archiveDb.prepare(
+      'INSERT INTO log_archive (service_id, line, archived_at) VALUES (?, ?, ?)'
+    );
+    const now = Date.now();
+    archiveDb.exec('BEGIN');
+    try {
+      for (const line of toArchive) insert.run(service.id, line, now);
+      archiveDb.exec('COMMIT');
+    } catch (err) {
+      archiveDb.exec('ROLLBACK');
+      throw err;
+    }
+
+    // Attempt to trim the live log file. On Windows the file may be locked
+    // while the service process holds it open for append (EBUSY). In that
+    // case the archive already succeeded; the trim will happen next rotation.
+    try {
+      fs.writeFileSync(logPath, toKeep.join('\n') + '\n', 'utf8');
+      log(`Log rotation: archived ${toArchive.length} lines from ${service.id}, kept ${MAX_LOG_LINES}`);
+    } catch (writeErr) {
+      if (writeErr.code === 'EBUSY' || writeErr.code === 'EPERM') {
+        log(`Log rotation: archived ${toArchive.length} lines from ${service.id} (trim deferred — file in use)`);
+      } else {
+        throw writeErr;
+      }
+    }
+  } catch (err) {
+    log(`WARN: Log rotation failed for ${service.id}: ${err.message}`);
+  }
 }
 
 /* --------------------------------------------------------------------------
@@ -453,6 +526,41 @@ app.post('/api/services/:id/env', (req, res) => {
   }
 });
 
+// --- API: Service log archive (SQLite, searchable, paginated) ---
+app.get('/api/services/:id/logs/archive', (req, res) => {
+  if (!archiveDb) return res.status(503).json({ error: 'Archive DB not available' });
+  try {
+    const config = loadConfig();
+    const service = config.services.find(s => s.id === req.params.id);
+    if (!service) return res.status(404).json({ error: 'Service not found' });
+
+    const limit  = Math.min(parseInt(req.query.limit)  || 100, 500);
+    const offset = parseInt(req.query.offset) || 0;
+    const q      = (req.query.q || '').trim();
+
+    let rows, total;
+    if (q) {
+      rows  = archiveDb.prepare(
+        `SELECT id, line, archived_at FROM log_archive WHERE service_id = ? AND line LIKE ? ORDER BY id DESC LIMIT ? OFFSET ?`
+      ).all(req.params.id, `%${q}%`, limit, offset);
+      total = archiveDb.prepare(
+        `SELECT COUNT(*) AS n FROM log_archive WHERE service_id = ? AND line LIKE ?`
+      ).get(req.params.id, `%${q}%`).n;
+    } else {
+      rows  = archiveDb.prepare(
+        `SELECT id, line, archived_at FROM log_archive WHERE service_id = ? ORDER BY id DESC LIMIT ? OFFSET ?`
+      ).all(req.params.id, limit, offset);
+      total = archiveDb.prepare(
+        `SELECT COUNT(*) AS n FROM log_archive WHERE service_id = ?`
+      ).get(req.params.id).n;
+    }
+
+    res.json({ rows, total, limit, offset });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // --- API: System info ---
 app.get('/api/system', (_req, res) => {
   const ifaces = os.networkInterfaces();
@@ -520,6 +628,14 @@ app.listen(PORT, '0.0.0.0', async () => {
 
   // Start background health monitor
   startHealthMonitor(config.healthCheckInterval || DEFAULT_HEALTH_INTERVAL);
+
+  // Rotate service logs on boot, then every 5 minutes
+  const allServices = loadConfig().services;
+  for (const s of allServices.filter(s => s.logFile)) rotateServiceLog(s);
+  setInterval(() => {
+    const cfg = loadConfig();
+    for (const s of cfg.services.filter(s => s.logFile)) rotateServiceLog(s);
+  }, 5 * 60 * 1000);
 
   // Launch system tray icon
   const trayScript = path.join(__dirname, 'tray.ps1');

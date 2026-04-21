@@ -18,7 +18,7 @@
       "url": "http://192.168.23.83:9292",
       "logFile": "c:\\Users\\sherb\\OneDrive\\Documents\\Shopify\\TCB Party Rental\\scripts\\shopify-dev.log",
       "envFile": "c:\\Users\\sherb\\OneDrive\\Documents\\Shopify\\TCB Party Rental\\.env",
-      "envKeys": ["SHOPIFY_STORE_PASSWORD"],
+      "envKeys": ["SHOPIFY_CLI_THEME_TOKEN", "SHOPIFY_STORE_PASSWORD"],
       "autoStart": true,
       "autoRestart": true,
       "restartDelay": 8000,

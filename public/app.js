@@ -374,12 +374,25 @@ function startAutoRefresh() {
    -------------------------------------------------------------------------- */
 
 let logModalServiceId = null;
-let logTailInterval = null;
+let logTailInterval   = null;
+let activeLogTab      = 'live';
+let archiveOffset     = 0;
+let archiveTotalCount = 0;
+let archiveCurrentQuery = '';
+const ARCHIVE_PAGE_SIZE = 100;
 
 async function openLogModal(id, name) {
   logModalServiceId = id;
   document.getElementById('log-modal-title').textContent = `Logs — ${name}`;
   document.getElementById('log-modal').classList.add('modal-overlay--open');
+  // Always open on Live tab
+  switchLogTab('live');
+  document.getElementById('archive-search-input').value = '';
+  document.getElementById('archive-viewer').innerHTML =
+    '<span class="log-empty">Enter a search term or press Search to browse.</span>';
+  document.getElementById('archive-stats').textContent = '';
+  document.getElementById('archive-load-more').hidden = true;
+  archiveOffset = 0;
   await refreshLogs();
   if (document.getElementById('log-tail').checked) {
     logTailInterval = setInterval(refreshLogs, 3000);
@@ -388,6 +401,68 @@ async function openLogModal(id, name) {
     clearInterval(logTailInterval);
     if (e.target.checked) logTailInterval = setInterval(refreshLogs, 3000);
   };
+}
+
+function switchLogTab(tab) {
+  activeLogTab = tab;
+  document.getElementById('log-panel-live').classList.toggle('log-panel--hidden',    tab !== 'live');
+  document.getElementById('log-panel-archive').classList.toggle('log-panel--hidden', tab !== 'archive');
+  document.getElementById('log-footer-live').classList.toggle('log-panel--hidden',    tab !== 'live');
+  document.getElementById('log-footer-archive').classList.toggle('log-panel--hidden', tab !== 'archive');
+  document.getElementById('log-tab-live').classList.toggle('modal__tab--active',    tab === 'live');
+  document.getElementById('log-tab-archive').classList.toggle('modal__tab--active', tab === 'archive');
+  if (tab === 'live') {
+    if (document.getElementById('log-tail').checked) {
+      clearInterval(logTailInterval);
+      logTailInterval = setInterval(refreshLogs, 3000);
+    }
+  } else {
+    clearInterval(logTailInterval);
+    logTailInterval = null;
+  }
+}
+
+async function searchArchive(reset = true) {
+  if (!logModalServiceId) return;
+  if (reset) {
+    archiveOffset       = 0;
+    archiveCurrentQuery = document.getElementById('archive-search-input').value.trim();
+  }
+  const viewer   = document.getElementById('archive-viewer');
+  const stats    = document.getElementById('archive-stats');
+  const loadMore = document.getElementById('archive-load-more');
+
+  if (reset) viewer.innerHTML = '<span class="log-empty">Loading…</span>';
+
+  try {
+    const params = new URLSearchParams({ limit: ARCHIVE_PAGE_SIZE, offset: archiveOffset });
+    if (archiveCurrentQuery) params.set('q', archiveCurrentQuery);
+    const data = await api(`/services/${logModalServiceId}/logs/archive?${params}`);
+    archiveTotalCount = data.total;
+
+    if (reset) {
+      if (!data.rows || data.rows.length === 0) {
+        viewer.innerHTML = '<span class="log-empty">No archived entries found.</span>';
+        stats.textContent = '';
+        loadMore.hidden = true;
+        return;
+      }
+      viewer.innerHTML = data.rows.map(r => `<div class="log-line">${escLog(r.line)}</div>`).join('');
+    } else {
+      viewer.insertAdjacentHTML('beforeend',
+        data.rows.map(r => `<div class="log-line">${escLog(r.line)}</div>`).join(''));
+    }
+
+    archiveOffset += data.rows.length;
+    stats.textContent = `Showing ${archiveOffset.toLocaleString()} of ${archiveTotalCount.toLocaleString()} archived entries`;
+    loadMore.hidden = archiveOffset >= archiveTotalCount;
+  } catch {
+    viewer.innerHTML = '<span class="log-empty log-empty--error">Failed to load archive.</span>';
+  }
+}
+
+async function loadMoreArchive() {
+  await searchArchive(false);
 }
 
 function closeLogModal(e) {

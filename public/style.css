@@ -705,6 +705,72 @@ body {
   margin-left: auto;
 }
 
+/* Log modal — tabs & archive panel */
+.modal--wide {
+  width: min(860px, 95vw);
+}
+
+.modal__tabs {
+  display: flex;
+  gap: 2px;
+  margin-left: 12px;
+  margin-right: auto;
+}
+
+.modal__tab {
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 4px 4px 0 0;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 0.8rem;
+  padding: 3px 12px;
+  transition: color 0.15s;
+}
+
+.modal__tab:hover {
+  color: var(--text-primary);
+}
+
+.modal__tab--active {
+  background: var(--bg-secondary);
+  border-color: var(--border);
+  border-bottom-color: transparent;
+  color: var(--text-primary);
+}
+
+.log-panel--hidden {
+  display: none !important;
+}
+
+.archive-search {
+  display: flex;
+  gap: 8px;
+  padding: 10px 0 8px;
+}
+
+.archive-search__input {
+  flex: 1;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  padding: 5px 10px;
+  outline: none;
+}
+
+.archive-search__input:focus {
+  border-color: var(--accent);
+}
+
+.archive-stats {
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  margin-right: auto;
+  align-self: center;
+}
+
 /* Env Editor */
 .env-desc {
   font-size: 0.8rem;
