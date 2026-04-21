@@ -18,6 +18,25 @@ const DEFAULT_HEALTH_INTERVAL = 5000;
 const MAX_HEALTH_HISTORY = 60; // ~5 min at 5s intervals
 
 /* --------------------------------------------------------------------------
+   .env loader — reads KEY=VALUE pairs into process.env (gitignored)
+   -------------------------------------------------------------------------- */
+
+(function loadEnv() {
+  const envPath = path.join(__dirname, '.env');
+  if (!fs.existsSync(envPath)) return;
+  const lines = fs.readFileSync(envPath, 'utf8').split('\n');
+  for (const raw of lines) {
+    const line = raw.trim();
+    if (!line || line.startsWith('#')) continue;
+    const idx = line.indexOf('=');
+    if (idx < 1) continue;
+    const key = line.slice(0, idx).trim();
+    const val = line.slice(idx + 1).trim();
+    if (!process.env[key]) process.env[key] = val;
+  }
+})();
+
+/* --------------------------------------------------------------------------
    Logging
    -------------------------------------------------------------------------- */
 
@@ -201,7 +220,11 @@ function startService(service) {
 
   log(`Starting: ${service.name} (${service.id})`);
 
-  const proc = spawn(service.command, service.args || [], {
+  const resolvedArgs = (service.args || []).map(arg =>
+    arg.replace(/\$\{([^}]+)\}/g, (_, key) => process.env[key] || '')
+  );
+
+  const proc = spawn(service.command, resolvedArgs, {
     cwd: service.workingDirectory || __dirname,
     stdio: ['ignore', 'pipe', 'pipe'],
     windowsHide: true,
@@ -357,6 +380,79 @@ app.post('/api/services/stop-all', (_req, res) => {
   }
 });
 
+// --- API: Service log file (last N lines) ---
+app.get('/api/services/:id/logs', (req, res) => {
+  try {
+    const config = loadConfig();
+    const service = config.services.find(s => s.id === req.params.id);
+    if (!service) return res.status(404).json({ error: 'Service not found' });
+    if (!service.logFile) return res.json({ lines: [], logFile: null });
+
+    const logPath = service.logFile;
+    if (!fs.existsSync(logPath)) return res.json({ lines: [], logFile: logPath });
+
+    const lines = parseInt(req.query.lines) || 100;
+    const content = fs.readFileSync(logPath, 'utf8');
+    const all = content.split('\n').filter(l => l.trim());
+    res.json({ lines: all.slice(-lines), logFile: logPath });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// --- API: Service env keys (names only, never values) ---
+app.get('/api/services/:id/env', (req, res) => {
+  try {
+    const config = loadConfig();
+    const service = config.services.find(s => s.id === req.params.id);
+    if (!service) return res.status(404).json({ error: 'Service not found' });
+    res.json({ envKeys: service.envKeys || [], envFile: service.envFile || null });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// --- API: Update a single env key ---
+app.post('/api/services/:id/env', (req, res) => {
+  try {
+    const config = loadConfig();
+    const service = config.services.find(s => s.id === req.params.id);
+    if (!service) return res.status(404).json({ error: 'Service not found' });
+
+    const { key, value } = req.body;
+    if (!key || typeof value === 'undefined') return res.status(400).json({ error: 'key and value required' });
+
+    // Only allow keys declared in envKeys for this service
+    if (!service.envKeys || !service.envKeys.includes(key)) {
+      return res.status(403).json({ error: `Key '${key}' not permitted for this service` });
+    }
+
+    const envPath = service.envFile || path.join(__dirname, '.env');
+
+    // Read existing .env lines
+    let lines = [];
+    if (fs.existsSync(envPath)) {
+      lines = fs.readFileSync(envPath, 'utf8').split('\n');
+    }
+
+    // Update or append
+    const idx = lines.findIndex(l => l.split('=')[0].trim() === key);
+    const newLine = `${key}=${value}`;
+    if (idx >= 0) lines[idx] = newLine;
+    else lines.push(newLine);
+
+    fs.writeFileSync(envPath, lines.join('\n').trimEnd() + '\n', 'utf8');
+
+    // Also update live process.env so restarts pick it up
+    process.env[key] = value;
+
+    log(`Env updated: ${key} (service: ${req.params.id})`);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // --- API: System info ---
 app.get('/api/system', (_req, res) => {
   const ifaces = os.networkInterfaces();
@@ -409,8 +505,8 @@ app.listen(PORT, '0.0.0.0', async () => {
   log(`Health monitor: every ${config.healthCheckInterval || DEFAULT_HEALTH_INTERVAL}ms`);
   log('================================================');
 
-  // Auto-start services marked autoRestart
-  for (const s of config.services.filter(s => s.autoRestart)) {
+  // Auto-start services marked autoStart
+  for (const s of config.services.filter(s => s.autoStart)) {
     if (s.healthCheck) {
       const check = await checkHealth(s.healthCheck);
       if (check.reachable && isHealthy(check, s.expectedStatus)) {

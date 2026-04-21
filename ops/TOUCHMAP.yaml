@@ -9,6 +9,19 @@ tasks:
       - server.js
       - services.json
       - package.json
-      - install-service.js
-      - uninstall-service.js
-    notes: "Auto-starting silent service setup"
+      - service-install.js
+      - service-uninstall.js
+      - tray.ps1
+      - launch-tray.vbs
+      - launch-server.vbs
+    notes: "Auto-starting silent service setup — launch-server.vbs added for silent server startup via Windows Startup folder"
+
+  META.AUDIT:
+    files:
+      - ops/TOUCHMAP.yaml
+      - ops/ROUTER.yaml
+      - ops/NEXT.yaml
+      - masterroutetable.md
+      - Prompt.md
+      - docs/architecture-bible/01-system-overview.md
+    notes: "Codespace audit — meta-router and docs sync"

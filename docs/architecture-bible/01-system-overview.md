@@ -11,26 +11,31 @@
 | Frontend | HTML/CSS/JS | No framework, no bundler |
 | Process Mgmt | child_process (spawn) | Native Node.js process control |
 | Config | JSON file | `services.json` — hot-reloaded per request |
+| Auto-Start | VBS + Windows Startup | Silent launch, no console window |
 
 ## Project Structure
 
 ```
 service-manager/
-├── server.js          # Express server + process registry + API
-├── services.json      # Service definitions and port config
-├── package.json       # Dependencies (express only)
-├── public/            # Dashboard SPA
-│   ├── index.html     # Dashboard shell
-│   ├── app.js         # Client logic
-│   └── style.css      # Dark theme styles
-├── ops/               # Governance (NEXT, ROUTER, TOUCHMAP)
-├── docs/              # Bible documentation system
-├── .github/           # AI instructions
-├── Patch.md           # AI Project Manager Contract
-├── Prompt.md          # Current state for automation
-├── Tasklist.md        # Task backlog
-├── AGENTS.md          # Agent operations guide
-└── masterroutetable.md # Text-first router map
+├── server.js              # Express server + process registry + API
+├── services.json          # Service definitions and port config
+├── package.json           # Dependencies (express only) and npm scripts
+├── service-install.js     # Registers Service Manager as a Windows service
+├── service-uninstall.js   # Removes Windows service + tray auto-start
+├── tray.ps1               # PowerShell system tray icon (green/red indicator)
+├── launch-tray.vbs        # Silent VBS launcher for tray.ps1
+├── public/                # Dashboard SPA
+│   ├── index.html         # Dashboard shell
+│   ├── app.js             # Client logic
+│   └── style.css          # Dark theme styles
+├── ops/                   # Governance (NEXT, ROUTER, TOUCHMAP)
+├── docs/                  # Bible documentation system
+├── .github/               # AI instructions
+├── Patch.md               # AI Project Manager Contract
+├── Prompt.md              # Current state for automation
+├── Tasklist.md            # Task backlog
+├── AGENTS.md              # Agent operations guide
+└── masterroutetable.md    # Text-first router map
 ```
 
 ## Architecture Diagram
