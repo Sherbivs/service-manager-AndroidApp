@@ -17,7 +17,9 @@ const ICONS = {
   restart: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>',
   link:    '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>',
   startAll:'<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="1 3 11 12 1 21"/><polygon points="13 3 23 12 13 21"/></svg>',
-  stopAll: '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="4" width="7" height="16" rx="1"/><rect x="15" y="4" width="7" height="16" rx="1"/></svg>'
+  stopAll: '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="4" width="7" height="16" rx="1"/><rect x="15" y="4" width="7" height="16" rx="1"/></svg>',
+  logs:    '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>',
+  settings:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>'
 };
 
 /* --------------------------------------------------------------------------
@@ -228,6 +230,12 @@ function renderCard(s) {
             ${ICONS.link} Open
           </a>
         ` : ''}
+        <button class="btn btn--ghost btn--sm" onclick="openLogModal('${s.id}', '${esc(s.name)}')">
+          ${ICONS.logs} Logs
+        </button>
+        <button class="btn btn--ghost btn--sm" onclick="openEnvModal('${s.id}', '${esc(s.name)}')">
+          ${ICONS.settings} Settings
+        </button>
       </div>
     </div>
   `;
@@ -359,6 +367,212 @@ function startAutoRefresh() {
   }, 1000);
 
   refreshTimer = setInterval(fetchAll, REFRESH_INTERVAL);
+}
+
+/* --------------------------------------------------------------------------
+   Log Modal
+   -------------------------------------------------------------------------- */
+
+let logModalServiceId = null;
+let logTailInterval   = null;
+let activeLogTab      = 'live';
+let archiveOffset     = 0;
+let archiveTotalCount = 0;
+let archiveCurrentQuery = '';
+const ARCHIVE_PAGE_SIZE = 100;
+
+async function openLogModal(id, name) {
+  logModalServiceId = id;
+  document.getElementById('log-modal-title').textContent = `Logs — ${name}`;
+  document.getElementById('log-modal').classList.add('modal-overlay--open');
+  // Always open on Live tab
+  switchLogTab('live');
+  document.getElementById('archive-search-input').value = '';
+  document.getElementById('archive-viewer').innerHTML =
+    '<span class="log-empty">Enter a search term or press Search to browse.</span>';
+  document.getElementById('archive-stats').textContent = '';
+  document.getElementById('archive-load-more').hidden = true;
+  archiveOffset = 0;
+  await refreshLogs();
+  if (document.getElementById('log-tail').checked) {
+    logTailInterval = setInterval(refreshLogs, 3000);
+  }
+  document.getElementById('log-tail').onchange = (e) => {
+    clearInterval(logTailInterval);
+    if (e.target.checked) logTailInterval = setInterval(refreshLogs, 3000);
+  };
+}
+
+function switchLogTab(tab) {
+  activeLogTab = tab;
+  document.getElementById('log-panel-live').classList.toggle('log-panel--hidden',    tab !== 'live');
+  document.getElementById('log-panel-archive').classList.toggle('log-panel--hidden', tab !== 'archive');
+  document.getElementById('log-footer-live').classList.toggle('log-panel--hidden',    tab !== 'live');
+  document.getElementById('log-footer-archive').classList.toggle('log-panel--hidden', tab !== 'archive');
+  document.getElementById('log-tab-live').classList.toggle('modal__tab--active',    tab === 'live');
+  document.getElementById('log-tab-archive').classList.toggle('modal__tab--active', tab === 'archive');
+  if (tab === 'live') {
+    if (document.getElementById('log-tail').checked) {
+      clearInterval(logTailInterval);
+      logTailInterval = setInterval(refreshLogs, 3000);
+    }
+  } else {
+    clearInterval(logTailInterval);
+    logTailInterval = null;
+  }
+}
+
+async function searchArchive(reset = true) {
+  if (!logModalServiceId) return;
+  if (reset) {
+    archiveOffset       = 0;
+    archiveCurrentQuery = document.getElementById('archive-search-input').value.trim();
+  }
+  const viewer   = document.getElementById('archive-viewer');
+  const stats    = document.getElementById('archive-stats');
+  const loadMore = document.getElementById('archive-load-more');
+
+  if (reset) viewer.innerHTML = '<span class="log-empty">Loading…</span>';
+
+  try {
+    const params = new URLSearchParams({ limit: ARCHIVE_PAGE_SIZE, offset: archiveOffset });
+    if (archiveCurrentQuery) params.set('q', archiveCurrentQuery);
+    const data = await api(`/services/${logModalServiceId}/logs/archive?${params}`);
+    archiveTotalCount = data.total;
+
+    if (reset) {
+      if (!data.rows || data.rows.length === 0) {
+        viewer.innerHTML = '<span class="log-empty">No archived entries found.</span>';
+        stats.textContent = '';
+        loadMore.hidden = true;
+        return;
+      }
+      viewer.innerHTML = data.rows.map(r => `<div class="log-line">${escLog(r.line)}</div>`).join('');
+    } else {
+      viewer.insertAdjacentHTML('beforeend',
+        data.rows.map(r => `<div class="log-line">${escLog(r.line)}</div>`).join(''));
+    }
+
+    archiveOffset += data.rows.length;
+    stats.textContent = `Showing ${archiveOffset.toLocaleString()} of ${archiveTotalCount.toLocaleString()} archived entries`;
+    loadMore.hidden = archiveOffset >= archiveTotalCount;
+  } catch {
+    viewer.innerHTML = '<span class="log-empty log-empty--error">Failed to load archive.</span>';
+  }
+}
+
+async function loadMoreArchive() {
+  await searchArchive(false);
+}
+
+function closeLogModal(e) {
+  if (e && e.target !== document.getElementById('log-modal')) return;
+  document.getElementById('log-modal').classList.remove('modal-overlay--open');
+  clearInterval(logTailInterval);
+  logTailInterval = null;
+  logModalServiceId = null;
+}
+
+async function refreshLogs() {
+  if (!logModalServiceId) return;
+  try {
+    const data = await api(`/services/${logModalServiceId}/logs?lines=150`);
+    const viewer = document.getElementById('log-viewer');
+    if (!data.lines || data.lines.length === 0) {
+      viewer.innerHTML = '<span class="log-empty">No log entries yet.</span>';
+      return;
+    }
+    viewer.innerHTML = data.lines.map(l => `<div class="log-line">${escLog(l)}</div>`).join('');
+    viewer.scrollTop = viewer.scrollHeight;
+  } catch {
+    document.getElementById('log-viewer').innerHTML = '<span class="log-empty log-empty--error">Failed to load logs.</span>';
+  }
+}
+
+function escLog(str) {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/(error|failed|warn)/gi, '<span class="log-highlight log-highlight--$1">$&</span>')
+    .replace(/(success|200|running|started)/gi, '<span class="log-highlight log-highlight--ok">$&</span>');
+}
+
+/* --------------------------------------------------------------------------
+   Env / Settings Modal
+   -------------------------------------------------------------------------- */
+
+let envModalServiceId = null;
+
+async function openEnvModal(id, name) {
+  envModalServiceId = id;
+  document.getElementById('env-modal-title').textContent = `Settings — ${name}`;
+  document.getElementById('env-modal').classList.add('modal-overlay--open');
+
+  const body = document.getElementById('env-modal-body');
+  body.innerHTML = '<p class="modal__loading">Loading…</p>';
+
+  try {
+    const data = await api(`/services/${id}/env`);
+    if (!data.envKeys || data.envKeys.length === 0) {
+      body.innerHTML = '<p class="modal__loading">No configurable settings for this service.</p>';
+      return;
+    }
+    body.innerHTML = `
+      <p class="env-desc">These values are saved to <code>.env</code> (gitignored). Saving will restart the service.</p>
+      <div class="env-fields">
+        ${data.envKeys.map(k => `
+          <div class="env-field">
+            <label class="env-label" for="env-${k}">${k}</label>
+            <input class="env-input" type="password" id="env-${k}" data-key="${k}"
+              placeholder="Enter value…" autocomplete="off">
+            <button class="env-show-btn" type="button" onclick="toggleEnvVisibility('env-${k}', this)">Show</button>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  } catch {
+    body.innerHTML = '<p class="modal__loading">Failed to load settings.</p>';
+  }
+}
+
+function closeEnvModal(e) {
+  if (e && e.target !== document.getElementById('env-modal')) return;
+  document.getElementById('env-modal').classList.remove('modal-overlay--open');
+  envModalServiceId = null;
+}
+
+function toggleEnvVisibility(inputId, btn) {
+  const input = document.getElementById(inputId);
+  if (input.type === 'password') { input.type = 'text'; btn.textContent = 'Hide'; }
+  else { input.type = 'password'; btn.textContent = 'Show'; }
+}
+
+async function saveEnvAndRestart() {
+  if (!envModalServiceId) return;
+  const fields = document.querySelectorAll('#env-modal-body .env-input');
+  let saved = 0;
+  for (const field of fields) {
+    const key = field.dataset.key;
+    const value = field.value.trim();
+    if (!value) continue;
+    try {
+      const r = await fetch(`/api/services/${envModalServiceId}/env`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key, value })
+      });
+      if (r.ok) saved++;
+    } catch { /* handled below */ }
+  }
+  if (saved > 0) {
+    showToast(`Saved ${saved} setting(s). Restarting service…`, 'success');
+    closeEnvModal();
+    await new Promise(r => setTimeout(r, 500));
+    await doAction(envModalServiceId, 'restart');
+  } else {
+    showToast('No changes to save (fields empty?)', 'info');
+  }
 }
 
 /* --------------------------------------------------------------------------

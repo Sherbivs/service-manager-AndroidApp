@@ -12,7 +12,6 @@
     "tray": "wscript.exe launch-tray.vbs"
   },
   "dependencies": {
-    "express": "^4.21.0",
-    "node-windows": "^1.0.0-beta.8"
+    "express": "^4.21.0"
   }
 }

@@ -1,6 +1,6 @@
 # Prompt.md
-Timestamp (UTC): 2026-04-18T00:00:00Z
-Revision: 1.0
+Timestamp (UTC): 2026-04-18T12:00:00Z
+Revision: 1.1
 
 **Cross-References**:
 - See `Patch.md` for contract rules
@@ -17,16 +17,17 @@ Canonical brief for automation: captures current mission, guardrails, and truth 
 4. If router manifests diverge from working intent, update them before editing.
 
 ## Last Repo Changes
-- **2026-04-18:** Bootstrapped meta-router system, Patch contract, Bible documentation, AI instructions, AGENTS.md, and governance surface (ops/). Modeled after SensaiOS patterns, tailored for a lightweight Node.js service manager.
+- **2026-04-18 (Rev 1.2):** Silent startup via VBS — created `launch-server.vbs` (hidden window style, idempotent check); updated `service-install.js` to register it in Windows Startup folder alongside the tray; updated `service-uninstall.js` to remove both shortcuts. Synced TOUCHMAP, ROUTER.yaml, ROUTER.md, masterroutetable.
+- **2026-04-18 (Rev 1.1):** Codespace audit — fixed TOUCHMAP filenames, stale ROUTER.yaml glob, expanded masterroutetable, updated architecture-bible project structure.
 
 ## PATCHSET Echo
 <<<PATCHSET START>>>
-Header: [Meta] Bootstrap governance system
+Header: [Meta] Codespace audit — meta-router and docs sync
 
-Summary: Created meta-router, patch system, bible-docs, AI instructions, AGENTS.md, masterroutetable, Tasklist, and Prompt for Service Manager. Governance surface (ops/) established with NEXT pointer, ROUTER.yaml, and TOUCHMAP.
+Summary: Audited workspace against actual disk state. Fixed TOUCHMAP filenames, removed stale .github/instructions/* glob from ROUTER.yaml, expanded masterroutetable Key Files table with 5 missing root files, updated architecture-bible project structure. SM.INIT.AUTO_START scripts confirmed present (service-install.js, service-uninstall.js, tray.ps1, launch-tray.vbs, node-windows dep) — task remains READY pending functional verification.
 
-TasklistDiff: true
-Tests: N/A (no test framework yet)
+TasklistDiff: false
+Tests: N/A
 Contracts: ON
-READY pointer: SM.INIT.AUTO_START
+READY pointer: SM.INIT.AUTO_START (verify/test auto-start behavior)
 <<<PATCHSET END>>>

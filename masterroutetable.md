@@ -1,5 +1,5 @@
 # Master Router Table
-Last Updated (UTC): 2026-04-18T00:00:00Z
+Last Updated (UTC): 2026-04-18T12:00:00Z
 Purpose: Text-only reference of every router and the primary files/routes they cover.
 
 ---
@@ -32,9 +32,15 @@ Purpose: Text-only reference of every router and the primary files/routes they c
 |------|---------|
 | `server.js` | Express API server, process registry, health checks, auto-restart |
 | `services.json` | Service configuration (port, service definitions) |
-| `package.json` | Dependencies and npm scripts |
+| `package.json` | Dependencies (express only) and npm scripts |
+| `service-install.js` | Registers Service Manager as a Windows service + tray auto-start |
+| `service-uninstall.js` | Removes Windows service + tray auto-start shortcut |
+| `tray.ps1` | PowerShell system tray icon (green/red status indicator) |
+| `launch-tray.vbs` | Silent VBS launcher for tray.ps1 (no console window) |
+| `launch-server.vbs` | Silent VBS launcher for server.js — checks if running, starts hidden if not |
 | `Patch.md` | AI Project Manager Contract |
 | `Prompt.md` | Current state, PATCHSET echo, recent changes |
 | `Tasklist.md` | Task backlog with READY queue |
 | `AGENTS.md` | Agent operations guide |
 | `masterroutetable.md` | This file — text-first router map |
+| `service-manager.log` | Runtime log (auto-rotated at 2 MB) |

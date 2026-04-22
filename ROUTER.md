@@ -17,6 +17,7 @@ Areas:
 - service-uninstall.js — Removes Windows service + tray auto-start
 - tray.ps1 — PowerShell system tray icon (green/red status indicator)
 - launch-tray.vbs — Silent VBS launcher for tray.ps1
+- launch-server.vbs — Silent VBS launcher for server.js (Windows Startup auto-start)
 - AGENTS.md — Agent operations guide
 - Patch.md — AI Project Manager Contract
 - Prompt.md — Current state, PATCHSET echo

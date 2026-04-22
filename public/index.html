@@ -55,6 +55,63 @@
 
   <div class="toast-container" id="toast-container"></div>
 
+  <!-- Log Viewer Modal -->
+  <div class="modal-overlay" id="log-modal" onclick="closeLogModal(event)">
+    <div class="modal modal--wide">
+      <div class="modal__header">
+        <h3 class="modal__title" id="log-modal-title">Logs</h3>
+        <div class="modal__tabs">
+          <button class="modal__tab modal__tab--active" id="log-tab-live" onclick="switchLogTab('live')">Live</button>
+          <button class="modal__tab" id="log-tab-archive" onclick="switchLogTab('archive')">Archive</button>
+        </div>
+        <button class="modal__close" onclick="closeLogModal()">✕</button>
+      </div>
+      <div class="modal__body">
+        <div id="log-panel-live">
+          <div class="log-viewer" id="log-viewer"><span class="log-empty">Loading…</span></div>
+        </div>
+        <div id="log-panel-archive" class="log-panel--hidden">
+          <div class="archive-search">
+            <input type="text" class="archive-search__input" id="archive-search-input"
+              placeholder="Search archived logs… (leave empty to browse all)"
+              onkeydown="if(event.key==='Enter')searchArchive()">
+            <button class="btn btn--ghost btn--sm" onclick="searchArchive()">Search</button>
+          </div>
+          <div class="log-viewer" id="archive-viewer"><span class="log-empty">Enter a search term or press Search to browse.</span></div>
+        </div>
+      </div>
+      <div class="modal__footer">
+        <div id="log-footer-live">
+          <button class="btn btn--ghost btn--sm" onclick="refreshLogs()">Refresh</button>
+          <label class="log-tail-label">
+            <input type="checkbox" id="log-tail" checked> Auto-tail
+          </label>
+        </div>
+        <div id="log-footer-archive" class="log-panel--hidden">
+          <span class="archive-stats" id="archive-stats"></span>
+          <button class="btn btn--ghost btn--sm" id="archive-load-more" onclick="loadMoreArchive()" hidden>Load more</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Env Editor Modal -->
+  <div class="modal-overlay" id="env-modal" onclick="closeEnvModal(event)">
+    <div class="modal">
+      <div class="modal__header">
+        <h3 class="modal__title" id="env-modal-title">Service Settings</h3>
+        <button class="modal__close" onclick="closeEnvModal()">✕</button>
+      </div>
+      <div class="modal__body" id="env-modal-body">
+        <p class="modal__loading">Loading…</p>
+      </div>
+      <div class="modal__footer">
+        <button class="btn btn--start btn--sm" onclick="saveEnvAndRestart()">Save &amp; Restart</button>
+        <button class="btn btn--ghost btn--sm" onclick="closeEnvModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
   <script src="app.js"></script>
 </body>
 </html>
