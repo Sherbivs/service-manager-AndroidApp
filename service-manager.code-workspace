@@ -5,6 +5,9 @@
 		},
 		{
 			"path": "../../Shopify"
+		},
+		{
+			"path": "../../../../StudioProjects/service-manager-AndroidApp"
 		}
 	],
 	"settings": {}

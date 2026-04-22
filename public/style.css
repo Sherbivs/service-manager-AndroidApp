@@ -640,10 +640,22 @@ body {
 
 .modal__body {
   flex: 1;
+  min-height: 0;
   overflow: hidden;
   display: flex;
   flex-direction: column;
 }
+
+/* Log panels fill the modal body and contain their scrollable viewer */
+#log-panel-live,
+#log-panel-archive {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
 
 .modal__footer {
   display: flex;
@@ -744,6 +756,7 @@ body {
 }
 
 .archive-search {
+  flex-shrink: 0;
   display: flex;
   gap: 8px;
   padding: 10px 0 8px;
