@@ -1,5 +1,31 @@
-node_modules/
-*.log
-*.log.old
-.env
-.env.local
+# Android / Gradle build outputs
+*.iml
+.gradle/
+/local.properties
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+
+# Android Studio
+*.apk
+*.aab
+*.ap_
+*.dex
+bin/
+gen/
+out/
+release/
+
+# Signing configs / secrets
+*.jks
+*.keystore
+keystore.properties
