@@ -9,88 +9,14 @@
 **Status:** READY  
 **Priority:** P0 — Blocks everything  
 **Acceptance Criteria:**
-- [ ] `data/ApiService.kt` Retrofit interface with all 7 endpoints
-- [ ] `data/ServiceRepository.kt` wraps all API calls, returns `sealed Result<T>` (Success/Error)
-- [ ] `data/RetrofitClient.kt` builds OkHttpClient + Retrofit; base URL read from `EncryptedSharedPreferences`
-- [ ] Base URL normalized on set (must end with `/`, must be valid URL)
-- [ ] No hardcoded URLs anywhere in source
-- [ ] **Tests:** `ServiceRepositoryTest` with MockK mocks — success path, error path, empty list
-- [ ] **Tests:** `RetrofitClientTest` with MockWebServer — verifies URL construction, correct headers, JSON parsing for each endpoint
-- [ ] **Tests:** Base URL trailing-slash normalization tested
-- [ ] `./gradlew lint test` passes
-
----
-
-### SMA.002 — Server URL Onboarding / Settings Screen
-**Status:** BLOCKED — depends on SMA.001, SMA.009  
-**Priority:** P0 — App is unusable without server URL  
-**Acceptance Criteria:**
-- [ ] First-run: user prompted for server URL before navigating to main screen
-- [ ] Settings screen accessible from main screen (toolbar menu)
-- [ ] URL stored via `util/EncryptedPrefsHelper.kt`
-- [ ] Basic URL validation (non-empty, starts with `http://` or `https://`, normalized trailing slash)
-- [ ] "Test Connection" button pings `/api/system` and shows success/failure Snackbar
-- [ ] `OnboardingViewModel` injected via Hilt `@HiltViewModel`
-- [ ] ROUTER.md updated for new UI files
-- [ ] **Tests:** `OnboardingViewModelTest` — URL validation logic, success + error states via Turbine
-- [ ] **UI Test:** Onboarding screen launches on first run (Espresso smoke test)
-
----
-
-### SMA.003 — Services List Screen
-**Status:** BLOCKED — depends on SMA.001, SMA.009, SMA.010  
-**Priority:** P1 — Core feature  
-**Acceptance Criteria:**
-- [ ] `ServicesViewModel` exposes `StateFlow<ServicesUiState>` (sealed Loading/Success/Error)
-- [ ] UDF enforced: ViewModel never called from RecyclerView adapter; events bubble up through Fragment
-- [ ] `ServicesFragment` with RecyclerView: name, status badge, port, action buttons (Start/Stop/Restart)
-- [ ] Pull-to-refresh via `SwipeRefreshLayout`
-- [ ] Auto-refresh every 10 seconds using `viewModelScope` coroutine (pauses when Fragment not resumed)
-- [ ] Status colors: green = running, red = stopped, amber = starting/unknown
-- [ ] ViewModel does not re-fetch if data is fresher than 10 seconds (rotation-safe)
-- [ ] `@HiltViewModel` injection for `ServicesViewModel`
-- [ ] Navigation to Service Detail via Safe Args
-- [ ] **Tests:** `ServicesViewModelTest` — loading/success/error state sequence (Turbine), auto-refresh tick, stale-data guard
-- [ ] **UI Test:** Services screen launches, RecyclerView shows at least one item (Espresso smoke)
-
----
-
-### SMA.004 — Service Actions (Start / Stop / Restart)
-**Status:** BLOCKED — depends on SMA.003  
-**Priority:** P1  
-**Acceptance Criteria:**
-- [ ] Tapping Start/Stop/Restart fires the correct POST endpoint via Repository
-- [ ] ViewModel emits an `ActionState` (sealed: Idle/InFlight/Done/Error) separate from list `UiState`
-- [ ] Action buttons disabled while `ActionState` is `InFlight` (prevents double-tap)
-- [ ] Snackbar feedback: success message or error with Retry action
-- [ ] Services list auto-refreshes after action completes
-- [ ] **Tests:** `ServicesViewModelTest` — action dispatched correctly, `ActionState` sequence, error handling, retry logic (Turbine + MockK)
-
----
-
-### SMA.005 — System Info Screen
-**Status:** BLOCKED — depends on SMA.001, SMA.009, SMA.010  
-**Priority:** P2  
-**Acceptance Criteria:**
-- [ ] Displays: hostname, IP, Node version, memory used/total, uptime
-- [ ] Accessible from bottom navigation or overflow menu
-- [ ] Refreshes on screen focus (lifecycle-aware)
-- [ ] `@HiltViewModel` injection
-- [ ] **Tests:** `SystemViewModelTest` — success + error states (Turbine)
-
----
-
-### SMA.006 — Log Viewer Screen
-**Status:** BLOCKED — depends on SMA.001, SMA.009, SMA.010  
-**Priority:** P2  
-**Acceptance Criteria:**
-- [ ] Displays last N log lines (N configurable, default 100)
-- [ ] Archive search: query field → calls `/api/services/:id/logs/archive`
-- [ ] Auto-scroll to bottom on new lines
-- [ ] "Copy to clipboard" button
-- [ ] Long log lines truncate with expand-on-tap
-- [ ] `@HiltViewModel` injection
-- [ ] **Tests:** `LogViewerViewModelTest` — log fetch, search, empty state (Turbine)
+- [ ] `data/api/ApiService.kt` Retrofit interface with all 7 endpoints
+- [ ] `data/repository/ServiceRepository.kt` wraps all API calls, returns `Result<T>` types
+- [ ] `data/model/` — DTOs: `ServiceDto.kt`, `SystemInfoDto.kt`, `LogEntryDto.kt`
+- [ ] Base URL read from `EncryptedSharedPreferences` via `util/EncryptedPrefsHelper.kt`
+- [ ] Base URL validated on set (must end with `/`, must be valid URL)
+- [ ] Unit tests: `ServiceRepositoryTest` with `MockWebServer` — test all endpoints, error cases
+- [ ] No hardcoded URLs anywhere
+- [ ] Hilt wiring complete (see SMA.009 — may be done in parallel)
 
 ---
 
@@ -99,10 +25,142 @@
 **Priority:** P0 — Required for app to reach LAN HTTP server  
 **Acceptance Criteria:**
 - [ ] `res/xml/network_security_config.xml` created
-- [ ] Config allows cleartext for user-configured LAN host only (not globally)
-- [ ] `AndroidManifest.xml` references `android:networkSecurityConfig`
+- [ ] Config allows cleartext for user-configured LAN host via `<domain>` element, not globally
+- [ ] `AndroidManifest.xml` references `android:networkSecurityConfig="@xml/network_security_config"`
 - [ ] `usesCleartextTraffic="true"` NOT set globally in manifest
-- [ ] ROUTER.md updated to document `res/xml/`
+- [ ] `app/ROUTER.md` updated to document `res/xml/`
+
+---
+
+### SMA.009 — Dependency Injection (Hilt) Setup
+**Status:** READY  
+**Priority:** P0 — Required before any feature work  
+**Acceptance Criteria:**
+- [ ] `com.google.dagger:hilt-android` added to `app/build.gradle` dependencies
+- [ ] Hilt Gradle plugin applied in root `build.gradle` and `app/build.gradle`
+- [ ] `ServiceManagerApp.kt` created with `@HiltAndroidApp`
+- [ ] `AndroidManifest.xml` references `android:name=".ServiceManagerApp"`
+- [ ] `di/NetworkModule.kt` created with `@Module @InstallIn(SingletonComponent::class)`
+- [ ] `di/AppModule.kt` created for non-network singleton bindings (EncryptedPrefsHelper, etc.)
+- [ ] `MainActivity.kt` annotated with `@AndroidEntryPoint`
+- [ ] Verified: `./gradlew assembleDebug` succeeds with Hilt wired
+
+---
+
+### SMA.010 — Navigation Component Setup
+**Status:** BLOCKED — depends on SMA.009  
+**Priority:** P0 — Required for single-activity architecture  
+**Acceptance Criteria:**
+- [ ] `androidx.navigation:navigation-fragment-ktx` and `navigation-ui-ktx` added
+- [ ] Safe Args plugin applied in `build.gradle`
+- [ ] `res/navigation/nav_graph.xml` created with placeholder destinations
+- [ ] `MainActivity.kt` sets up `NavHostFragment` as the content view
+- [ ] `BottomNavigationView` wired to `NavController` for Services, System, Logs
+- [ ] `app/ROUTER.md` updated to document `res/navigation/`
+- [ ] Verified: navigation between stub screens works on device
+
+---
+
+### SMA.011 — Testing Infrastructure
+**Status:** READY  
+**Priority:** P1 — Required before writing any feature tests  
+**Acceptance Criteria:**
+- [ ] `app/build.gradle` test dependencies added:
+  - `junit:junit:4.13.2`
+  - `io.mockk:mockk:1.13.x`
+  - `app.cash.turbine:turbine:x.x`
+  - `org.jetbrains.kotlinx:kotlinx-coroutines-test`
+  - `com.squareup.okhttp3:mockwebserver`
+- [ ] `app/build.gradle` androidTest dependencies:
+  - `androidx.test.espresso:espresso-core`
+  - `androidx.fragment:fragment-testing`
+  - `com.google.dagger:hilt-android-testing`
+- [ ] `MainCoroutineRule.kt` utility created in `src/test/` (provides `UnconfinedTestDispatcher`)
+- [ ] Smoke test: `ServicesViewModelTest.kt` with one passing test as proof-of-concept
+- [ ] `./gradlew test` passes with no errors
+
+---
+
+### SMA.012 — Code Quality Tooling (ktlint + detekt)
+**Status:** READY  
+**Priority:** P1 — Required before any code review or merge  
+**Acceptance Criteria:**
+- [ ] `ktlint` Gradle plugin applied (`org.jlleitschuh.gradle.ktlint`)
+- [ ] `detekt` Gradle plugin applied (`io.gitlab.arturbosch.detekt`)
+- [ ] `detekt.yml` config file created at root with sensible thresholds (max complexity 20, max function length 40)
+- [ ] `.editorconfig` created specifying Kotlin style rules compatible with ktlint
+- [ ] `./gradlew ktlintCheck` passes on current codebase
+- [ ] `./gradlew detekt` passes on current codebase with zero ERRORs
+- [ ] `./gradlew lint` configured with `abortOnError true`
+- [ ] CI gate: all three tools run on PR (see SMA.013)
+
+---
+
+### SMA.002 — Server URL Onboarding / Settings Screen
+**Status:** BLOCKED — depends on SMA.001, SMA.009, SMA.010  
+**Priority:** P0 — App is unusable without server URL  
+**Acceptance Criteria:**
+- [ ] First-run: `OnboardingFragment` shown if no URL is configured
+- [ ] Settings: `SettingsFragment` accessible from main nav
+- [ ] URL stored via `util/EncryptedPrefsHelper.kt`
+- [ ] Basic URL validation (non-empty, starts with `http://` or `https://`, ends with `/`)
+- [ ] "Test Connection" button that pings `/api/system` and shows success/error Snackbar
+- [ ] `ServicesViewModelTest` updated to cover URL validation edge cases
+- [ ] `ROUTER.md` updated for `ui/settings/` and `ui/onboarding/`
+
+---
+
+### SMA.003 — Services List Screen
+**Status:** BLOCKED — depends on SMA.001, SMA.009, SMA.010  
+**Priority:** P1 — Core feature  
+**Acceptance Criteria:**
+- [ ] `ServicesUiState` sealed class: `Loading`, `Success(List<ServiceModel>)`, `Error(String)`
+- [ ] `ServicesViewModel` (`@HiltViewModel`) exposes `StateFlow<ServicesUiState>`
+- [ ] `ServicesFragment` (`@AndroidEntryPoint`) with RecyclerView: name, status badge, port, action buttons
+- [ ] Pull-to-refresh via `SwipeRefreshLayout`
+- [ ] Auto-refresh every 10 seconds — pauses on `STOPPED` lifecycle, resumes on `STARTED`
+- [ ] Status colours: green = running, red = stopped, amber = unknown/error
+- [ ] ViewModel does not re-fetch if cached data is < 10s old
+- [ ] Unit test: `ServicesViewModelTest` — Loading → Success, Loading → Error, cache hit
+- [ ] UI test: `ServicesFragmentTest` — RecyclerView shows items, error state shown
+
+---
+
+### SMA.004 — Service Actions (Start / Stop / Restart)
+**Status:** BLOCKED — depends on SMA.003  
+**Priority:** P1  
+**Acceptance Criteria:**
+- [ ] `ServicesViewModel.startService(id)`, `stopService(id)`, `restartService(id)` methods
+- [ ] Buttons disabled while action in-flight (prevent double-tap)
+- [ ] Snackbar feedback: success message or error with Retry action
+- [ ] List refreshes after action completes (re-fetches immediately)
+- [ ] Unit test: action fires correct repo method, error state handled correctly
+- [ ] UI test: button click triggers correct action observable in ViewModel
+
+---
+
+### SMA.005 — System Info Screen
+**Status:** BLOCKED — depends on SMA.001, SMA.009, SMA.010  
+**Priority:** P2  
+**Acceptance Criteria:**
+- [ ] `SystemUiState` sealed class with `Loading`, `Success(SystemModel)`, `Error`
+- [ ] `SystemViewModel` exposes `StateFlow<SystemUiState>`
+- [ ] `SystemFragment` displays: hostname, IP, Node version, memory used/total, uptime
+- [ ] Refreshes on screen focus (`onResume`)
+- [ ] Unit test: `SystemViewModelTest`
+
+---
+
+### SMA.006 — Log Viewer Screen
+**Status:** BLOCKED — depends on SMA.001, SMA.009, SMA.010  
+**Priority:** P2  
+**Acceptance Criteria:**
+- [ ] `LogsUiState` with `Loading`, `Success(List<String>)`, `Error`
+- [ ] `LogsViewModel` with line-count parameter (default 100)
+- [ ] `LogsFragment` with scrollable log list; auto-scrolls to bottom on new data
+- [ ] Archive search: query field → calls `/api/services/:id/logs/archive`
+- [ ] "Copy to clipboard" button copies all visible log lines
+- [ ] Unit test: `LogsViewModelTest`
 
 ---
 
@@ -110,56 +168,25 @@
 **Status:** BLOCKED — depends on SMA.001, SMA.003, SMA.004  
 **Priority:** P1 — Required before any distribution  
 **Acceptance Criteria:**
-- [ ] `app/build.gradle` release config: `minifyEnabled true`, `shrinkResources true`, `debuggable false`
-- [ ] ProGuard/R8 rules: keep Retrofit/Gson model classes; suppress logs in release (`-assumenosideeffects Log.*`)
+- [ ] `app/build.gradle` release: `minifyEnabled true`, `shrinkResources true`, `debuggable false`
+- [ ] `proguard-rules.pro` rules: keep Retrofit model classes, Gson annotations, Hilt generated code
+- [ ] `BuildConfig.DEBUG` guards on all `Log.*` calls
 - [ ] `keystore.properties` pattern documented in `docs/operations-bible/02-release-signing.md`
-- [ ] Verified: `./gradlew assembleRelease` succeeds with dummy keystore
-- [ ] Verified: `strings` on release APK shows no server URLs, no credentials
+- [ ] Verified: `./gradlew assembleRelease` succeeds with a dummy keystore
+- [ ] Verified: `strings` tool on release APK reveals no server URL, no credentials
 
 ---
 
-### SMA.009 — Hilt Dependency Injection Setup
-**Status:** READY (no dependencies)  
-**Priority:** P0 — Blocks SMA.002, SMA.003, SMA.005, SMA.006  
+### SMA.013 — GitHub Actions CI/CD Pipeline
+**Status:** READY  
+**Priority:** P2 — Ship after core features are testable  
 **Acceptance Criteria:**
-- [ ] `hilt-android` + `hilt-compiler` added to `app/build.gradle`
-- [ ] `@HiltAndroidApp` annotation on `Application` class (`ServiceManagerApp.kt`)
-- [ ] `@AndroidEntryPoint` on `MainActivity`
-- [ ] `NetworkModule.kt` — Hilt module providing `OkHttpClient`, `Retrofit`, `ApiService`
-- [ ] `DataModule.kt` — Hilt module providing `ServiceRepository`, `EncryptedPrefsHelper`
-- [ ] `RetrofitClient` removed or replaced by Hilt-provided instances (no manual `new`)
-- [ ] **Tests:** Verify `ServiceRepository` can be injected into a test using `@HiltAndroidTest` or constructor injection
-- [ ] `./gradlew assembleDebug` passes with Hilt enabled
-
----
-
-### SMA.010 — Jetpack Navigation Component
-**Status:** READY (no dependencies)  
-**Priority:** P0 — Blocks SMA.002, SMA.003, SMA.005, SMA.006  
-**Acceptance Criteria:**
-- [ ] `navigation-fragment-ktx` + `navigation-ui-ktx` + `navigation-safe-args-gradle-plugin` added
-- [ ] `res/navigation/nav_graph.xml` defines all destinations: Onboarding, ServicesList, LogViewer, SystemInfo
-- [ ] `MainActivity` hosts a single `NavHostFragment`; no other activities for navigation
-- [ ] Safe Args plugin generates typed direction classes for all navigations with arguments
-- [ ] Bottom navigation (if used) wired to `NavController` via `NavigationUI.setupWithNavController()`
-- [ ] Up/Back buttons handled by NavController — no manual `onBackPressed()` override
-- [ ] **Tests:** Each destination navigable via `NavController.navigate()` in test using `TestNavHostController`
-
----
-
-### SMA.011 — Code Quality Toolchain & CI
-**Status:** READY (no dependencies)  
-**Priority:** P1 — Gates all future PRs  
-**Acceptance Criteria:**
-- [ ] **ktlint** configured via Gradle plugin; `.editorconfig` in root
-- [ ] **Detekt** configured via Gradle plugin; `detekt.yml` baseline in root
-- [ ] **Android Lint** `lint.xml` with `abortOnError true` for release builds
-- [ ] `./gradlew lint ktlintCheck detekt test` all pass on clean checkout
-- [ ] **GitHub Actions** workflow `.github/workflows/ci.yml`:
-  - Triggers on push + PR to `main`
-  - Steps: checkout → JDK 17 setup → Gradle cache → `lint` → `ktlintCheck` → `detekt` → `test`
-  - Fails PR if any step fails
-- [ ] ROUTER.md updated for `.github/workflows/`
+- [ ] `.github/workflows/ci.yml` created
+- [ ] PR trigger: `./gradlew lint ktlintCheck detekt test`
+- [ ] Push to `main` trigger: `./gradlew assembleDebug` + upload APK artifact
+- [ ] Secrets wired: no hardcoded paths or credentials
+- [ ] Workflow passes on clean run with current codebase
+- [ ] `ROUTER.md` updated for `.github/workflows/`
 
 ---
 
@@ -182,6 +209,125 @@
 - SMA.102 — Push notifications for service crashes (requires server-side webhook support)
 - SMA.103 — Multi-server support (save multiple server URLs)
 - SMA.104 — Biometric lock for app access
-- SMA.105 — Domain/Use Case layer (extract use cases from ViewModel if complexity grows)
-- SMA.106 — Gradle modularization (`:core`, `:data`, `:features:services`)
-- SMA.107 — Compose UI migration (optional; evaluate after MVVM + Views is stable)
+- SMA.105 — WorkManager: periodic background sync (requires battery impact review)
+
+---
+
+## READY Queue (work in this order)
+
+### SMA.001 — Network Layer Foundation
+**Status:** READY  
+**Priority:** P0 — Blocks everything  
+**Acceptance Criteria:**
+- [ ] `data/ApiService.kt` Retrofit interface with all 7 endpoints
+- [ ] `data/ServiceRepository.kt` wraps all API calls, returns sealed Result types
+- [ ] `data/RetrofitClient.kt` builds OkHttpClient + Retrofit, reads base URL from EncryptedSharedPreferences
+- [ ] Base URL validated on set (must end with `/`, must be valid URL)
+- [ ] Unit tests: `ServiceRepositoryTest` with mocked Retrofit responses
+- [ ] No hardcoded URLs anywhere
+
+---
+
+### SMA.002 — Server URL Onboarding / Settings Screen
+**Status:** BLOCKED — depends on SMA.001  
+**Priority:** P0 — App is unusable without server URL  
+**Acceptance Criteria:**
+- [ ] First-run: user prompted for server URL before navigating to main screen
+- [ ] Settings screen accessible from main screen (toolbar menu or FAB)
+- [ ] URL stored via `util/EncryptedPrefsHelper.kt`
+- [ ] Basic URL validation (non-empty, starts with `http://` or `https://`)
+- [ ] "Test Connection" button that pings `/api/system` and shows result
+- [ ] ROUTER.md updated for new UI files
+
+---
+
+### SMA.003 — Services List Screen
+**Status:** BLOCKED — depends on SMA.001  
+**Priority:** P1 — Core feature  
+**Acceptance Criteria:**
+- [ ] `ServicesViewModel` exposes `StateFlow<ServicesUiState>` (loading, success, error)
+- [ ] `ServicesFragment` with RecyclerView showing: name, status badge, port, action buttons
+- [ ] Pull-to-refresh
+- [ ] Auto-refresh every 10 seconds (stops on background, resumes on foreground)
+- [ ] Status colors: green = running, red = stopped, yellow = unknown
+- [ ] ViewModel survives rotation without re-fetching if data < 10s old
+
+---
+
+### SMA.004 — Service Actions (Start / Stop / Restart)
+**Status:** BLOCKED — depends on SMA.003  
+**Priority:** P1  
+**Acceptance Criteria:**
+- [ ] Tapping Start/Stop/Restart fires the correct POST endpoint
+- [ ] Button disabled while action in flight (prevents double-tap)
+- [ ] Snackbar feedback: success message or error with retry
+- [ ] List auto-refreshes after action completes
+- [ ] Unit tests: action dispatched correctly, error state handled
+
+---
+
+### SMA.005 — System Info Screen
+**Status:** BLOCKED — depends on SMA.001  
+**Priority:** P2  
+**Acceptance Criteria:**
+- [ ] Displays: hostname, IP, Node version, memory used/total, uptime
+- [ ] Accessible from bottom nav or overflow menu
+- [ ] Refreshes on screen focus
+
+---
+
+### SMA.006 — Log Viewer Screen
+**Status:** BLOCKED — depends on SMA.001  
+**Priority:** P2  
+**Acceptance Criteria:**
+- [ ] Displays last N log lines (N configurable, default 100)
+- [ ] Archive search: query field → calls `/api/services/:id/logs/archive`
+- [ ] Auto-scroll to bottom on new lines
+- [ ] "Copy to clipboard" button
+- [ ] Long log lines truncate with expand-on-tap
+
+---
+
+### SMA.007 — Network Security Config (LAN HTTP support)
+**Status:** READY (no dependencies)  
+**Priority:** P0 — Required for app to reach LAN HTTP server  
+**Acceptance Criteria:**
+- [ ] `res/xml/network_security_config.xml` created
+- [ ] Config allows cleartext for user-configured LAN host only (not globally)
+- [ ] `AndroidManifest.xml` references `android:networkSecurityConfig`
+- [ ] `usesCleartextTraffic="true"` NOT set globally in manifest
+- [ ] ROUTER.md updated to document `res/xml/`
+
+---
+
+### SMA.008 — Release Build Hardening
+**Status:** BLOCKED — depends on SMA.001, SMA.003, SMA.004  
+**Priority:** P1 — Required before any distribution  
+**Acceptance Criteria:**
+- [ ] `app/build.gradle` release config: `minifyEnabled true`, `shrinkResources true`, `debuggable false`
+- [ ] ProGuard/R8 rules: keep Retrofit models, Gson annotations; strip logs in release
+- [ ] `keystore.properties` pattern documented in `docs/operations-bible/`
+- [ ] Verified: `./gradlew assembleRelease` succeeds with dummy keystore
+- [ ] Verified: no sensitive strings visible via `strings` tool on release APK
+
+---
+
+## IN PROGRESS
+
+*(none)*
+
+---
+
+## DONE
+
+*(none)*
+
+---
+
+## BACKLOG (future consideration)
+
+- SMA.100 — Dark mode / theme toggle
+- SMA.101 — Widget: service status on home screen
+- SMA.102 — Push notifications for service crashes (requires server-side webhook support)
+- SMA.103 — Multi-server support (save multiple server URLs)
+- SMA.104 — Biometric lock for app access

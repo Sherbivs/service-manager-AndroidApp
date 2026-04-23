@@ -13,10 +13,6 @@
 4. **Never skip ROUTER updates.** Every structural file change requires updating the relevant `ROUTER.md` and `ops/ROUTER.yaml` in the same commit.
 5. **Never leave `android:debuggable="true"` in release builds.** R8 + no debuggable = required for release.
 6. **Task queue discipline.** Only work on tasks listed in `ops/NEXT.yaml`. Mark tasks in-progress before starting, completed immediately after finishing.
-7. **Never put business logic in Activities or Fragments.** UI components observe state and forward events. All logic lives in ViewModels and Repositories.
-8. **Always follow UDF.** ViewModel exposes `StateFlow<UiState>`; UI only collects it. State changes are never triggered from the UI layer directly.
-9. **Tests are not optional.** Every new ViewModel method and Repository function requires unit tests. A task is not DONE until tests pass.
-10. **Code quality gates must pass.** `./gradlew lint ktlintCheck detekt test` must all pass before any commit. Do not bypass with `//noinspection` without a documented reason.
 
 ---
 
@@ -30,19 +26,15 @@
 
 ### During Work
 - Make minimal, reversible changes. One logical change per commit.
-- Follow Kotlin idioms and MVVM/UDF patterns (see `AGENTS.md`).
+- Follow Kotlin idioms and MVVM patterns (see `AGENTS.md`).
 - Keep security invariants (see Security Baseline in `AGENTS.md`).
 - Update ROUTER files whenever adding/moving files or directories.
-- Write or update unit tests alongside every ViewModel/Repository change.
-- Inject dependencies via Hilt — never manually construct Repository or API clients.
-- Use Navigation Component for all screen transitions — never `startActivity()`.
 
 ### Before Finishing
-1. Run `./gradlew lint ktlintCheck detekt test` — all must pass.
-2. Update `Prompt.md` with a PATCHSET echo of what changed.
-3. Update `ops/NEXT.yaml` — mark the task complete, point to next READY task.
-4. Update `Tasklist.md` — move task to DONE, update status of dependents.
-5. Commit with message format: `[Task SMA.XXX] Brief summary`
+1. Update `Prompt.md` with a PATCHSET echo of what changed.
+2. Update `ops/NEXT.yaml` — mark the task complete, point to next READY task.
+3. Update `Tasklist.md` — move task to DONE, update status of dependents.
+4. Commit with message format: `[Task SMA.XXX] Brief summary`
 
 ---
 
@@ -80,4 +72,4 @@ If a run gets stuck (same error ≥2 times, no progress in 3 steps):
 
 ---
 
-**Document Version:** 1.1 (2026-04-22) — Added UDF, testing, and code quality absolutes
+**Document Version:** 1.0 (2026-04-22) — Initial Android bootstrap

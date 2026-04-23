@@ -6,38 +6,59 @@
 | # | Title | Status |
 |---|-------|--------|
 | 01 | [System Overview](01-system-overview.md) | Pending |
-| 02 | [Android Architecture & UDF](02-android-architecture.md) | Pending |
+| 02 | [Android Architecture (MVVM + UDF)](02-android-architecture.md) | Pending |
 | 03 | [API Integration](03-api-integration.md) | Pending |
 | 04 | [Security Architecture](04-security-architecture.md) | Pending |
-| 05 | [Dependency Injection (Hilt)](05-dependency-injection.md) | Pending |
-| 06 | [Navigation Component](06-navigation.md) | Pending |
-| 07 | [Testing Strategy](07-testing-strategy.md) | Pending |
 
-## Architecture Overview
+---
 
-The Service Manager Android App is a native Android client built with Kotlin using **MVVM** architecture and **Unidirectional Data Flow (UDF)**. It communicates with the Service Manager REST API (`http://<host>:3500/api/`) over LAN.
+## Layered Architecture
 
-### Layer Responsibilities
+The app follows the official Android layered architecture. Each layer has a single responsibility and communicates only with the layer immediately below it.
 
-| Layer | Components | Rules |
-|-------|-----------|-------|
-| **UI** | Activities, Fragments, ViewBinding | No business logic. Only: observe `StateFlow`, call ViewModel methods, setup ViewBinding. |
-| **ViewModel** | `@HiltViewModel` classes | Exposes `val uiState: StateFlow<UiState>`. Launches coroutines in `viewModelScope`. No `Context` access. |
-| **Repository** | `ServiceRepository` | Single source of truth. Wraps Retrofit, maps DTOs to domain models, returns `Result<T>`. |
-| **Network** | `ApiService`, `RetrofitClient` | Retrofit interface + OkHttp client. Base URL from `EncryptedSharedPreferences`. |
-| **Util** | `EncryptedPrefsHelper` | Wraps `EncryptedSharedPreferences`; no raw `SharedPreferences` for sensitive values. |
-
-### Unidirectional Data Flow (UDF)
-
-All screens follow this mandatory pattern:
 ```
-User Event → Fragment/Activity calls ViewModel.onEvent()
-           → ViewModel updates MutableStateFlow
-           → Fragment collects StateFlow
-           → UI renders new state
+UI Layer
+  ├── MainActivity (NavHostFragment)
+  ├── ServicesFragment  ← observes StateFlow, dispatches events
+  ├── SystemFragment
+  ├── LogsFragment
+  └── SettingsFragment
+
+ViewModel Layer (survives rotation)
+  ├── ServicesViewModel  ← holds StateFlow<ServicesUiState>
+  ├── SystemViewModel
+  └── LogsViewModel
+
+[Domain Layer] (optional; add only for complex reusable logic)
+  └── GetServicesUseCase, etc.
+
+Data Layer
+  ├── ServiceRepository  ← single source of truth
+  ├── ApiService (Retrofit interface)
+  └── EncryptedPrefsHelper
 ```
 
-Sealed state class template:
+**Layer rules (strictly enforced):**
+- UI layer: ViewBinding setup, click listeners, StateFlow collection — NOTHING ELSE
+- ViewModel layer: `viewModelScope` coroutines, state transformation, business rules — no `Context`
+- Repository layer: API calls, result mapping, error handling — no Android UI classes
+- DTOs vs Models: API returns `ServiceDto`; ViewModel receives `ServiceModel` (mapped in Repository)
+
+---
+
+## Unidirectional Data Flow (UDF)
+
+All state changes follow a single direction: **User Event → ViewModel → StateFlow → UI**.
+
+```
+User taps "Start"  →  Fragment calls viewModel.startService(id)
+                   →  ViewModel sets state to Loading, calls repo.startService(id)
+                   →  Repo POST /api/services/:id/start → returns Result<Unit>
+                   →  ViewModel sets state to Success or Error
+                   →  Fragment's collect{} re-renders UI from new state
+```
+
+**Required sealed class pattern per screen:**
 ```kotlin
 sealed class ServicesUiState {
     object Loading : ServicesUiState()
@@ -46,57 +67,75 @@ sealed class ServicesUiState {
 }
 ```
 
-ViewModel template:
-```kotlin
-@HiltViewModel
-class ServicesViewModel @Inject constructor(
-    private val repository: ServiceRepository
-) : ViewModel() {
-    private val _uiState = MutableStateFlow<ServicesUiState>(ServicesUiState.Loading)
-    val uiState: StateFlow<ServicesUiState> = _uiState.asStateFlow()
+**Never** expose `MutableStateFlow` from a ViewModel. Always use `.asStateFlow()`.
 
-    fun loadServices() {
-        viewModelScope.launch {
-            _uiState.value = ServicesUiState.Loading
-            repository.getServices()
-                .onSuccess { _uiState.value = ServicesUiState.Success(it) }
-                .onFailure { _uiState.value = ServicesUiState.Error(it.message ?: "Unknown error") }
-        }
-    }
-}
+---
+
+## Dependency Injection (Hilt)
+
+Hilt is the official Android DI library (built on Dagger 2). It provides:
+- Compile-time DI graph validation
+- Automatic lifecycle scoping (`SingletonComponent`, `ViewModelComponent`, `ActivityComponent`)
+- `@HiltViewModel` for ViewModel injection (no `ViewModelProvider.Factory` boilerplate)
+
+**Module structure:**
+```
+di/
+  NetworkModule.kt    — Retrofit, OkHttpClient, ApiService (@Singleton)
+  AppModule.kt        — EncryptedPrefsHelper, any other app-wide deps
 ```
 
-### Architecture Patterns: MVVM vs MVI vs Clean
+**Scoping:**
+- `@Singleton` — Retrofit, OkHttpClient, ApiService, ServiceRepository, EncryptedPrefsHelper
+- `@HiltViewModel` + `@Inject` — All ViewModels
+- `@ActivityScoped` — Only if a dependency must be tied to a single Activity
 
-| Pattern | Description | Pros | Cons | When to Use |
-|---------|-------------|------|------|-------------|
-| **MVVM + UDF** | ViewModel holds state as StateFlow; UI observes. Current approach. | Jetpack-native, easy to test, survives rotation. | Risk of bloated VM if not careful. | All screens in this app. |
-| **MVI** | Single immutable state per screen; Intents reduce to new state (Redux-like). | Very predictable; great for complex screens. | More boilerplate; steeper learning curve. | Consider if a screen has >5 distinct event types. |
-| **Clean (Domain layer)** | Adds Use Case classes between ViewModel and Repository. | Reusable business logic; very testable. | More files/interfaces. | Add when a ViewModel has >3 concerns (see SMA.105). |
+---
 
-### Dependency Injection (Hilt)
+## Navigation (Jetpack Navigation Component)
 
-All dependencies wired via Hilt:
-- `@HiltAndroidApp` on `Application` class
-- `@AndroidEntryPoint` on every `Activity` and `Fragment`
-- `@HiltViewModel` + `@Inject constructor` on every ViewModel
-- `NetworkModule` provides `OkHttpClient`, `Retrofit`, `ApiService`
-- `DataModule` provides `ServiceRepository`, `EncryptedPrefsHelper`
+Single-activity architecture. `MainActivity` hosts one `NavHostFragment`. All screens are Fragments.
 
-**Never** manually instantiate `ServiceRepository` or `RetrofitClient`.
+```
+MainActivity
+  └── NavHostFragment (nav_graph.xml)
+        ├── ServicesFragment   (startDestination)
+        ├── SystemFragment
+        ├── LogsFragment
+        └── SettingsFragment
+```
 
-### Navigation
+**Nav graph actions (example):**
+```xml
+<action
+    android:id="@+id/action_services_to_logs"
+    app:destination="@id/logsFragment" />
+```
 
-Single-activity architecture via Jetpack Navigation Component:
-- `MainActivity` hosts one `NavHostFragment`
-- `res/navigation/nav_graph.xml` defines all destinations
-- Safe Args generates typed direction classes
-- All transitions via `NavController.navigate()` — no `startActivity()` for in-app nav
-- Back stack managed by NavController
+**BottomNavigationView** wired to `NavController` via `NavigationUI.setupWithNavController()`.
 
-### Key Design Decisions
-- **Configurable server URL** — Never hardcoded. User enters on first run; stored in `EncryptedSharedPreferences`.
-- **LAN HTTP** — Server uses plain HTTP. `network_security_config.xml` allows cleartext for the configured host only. `usesCleartextTraffic` is not enabled globally.
-- **No server-side components** — Android-only. Node.js server at [Sherbivs/service-manager](https://github.com/Sherbivs/service-manager).
-- **Future: Domain layer** — Extract Use Case classes if ViewModel complexity grows (see SMA.105 in Tasklist).
-- **Future: Modularization** — `:core`, `:data`, `:features:services` modules if build times or team size grow (see SMA.106).
+---
+
+## Optional Domain Layer (Use Cases)
+
+Use Cases belong in `domain/` and are only added when business logic is:
+- **Shared** between multiple ViewModels, OR
+- **Complex enough** that the ViewModel exceeds ~80 lines of business logic
+
+For this app, Use Cases are NOT required in initial implementation.
+
+---
+
+## Key Design Decisions
+
+| Decision | Choice | Reason |
+|----------|--------|--------|
+| State exposure | `StateFlow<UiState>` | Kotlin-native, lifecycle-aware, testable with Turbine |
+| DI framework | Hilt | Official Android recommendation, compile-time safe |
+| Navigation | Navigation Component | Single back stack, Safe Args, deep link ready |
+| Network | Retrofit + OkHttp | Industry standard, Hilt-injectable, MockWebServer testable |
+| Secrets | EncryptedSharedPreferences | MASVS M2 compliant, hardware-backed on API 23+ |
+| Cleartext | domain exception only | MASVS M3; `usesCleartextTraffic` never global |
+| View system | ViewBinding | Null-safe, no reflection, simpler than DataBinding |
+| Background | foreground polling only | WorkManager added only if background sync is needed |
+| UI tests | FragmentScenario + Espresso | Official; no Robolectric dependency |

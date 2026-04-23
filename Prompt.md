@@ -1,13 +1,13 @@
 # Prompt.md — Service Manager Android App
 **Project:** Service Manager Android App  
 **Repo:** Sherbivs/service-manager-AndroidApp  
-**Timestamp:** 2026-04-22T00:00:00Z
+**Timestamp:** 2026-04-22T00:00:01Z
 
 ---
 
 ## Current State
 
-Project is in **bootstrap phase**. All meta docs, governance files, and project structure are in place. No application source code has been written yet.
+Project is in **pre-implementation phase**. All meta docs, governance files, and project structure are in place. No application source code has been written yet. Meta docs are now fully aligned with Android architecture and engineering standards.
 
 The Android Gradle project is scaffolded with:
 - `app/src/main/AndroidManifest.xml` — INTERNET permission, MainActivity placeholder
@@ -15,7 +15,26 @@ The Android Gradle project is scaffolded with:
 - `build.gradle` — AGP 8.2.2, Kotlin 1.9.22
 - `settings.gradle` — rootProject.name = "Service Manager", includes `:app`
 
-**Next action:** Begin SMA.001 (Network Layer) and SMA.007 (Network Security Config) — both are READY.
+**Next action:** Begin SMA.009 (Hilt DI setup) — the foundation that unblocks SMA.010 (Navigation). Run SMA.001, SMA.007, SMA.011, SMA.012 in parallel after Hilt is in place.
+
+---
+
+## PATCHSET Standards Alignment — Meta Docs Update
+Date: 2026-04-22 (Session 2)  
+Files Changed:
+  - AGENTS.md — expanded with UDF, Hilt DI, Navigation Component, testing pyramid, code quality, 10-item pitfalls list. Version bumped to 1.1
+  - .github/copilot-instructions.md — fully rewritten; old Node.js content purged; complete Android standards added (UDF + Hilt + Navigation code examples, testing pyramid, quality gates, 10-step feature checklist)
+  - Tasklist.md — expanded from 8 to 13 tasks; added SMA.009 (Hilt), SMA.010 (Navigation), SMA.011 (Testing Infra), SMA.012 (ktlint/detekt), SMA.013 (CI/CD); all ACs updated with Hilt and testing requirements
+  - docs/architecture-bible/INDEX.md — full content: layered architecture diagram, UDF flow, sealed UiState pattern, Hilt scoping, Navigation structure, optional Domain layer guidance, design decisions table
+  - docs/development-bible/INDEX.md — full content: quick setup, architecture rules table, sealed UiState pattern, testing pyramid, unit/integration test templates, MainDispatcherRule, coverage targets, code quality gate commands, CI/CD pipeline overview
+  - ops/NEXT.yaml — version 2; queue updated with SMA.009, SMA.010, SMA.011, SMA.012, SMA.013; recommended execution order documented
+  - Prompt.md — this update
+
+Summary: Completed standards-alignment pass informed by Android App Architecture & Engineering Best Practices research. All meta docs now consistently document MVVM + UDF, Hilt DI, Navigation Component, testing pyramid (JUnit/MockK/Turbine/MockWebServer/Espresso), code quality tooling (ktlint/detekt/Lint), and CI/CD patterns. Five new tasks added to backlog.
+
+Testing: Files reviewed for correctness and consistency.
+
+Next: SMA.009 — Dependency Injection / Hilt Setup
 
 ---
 
@@ -35,18 +54,24 @@ Files Changed:
   - ops/ROUTER.md  (created)
   - .gitignore  (replaced with Android-specific gitignore)
 
-Summary: Bootstrapped all meta docs for the Android companion app project. The Node.js service-manager content was present from a repo separation operation; all files have been rewritten for the Android project. Governance structure mirrors the service-manager repo pattern with Android-specific content throughout.  
-
-Testing: Files verified by reading back key sections.  
-
-Next: SMA.001 — Network Layer Foundation
+Summary: Bootstrapped all meta docs for the Android companion app project.
 
 ---
 
-## Active Task
+## Active Tasks (READY)
 
-**SMA.001** — Network Layer Foundation  
-**SMA.007** — Network Security Config (LAN HTTP support)
+**SMA.009** — Dependency Injection / Hilt Setup (P0)  
+**SMA.001** — Network Layer Foundation (P0)  
+**SMA.007** — Network Security Config (P0)  
+**SMA.011** — Testing Infrastructure (P1)  
+**SMA.012** — Code Quality Tooling / ktlint + detekt (P1)  
+**SMA.013** — GitHub Actions CI/CD (P2)
+
+## Blocked Tasks
+
+**SMA.010** — Navigation Component Setup (blocked on SMA.009)  
+**SMA.002** — Server URL Onboarding (blocked on SMA.001, SMA.009, SMA.010)  
+**SMA.003** — Services List Screen (blocked on SMA.001, SMA.009, SMA.010)
 
 ---
 

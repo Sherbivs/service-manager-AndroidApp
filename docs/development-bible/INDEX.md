@@ -7,9 +7,10 @@
 |---|-------|--------|
 | 01 | [Local Setup](01-local-setup.md) | Pending |
 | 02 | [Coding Conventions](02-coding-conventions.md) | Pending |
-| 03 | [Contributing Guide](03-contributing.md) | Pending |
-| 04 | [Testing Guide](04-testing-guide.md) | Pending |
-| 05 | [Code Quality & CI](05-code-quality-ci.md) | Pending |
+| 03 | [Testing Guide](03-testing.md) | Pending |
+| 04 | [Contributing Guide](04-contributing.md) | Pending |
+
+---
 
 ## Quick Setup
 
@@ -20,119 +21,138 @@
 - Physical device or emulator (API 24+)
 - Service Manager server running on LAN ([Sherbivs/service-manager](https://github.com/Sherbivs/service-manager))
 
-### First Run
+### Clone & Build
 ```bash
 git clone https://github.com/Sherbivs/service-manager-AndroidApp.git
 cd service-manager-AndroidApp
-# Open in Android Studio OR:
 ./gradlew assembleDebug
 ./gradlew installDebug
 ```
 
+---
+
 ## Coding Conventions
 
-### Kotlin
+### Kotlin Style
 - Follow [Kotlin Coding Conventions](https://kotlinlang.org/docs/coding-conventions.html)
-- Use `data class` for API response DTOs
-- Prefer `sealed class` for UI state: `Loading`, `Success(data)`, `Error(message)`
-- Extension functions go in `util/Extensions.kt`
-- `object` for singletons; `companion object` only for factory methods or constants
+- Style enforced by **ktlint** — run `./gradlew ktlintFormat` before committing
+- Static analysis by **detekt** — zero ERRORs policy, review WARNINGs
 
-### Architecture Rules
-- Activities and Fragments contain ONLY: ViewBinding setup, ViewModel observation, click listeners
-- ViewModels contain ONLY: business logic, coroutine launches, state management
-- Repository contains ONLY: API calls, data transformation, caching
-- Never access `Context` from a ViewModel — use `AndroidViewModel` only if absolutely necessary
-- All ViewModel dependencies injected via Hilt `@Inject constructor` — never `ViewModelFactory` manually
-- All screen transitions via `NavController.navigate()` with Safe Args — never `startActivity()`
+### Architecture Rules (hard constraints)
+| Location | Allowed | Forbidden |
+|----------|---------|----------|
+| Fragment/Activity | ViewBinding, click listeners, StateFlow collection | Business logic, coroutines, API calls |
+| ViewModel | `viewModelScope`, state, business rules | `Context`, Android UI classes |
+| Repository | API calls, result mapping, error handling | ViewModel references, UI classes |
+| DTOs (`model/`) | `data class` JSON shapes | Domain logic |
 
 ### File Naming
-- ViewModels: `ServicesViewModel.kt`, `SystemViewModel.kt`
-- Fragments: `ServicesFragment.kt`, `SystemFragment.kt`
-- Activities: `MainActivity.kt`
-- API DTOs: `ServiceDto.kt`, `SystemInfoDto.kt`
-- Domain models: `ServiceModel.kt`, `SystemInfoModel.kt`
-- Hilt modules: `NetworkModule.kt`, `DataModule.kt`
+```
+ServicesViewModel.kt          # ViewModel (+ UiState in same file)
+ServicesFragment.kt           # Fragment
+ServiceDto.kt                 # Network DTO (data/model/)
+ServiceModel.kt               # Domain model (mapped from DTO in Repository)
+ServicesViewModelTest.kt      # ViewModel unit test (src/test/)
+ServiceRepositoryTest.kt      # Repository integration test (src/test/, MockWebServer)
+ServicesFragmentTest.kt       # Fragment UI test (src/androidTest/, Espresso)
+```
 
-## Testing Standards
-
-### Test Layers
-
-| Layer | Location | Frameworks | Minimum Coverage |
-|-------|----------|------------|-----------------|
-| Unit | `app/src/test/` | JUnit 5, MockK, Turbine, kotlinx-coroutines-test | ≥80% ViewModel + Repository |
-| Integration | `app/src/test/` | OkHttp MockWebServer | All API endpoints |
-| UI / Smoke | `app/src/androidTest/` | Espresso, TestNavHostController | 1 smoke test per screen |
-
-### Unit Test Template (ViewModel)
+### Sealed UiState Pattern (required on every screen)
 ```kotlin
-@ExtendWith(InstantTaskExecutorExtension::class)
-class ServicesViewModelTest {
-    private val repository: ServiceRepository = mockk()
-    private lateinit var viewModel: ServicesViewModel
+sealed class ServicesUiState {
+    object Loading : ServicesUiState()
+    data class Success(val services: List<ServiceModel>) : ServicesUiState()
+    data class Error(val message: String) : ServicesUiState()
+}
 
-    @Before
-    fun setUp() {
-        Dispatchers.setMain(UnconfinedTestDispatcher())
-        viewModel = ServicesViewModel(repository)
-    }
+// ViewModel — private mutable, public immutable
+@HiltViewModel
+class ServicesViewModel @Inject constructor(
+    private val repo: ServiceRepository
+) : ViewModel() {
+    private val _uiState = MutableStateFlow<ServicesUiState>(ServicesUiState.Loading)
+    val uiState: StateFlow<ServicesUiState> = _uiState.asStateFlow()
+}
 
-    @Test
-    fun `loadServices emits Success when repository returns data`() = runTest {
-        val services = listOf(ServiceModel("id", "name", "running"))
-        coEvery { repository.getServices() } returns Result.success(services)
-
-        viewModel.uiState.test {
-            viewModel.loadServices()
-            assertEquals(ServicesUiState.Loading, awaitItem())
-            assertEquals(ServicesUiState.Success(services), awaitItem())
-            cancelAndIgnoreRemainingEvents()
-        }
+// Fragment — ALWAYS use repeatOnLifecycle
+viewLifecycleOwner.lifecycleScope.launch {
+    repeatOnLifecycle(Lifecycle.State.STARTED) {
+        viewModel.uiState.collect { render(it) }
     }
 }
 ```
 
-### Key Testing Dependencies
+---
+
+## Testing Guide
+
+### Testing Pyramid
+```
+          [UI Tests]        — Espresso / FragmentScenario  (fewest, device)
+       [Integration Tests]  — MockWebServer + Repository   (medium, JVM)
+    [Unit Tests]            — JUnit + MockK + Turbine       (most, JVM)
+```
+
+### Required test files per feature
+| Feature | Unit test | Integration test | UI test |
+|---------|-----------|-----------------|--------|
+| ServicesScreen | `ServicesViewModelTest` | `ServiceRepositoryTest` | `ServicesFragmentTest` |
+| SystemScreen | `SystemViewModelTest` | `ServiceRepositoryTest` | `SystemFragmentTest` |
+| LogsScreen | `LogsViewModelTest` | (covered by Repository test) | `LogsFragmentTest` |
+
+### Coverage Targets
+| Class | Target |
+|-------|--------|
+| ViewModel classes | ≥ 80% line coverage |
+| Repository classes | ≥ 80% line coverage |
+
+### Unit Test Dependencies
+```groovy
+testImplementation 'junit:junit:4.13.2'
+testImplementation 'io.mockk:mockk:1.13.9'
+testImplementation 'app.cash.turbine:turbine:1.0.0'
+testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3'
+testImplementation 'com.squareup.okhttp3:mockwebserver:4.12.0'
+```
+
+### `MainDispatcherRule` (required in every ViewModel test)
 ```kotlin
-// Unit testing
-testImplementation("junit:junit:4.13.2")
-testImplementation("io.mockk:mockk:1.13.x")
-testImplementation("app.cash.turbine:turbine:1.x.x")
-testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.x.x")
-// Integration (MockWebServer)
-testImplementation("com.squareup.okhttp3:mockwebserver:4.x.x")
-// UI tests
-androidTestImplementation("androidx.test.espresso:espresso-core:3.x.x")
-androidTestImplementation("androidx.navigation:navigation-testing:2.x.x")
+// app/src/test/java/com/servicemanager/app/util/MainDispatcherRule.kt
+class MainDispatcherRule(
+    private val dispatcher: TestDispatcher = UnconfinedTestDispatcher()
+) : TestWatcher() {
+    override fun starting(d: Description?) = Dispatchers.setMain(dispatcher)
+    override fun finished(d: Description?) = Dispatchers.resetMain()
+}
 ```
 
-## Code Quality Tools
+---
 
-All four must pass before any commit. CI blocks PRs if they fail.
+## Code Quality Gates
 
-| Tool | Command | Config File | Purpose |
-|------|---------|-------------|---------|
-| Android Lint | `./gradlew lint` | `lint.xml` | Android anti-patterns, resource issues |
-| ktlint | `./gradlew ktlintCheck` | `.editorconfig` | Kotlin formatting |
-| Detekt | `./gradlew detekt` | `detekt.yml` | Complexity, code smells, SOLID violations |
-| Unit Tests | `./gradlew test` | — | Correctness |
-
-### Run All Locally
 ```bash
-./gradlew lint ktlintCheck detekt test
+./gradlew lint          # Zero errors (abortOnError true)
+./gradlew ktlintCheck   # Zero style violations
+./gradlew ktlintFormat  # Auto-fix (run before commit)
+./gradlew detekt        # Zero ERRORs
+./gradlew test          # All unit tests pass
 ```
 
-### CI/CD (GitHub Actions)
-Workflow at `.github/workflows/ci.yml` triggers on push + PR to `main`:
-1. Checkout code
-2. Setup JDK 17
-3. Cache Gradle dependencies
-4. `./gradlew lint`
-5. `./gradlew ktlintCheck`
-6. `./gradlew detekt`
-7. `./gradlew test`
+### detekt.yml key thresholds
+- `complexity.CyclomaticComplexity.threshold: 15`
+- `complexity.LongMethod.threshold: 40`
+- `complexity.TooManyFunctions.thresholdInClasses: 11`
+- `style.MagicNumber.ignoreNumbers: [-1, 0, 1, 2, 100]`
 
-PRs cannot be merged if any step fails.
+---
+
+## CI/CD (GitHub Actions, SMA.013)
+
+**PR trigger:** `lint → ktlintCheck → detekt → test`  
+**Push to `main`:** `assembleDebug → upload APK artifact (7-day retention)`  
+**Tag trigger:** `assembleRelease (keystore from GitHub Secrets) → upload signed APK`
+
+---
 
 ## Commit Messages
 ```
