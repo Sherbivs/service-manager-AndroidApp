@@ -1,0 +1,65 @@
+title: Service Manager AndroidApp — Canonical Router Map
+version: 1
+last_updated: "2026-04-22T00:00:00Z"
+
+root:
+  path: "."
+  purpose: "Native Android companion app for Service Manager"
+  router: "ROUTER.md"
+
+areas:
+  - path: "app/"
+    purpose: "Android application module — all source code, resources, manifest"
+    router: "app/ROUTER.md"
+    children:
+      - path: "app/src/main/java/com/servicemanager/app/"
+        purpose: "Kotlin source root"
+        packages:
+          - "ui/"         # Activities, Fragments, ViewModels
+          - "data/"       # API client, models, repository
+          - "util/"       # Shared helpers (EncryptedPrefs, extensions)
+      - path: "app/src/main/res/"
+        purpose: "Android resources"
+        children:
+          - "layout/"     # XML layouts
+          - "values/"     # strings, colors, themes
+          - "xml/"        # network_security_config.xml, backup_rules.xml
+      - path: "app/src/main/AndroidManifest.xml"
+        purpose: "App manifest — permissions, components, network config reference"
+      - path: "app/src/test/"
+        purpose: "Unit tests (JVM)"
+      - path: "app/src/androidTest/"
+        purpose: "Instrumented tests (device)"
+
+  - path: "ops/"
+    purpose: "Governance surface — task queue, routing, change tracking"
+    router: "ops/ROUTER.md"
+    files:
+      - "NEXT.yaml"      # Active task queue (this file's sibling)
+      - "ROUTER.yaml"    # This file — canonical routing map
+      - "TOUCHMAP.yaml"  # File change frequency tracker
+
+  - path: "docs/"
+    purpose: "Bible documentation"
+    router: "docs/ROUTER.md"
+    children:
+      - "architecture-bible/"   # System design, API integration
+      - "operations-bible/"     # Build, sign, deploy, keystore setup
+      - "development-bible/"    # Setup, conventions, contributing
+
+  - path: ".github/"
+    purpose: "AI agent and Copilot instructions"
+    router: ".github/ROUTER.md"
+    files:
+      - "copilot-instructions.md"  # Copilot/AI coding rules
+
+meta_files:
+  - "AGENTS.md"      # Agent operations guide
+  - "Patch.md"       # AI Project Manager Contract
+  - "Prompt.md"      # Current state, PATCHSET echo
+  - "Tasklist.md"    # Task backlog
+  - "ROUTER.md"      # Root router (human-readable)
+  - "README.md"      # Public-facing project overview
+  - ".gitignore"     # Android gitignore
+  - "build.gradle"   # Root Gradle config
+  - "settings.gradle" # Project name, included modules

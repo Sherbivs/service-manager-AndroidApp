@@ -1,35 +1,32 @@
 # ROUTER
-Title: Service Manager — Root
-Purpose: Elastic service management dashboard — manage, monitor, and control local dev services from a single web UI.
+Title: Service Manager AndroidApp — Root
+Purpose: Native Android companion app for the Service Manager dashboard. Connects to the Node.js API over LAN.
 Owned Globs: *
-Last Updated (UTC): 2026-04-18T00:00:00Z
+Last Updated (UTC): 2026-04-22T00:00:00Z
 
 Notes:
-- Root meta-router for Service Manager. All sub-routers branch from here.
-- Project uses vanilla Node.js + Express with no build step.
-- Dashboard is a static SPA served from public/.
+- Root meta-router for the Android app project.
+- Language: Kotlin. Build system: Gradle. Architecture: MVVM.
+- All secrets stored in EncryptedSharedPreferences / Android Keystore.
+- No server-side code in this repo; API server lives at Sherbivs/service-manager.
 
 Areas:
-- server.js — Express API server, process registry, health checks, auto-restart engine
-- services.json — Service configuration (port, service definitions)
-- package.json — Dependencies and npm scripts
-- service-install.js — Installs Service Manager as a Windows service + tray auto-start
-- service-uninstall.js — Removes Windows service + tray auto-start
-- tray.ps1 — PowerShell system tray icon (green/red status indicator)
-- launch-tray.vbs — Silent VBS launcher for tray.ps1
-- launch-server.vbs — Silent VBS launcher for server.js (Windows Startup auto-start)
-- AGENTS.md — Agent operations guide
-- Patch.md — AI Project Manager Contract
-- Prompt.md — Current state, PATCHSET echo
-- Tasklist.md — Task backlog with READY queue
-- masterroutetable.md — Text-first router map
-- public/ — Dashboard SPA (HTML/CSS/JS)
-- ops/ — Governance surface (NEXT pointer, tasklist, routing metadata)
-- docs/ — Documentation (architecture-bible, operations-bible, development-bible)
-- .github/ — AI instructions for Copilot/GPT agents
+- app/build.gradle        — App module config: namespace, SDK versions, dependencies, signing
+- build.gradle            — Root Gradle config: plugin versions
+- settings.gradle         — Project name, included modules
+- gradle.properties       — JVM args, AndroidX flags
+- AGENTS.md               — Agent operations guide (START HERE for AI agents)
+- Patch.md                — AI Project Manager Contract
+- Prompt.md               — Current state, PATCHSET echo
+- Tasklist.md             — Task backlog with READY queue
+- app/                    — Android application module (all source code)
+- ops/                    — Governance surface (NEXT pointer, routing, task metadata)
+- docs/                   — Bible documentation (architecture, operations, development)
+- .github/                — Copilot/AI agent instructions
 
 Subrouters:
-- public/ROUTER.md — Dashboard frontend
-- ops/ROUTER.md — Ops & Governance
-- docs/ROUTER.md — Documentation library
-- .github/ROUTER.md — AI agent configuration
+- app/ROUTER.md           — Android app module (source, res, manifest)
+- ops/ROUTER.md           — Ops & Governance
+- docs/ROUTER.md          — Documentation library
+- .github/ROUTER.md       — AI agent configuration
+

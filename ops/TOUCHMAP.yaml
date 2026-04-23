@@ -1,0 +1,59 @@
+title: Service Manager AndroidApp — Touch Map
+version: 1
+last_updated: "2026-04-22T00:00:00Z"
+description: >
+  Tracks which files are changed most frequently. Use to identify hot spots
+  and prioritize code review / documentation attention.
+
+files:
+  # Format: path, touch_count, last_touched, note
+
+  - path: "AGENTS.md"
+    touch_count: 1
+    last_touched: "2026-04-22"
+    note: "Bootstrap rewrite"
+
+  - path: "README.md"
+    touch_count: 1
+    last_touched: "2026-04-22"
+    note: "Bootstrap rewrite"
+
+  - path: "ROUTER.md"
+    touch_count: 1
+    last_touched: "2026-04-22"
+    note: "Bootstrap rewrite"
+
+  - path: ".github/copilot-instructions.md"
+    touch_count: 1
+    last_touched: "2026-04-22"
+    note: "Bootstrap rewrite"
+
+  - path: "Patch.md"
+    touch_count: 1
+    last_touched: "2026-04-22"
+    note: "Initial creation"
+
+  - path: "Prompt.md"
+    touch_count: 1
+    last_touched: "2026-04-22"
+    note: "Initial creation"
+
+  - path: "Tasklist.md"
+    touch_count: 1
+    last_touched: "2026-04-22"
+    note: "Initial creation"
+
+  - path: "ops/NEXT.yaml"
+    touch_count: 1
+    last_touched: "2026-04-22"
+    note: "Initial creation"
+
+  - path: ".gitignore"
+    touch_count: 1
+    last_touched: "2026-04-22"
+    note: "Android-specific gitignore"
+
+  - path: "app/build.gradle"
+    touch_count: 0
+    last_touched: "2026-04-22"
+    note: "Scaffolded; minifyEnabled false on release (known issue SMA.008)"
