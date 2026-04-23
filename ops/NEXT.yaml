@@ -1,11 +1,11 @@
 title: Service Manager AndroidApp — Next Task Pointer
 version: 2
-last_updated: "2026-04-22T00:00:01Z"
+last_updated: "2026-04-22T02:00:00Z"
 
 queue:
   - id: SMA.009
     title: Dependency Injection / Hilt Setup
-    status: READY
+    status: DONE
     priority: P0
     description: >
       Add Hilt to app. Apply com.google.dagger.hilt.android plugin.
@@ -16,7 +16,7 @@ queue:
 
   - id: SMA.011
     title: Testing Infrastructure
-    status: READY
+    status: DONE
     priority: P1
     description: >
       Add test dependencies: MockK, Turbine, kotlinx-coroutines-test, MockWebServer,
@@ -26,7 +26,7 @@ queue:
 
   - id: SMA.012
     title: Code Quality Tooling (ktlint + detekt)
-    status: READY
+    status: DONE
     priority: P1
     description: >
       Apply ktlint and detekt plugins. Add detekt.yml with team thresholds.
@@ -35,7 +35,7 @@ queue:
 
   - id: SMA.001
     title: Network Layer Foundation
-    status: READY
+    status: DONE
     priority: P0
     description: >
       Create data/api/ApiService.kt (Retrofit interface), data/repository/ServiceRepository.kt,
@@ -45,7 +45,7 @@ queue:
 
   - id: SMA.007
     title: Network Security Config (LAN HTTP support)
-    status: READY
+    status: DONE
     priority: P0
     description: >
       Create res/xml/network_security_config.xml with domain exception for
@@ -55,8 +55,7 @@ queue:
 
   - id: SMA.010
     title: Navigation Component Setup
-    status: BLOCKED
-    blocked_by: [SMA.009]
+    status: DONE
     priority: P0
     description: >
       Apply Navigation Safe Args plugin. Create res/navigation/nav_graph.xml.
@@ -66,7 +65,7 @@ queue:
 
   - id: SMA.013
     title: GitHub Actions CI/CD
-    status: READY
+    status: DONE
     priority: P2
     description: >
       Create .github/workflows/ci.yml. PR pipeline: lint + ktlintCheck + detekt + test.
@@ -74,8 +73,67 @@ queue:
       Tag pipeline: assembleRelease with keystore from GitHub Secrets.
     acceptance_criteria_ref: "Tasklist.md#SMA.013"
 
+  - id: SMA.004
+    title: Service Actions (Start / Stop / Restart)
+    status: DONE
+    priority: P1
+    description: >
+      Gap remediation on top of existing dispatch chain:
+      pendingActions StateFlow disables buttons while action is in-flight.
+      actionSuccess SharedFlow emits "Service started/stopped/restarted" on success.
+      retryLastAction() re-dispatches the last failed action.
+      Error Snackbar upgraded to LENGTH_LONG with Retry button.
+      ServicesAdapter.updatePendingActions() added.
+      3 new tests: startService success + actionSuccess, stopService dispatch, retryLastAction.
+    acceptance_criteria_ref: "Tasklist.md#SMA.004"
+
+  - id: SMA.003
+    title: Services List Screen
+    status: DONE
+    priority: P1
+    description: >
+      ServicesFragment (RecyclerView + SwipeRefresh), ServicesViewModel (UDF StateFlow),
+      ServicesAdapter (DiffUtil, status chips, health metrics, action buttons).
+      loadServicesIfStale() rotation guard with 10s STALE_THRESHOLD_MS + lastFetchTimeMs.
+      10s background polling (startPolling/stopPolling). ServicesViewModelTest (5 tests).
+      ui/services/ROUTER.md created.
+    acceptance_criteria_ref: "Tasklist.md#SMA.003"
+
+  - id: SMA.002
+    title: Settings & Onboarding
+    status: DONE
+    priority: P0
+    description: >
+      Create SettingsFragment/ViewModel. UI to view/edit Server URL.
+      Store in EncryptedPrefsHelper. Test dynamic URL update in Retrofit interceptor.
+      Initial onboarding flow if server URL is missing.
+    acceptance_criteria_ref: "Tasklist.md#SMA.002"
+
+  - id: SMA.005
+    title: System Info Screen
+    status: DONE
+    priority: P2
+    description: >
+      Gap remediation: textNodeVersion binding added to bindInfo(). onStart() override
+      added for auto-refresh on screen focus. fragment_system.xml updated with Node.js
+      version row. SystemViewModelTest.kt created (3 tests). ui/system/ROUTER.md created.
+      Total unit tests: 21 (all passing).
+    acceptance_criteria_ref: "Tasklist.md#SMA.005"
+
+  - id: SMA.006
+    title: Log Viewer Screen
+    status: DONE
+    priority: P2
+    description: >
+      Full implementation: line count chips (50/100/200/500), LogLineAdapter with
+      expand-on-tap, copy FAB (ClipboardManager), archive search card
+      (service ID + query → GET /api/services/{id}/logs/archive?q).
+      LogsViewModelTest (6 tests). ui/logs/ROUTER.md created.
+      Total unit tests: 27.
+    acceptance_criteria_ref: "Tasklist.md#SMA.006"
+
 notes: >
-  Standards-alignment complete as of 2026-04-22 session 2.
-  Meta docs updated with Hilt DI, UDF, Navigation Component, testing pyramid,
-  code quality tooling (ktlint/detekt), and CI/CD patterns from Android best practices research.
-  Recommended order: SMA.009 (Hilt) -> SMA.001+SMA.007+SMA.011+SMA.012 in parallel -> SMA.010 (Navigation).
+  All READY tasks complete as of 2026-04-24.
+  DONE: SMA.001, SMA.002, SMA.003, SMA.004, SMA.005, SMA.006, SMA.007, SMA.008,
+        SMA.009, SMA.010, SMA.011, SMA.012, SMA.013.
+  Next: BACKLOG review (SMA.100+) or C03 audit cycle (fresh AS Problems export).

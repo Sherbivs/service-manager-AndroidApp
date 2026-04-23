@@ -17,7 +17,7 @@
 ### Prerequisites
 - Android Studio Hedgehog 2023.1.1+ (or later)
 - JDK 17+ (bundled with Android Studio)
-- Android SDK (API 24–34) — installed via SDK Manager
+- Android SDK (API 24–36) — installed via SDK Manager
 - Physical device or emulator (API 24+)
 - Service Manager server running on LAN ([Sherbivs/service-manager](https://github.com/Sherbivs/service-manager))
 
@@ -95,14 +95,14 @@ viewLifecycleOwner.lifecycleScope.launch {
 
 ### Required test files per feature
 | Feature | Unit test | Integration test | UI test |
-|---------|-----------|-----------------|--------|
+|----------------|--------------------------|------------------------|---------------------|
 | ServicesScreen | `ServicesViewModelTest` | `ServiceRepositoryTest` | `ServicesFragmentTest` |
 | SystemScreen | `SystemViewModelTest` | `ServiceRepositoryTest` | `SystemFragmentTest` |
 | LogsScreen | `LogsViewModelTest` | (covered by Repository test) | `LogsFragmentTest` |
 
 ### Coverage Targets
 | Class | Target |
-|-------|--------|
+|-------------------|---------------------|
 | ViewModel classes | ≥ 80% line coverage |
 | Repository classes | ≥ 80% line coverage |
 

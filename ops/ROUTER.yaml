@@ -1,6 +1,6 @@
 title: Service Manager AndroidApp — Canonical Router Map
 version: 1
-last_updated: "2026-04-22T00:00:00Z"
+last_updated: "2026-04-23T00:00:00Z"
 
 root:
   path: "."
@@ -46,6 +46,8 @@ areas:
       - "architecture-bible/"   # System design, API integration
       - "operations-bible/"     # Build, sign, deploy, keystore setup
       - "development-bible/"    # Setup, conventions, contributing
+      - "archive/"              # Audit and QA archive system
+      - "archive/tasks/"        # Lifecycle directories: new/in-progress/closed/canceled
 
   - path: ".github/"
     purpose: "AI agent and Copilot instructions"

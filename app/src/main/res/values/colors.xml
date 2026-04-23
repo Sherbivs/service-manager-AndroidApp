@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Service status chip colours -->
+    <color name="status_running_bg">#E6F4EA</color>
+    <color name="status_running_text">#137333</color>
+    <color name="status_stopped_bg">#FFF3E0</color>
+    <color name="status_stopped_text">#E65100</color>
+    <color name="status_error_bg">#FEEBEE</color>
+    <color name="status_error_text">#C62828</color>
+</resources>

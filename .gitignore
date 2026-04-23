@@ -29,3 +29,11 @@ release/
 *.jks
 *.keystore
 keystore.properties
+
+# Build outputs
+app/build/
+
+# Temp / log files
+.tmp/
+*.log
+

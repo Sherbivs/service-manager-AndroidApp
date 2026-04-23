@@ -9,7 +9,8 @@ Build a secure, native Android companion app for the Service Manager dashboard. 
 - See `Tasklist.md` for READY queue, dependencies, acceptance criteria
 - See `Prompt.md` for current state, PATCHSET echo, recent changes
 - See `README.md` for getting started guide
-- **Service Manager API:** `http://<host>:3500/api/` — see [Sherbivs/service-manager](https://github.com/Sherbivs/service-manager)
+- **Service Manager API:** `http://192.168.23.83:3500/api/` — see [Sherbivs/service-manager](https://github.com/Sherbivs/service-manager)
+- **Shopify Dev Service (TCB Party Rental):** `http://192.168.23.83:9292`
 
 ## Repo Map
 ```
@@ -53,9 +54,9 @@ docs/                   — Bible documentation
 - **Build:** `./gradlew assembleDebug`
 - **Run on device/emulator:** Android Studio → Run, or `./gradlew installDebug`
 - **API min SDK:** 24 (Android 7.0)
-- **Target SDK:** 34 (Android 14)
+- **Target SDK:** 36 (Android 16)
 - **Language:** Kotlin
-- **Requires:** Service Manager server running on LAN at `http://<host>:3500`
+- **Requires:** Service Manager server running on LAN at `http://192.168.23.83:3500`
 
 ## Architecture Overview
 
@@ -115,7 +116,8 @@ Use **Hilt** (official Android DI library) for all dependency wiring. Never cons
 @Module @InstallIn(SingletonComponent::class)
 object NetworkModule {
     @Provides @Singleton
-    fun provideRetrofit(prefs: EncryptedPrefsHelper): Retrofit { ... }
+  fun provideRetrofit(prefs: EncryptedPrefsHelper): Retrofit =
+    Retrofit.Builder().build()
     @Provides @Singleton
     fun provideApiService(retrofit: Retrofit): ApiService = retrofit.create()
 }
@@ -261,8 +263,55 @@ Recovery (in order):
   - `docs/architecture-bible/` — System design, MVVM+UDF+DI patterns, API integration
   - `docs/operations-bible/` — Build, sign, release, keystore setup, Play Store deployment
   - `docs/development-bible/` — Setup, coding conventions, testing, contributing
+- Audit and QA artifacts flow into the archive system under `docs/archive/tasks/`.
 - Transient notes go in `Tasklist.md` or `Prompt.md`, NOT standalone docs.
 - Every directory has a `ROUTER.md`.
+
+## Audit System Rules (Mandatory)
+
+These rules define the required audit workflow for this repository.
+
+### Canonical Audit Paths
+- Parent archive router: `docs/archive/ROUTER.md`
+- Task/audit parent router: `docs/archive/tasks/ROUTER.md`
+- Audit lifecycle index: `docs/archive/tasks/README.md`
+- Stage directories:
+  - `docs/archive/tasks/new/`
+  - `docs/archive/tasks/in-progress/`
+  - `docs/archive/tasks/closed/`
+  - `docs/archive/tasks/canceled/`
+
+### Lifecycle Rules
+1. Create each new audit report in `docs/archive/tasks/new/`.
+2. Move report to `docs/archive/tasks/in-progress/` when remediation starts.
+3. Move report to `docs/archive/tasks/closed/` when verified complete or substantially complete.
+4. Move report to `docs/archive/tasks/canceled/` if superseded, invalidated, or no longer applicable.
+
+### Required Update Rules
+On every audit create/move/close action, update all of the following in the same change:
+1. Source stage `ROUTER.md` (if moving from a stage)
+2. Destination stage `ROUTER.md`
+3. `docs/archive/tasks/ROUTER.md`
+4. `docs/archive/tasks/README.md` (index and status)
+5. `docs/archive/ROUTER.md` when structure or purpose changes
+
+### Naming Rules
+- Use cycle-prefixed audit filenames:
+  - `C{NN}-{TYPE}-{ID}.md`
+- Example patterns:
+  - `C01-QA-AUDIT-001.md`
+  - `C01-SEC-AUDIT-001.md`
+  - `C02-PERF-AUDIT-001.md`
+
+### Scope and Content Rules
+- Each audit must capture: scope, findings, severity, remediation plan, verification result, and final status.
+- Keep artifacts focused; split overly large reports into logically grouped files.
+- Do not store transient planning chatter inside archive reports.
+
+### Environment Baseline Rules (for audit context)
+- Service Manager API endpoint: `http://192.168.23.83:3500`
+- Shopify dev service endpoint: `http://192.168.23.83:9292`
+- Preserve these endpoints in audit evidence unless the environment is intentionally changed.
 
 ## Common Pitfalls
 1. **LAN HTTP** — The service manager runs plain HTTP on LAN. Use `network_security_config.xml` with a `<domain>` exception for the LAN host rather than enabling cleartext globally.
@@ -285,28 +334,6 @@ Recovery (in order):
 - All new ViewModels/Repositories have unit tests.
 - `./gradlew lint ktlintCheck` passes with no errors.
 
----
-**Document Version:** 1.1 (2026-04-22) — Standards alignment: UDF, Hilt DI, Navigation, Testing, Code Quality
-**Last Updated:** 2026-04-22T00:00:00Z
-  - `docs/operations-bible/` — Install, configure, monitor, troubleshoot
-  - `docs/development-bible/` — Setup, conventions, contributing
-- Transient notes go in `Tasklist.md` or `Prompt.md`, NOT standalone docs.
-- Every directory has a `ROUTER.md`.
-
-## Common Pitfalls
-1. **Don't add dependencies** — Express only unless strongly justified.
-2. **Router updates** — Forgetting breaks AI navigation.
-3. **services.json** — User configuration, never overwrite without permission.
-4. **Windows-specific** — `taskkill` is Windows-only.
-5. **No TypeScript** — Vanilla JS, no build step.
-
-## Checklist Before Exit
-- `Prompt.md` updated with accurate summary and NEXT pointer status.
-- `ops/NEXT.yaml` task queue reflects current work state.
-- `Tasklist.md` updated with task status changes.
-- Routers synchronized if structural changes made.
-- Commit message references task ID and change summary.
-
 ## Done Criteria (Per Task)
 - Changes implemented and verified.
 - Knowledge updated (`docs/` + this guide if behavior changed).
@@ -314,6 +341,5 @@ Recovery (in order):
 - Prompt.md PATCHSET echo current.
 
 ---
-
-**Document Version:** 1.0 (2026-04-18) — Initial bootstrap
-**Last Updated:** 2026-04-18T00:00:00Z
+**Document Version:** 1.2 (2026-04-23) — Added explicit audit system rules and lifecycle governance
+**Last Updated:** 2026-04-23T00:00:00Z

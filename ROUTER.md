@@ -2,7 +2,7 @@
 Title: Service Manager AndroidApp — Root
 Purpose: Native Android companion app for the Service Manager dashboard. Connects to the Node.js API over LAN.
 Owned Globs: *
-Last Updated (UTC): 2026-04-22T00:00:00Z
+Last Updated (UTC): 2026-04-23T00:00:00Z
 
 Notes:
 - Root meta-router for the Android app project.
@@ -29,4 +29,8 @@ Subrouters:
 - ops/ROUTER.md           — Ops & Governance
 - docs/ROUTER.md          — Documentation library
 - .github/ROUTER.md       — AI agent configuration
+
+Environment Baseline:
+- Service Manager API: http://192.168.23.83:3500
+- Shopify dev service (TCB Party Rental): http://192.168.23.83:9292
 

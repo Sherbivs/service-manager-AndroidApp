@@ -1,85 +1,60 @@
 # Prompt.md — Service Manager Android App
 **Project:** Service Manager Android App  
 **Repo:** Sherbivs/service-manager-AndroidApp  
-**Timestamp:** 2026-04-22T00:00:01Z
+**Timestamp:** 2026-04-24T00:00:00Z
 
 ---
 
 ## Current State
 
-Project is in **pre-implementation phase**. All meta docs, governance files, and project structure are in place. No application source code has been written yet. Meta docs are now fully aligned with Android architecture and engineering standards.
+SMA.006 (Log Viewer Screen) is **DONE**. Gap audit found 4 failures (AC1/2/4/5) + 2 missing artifacts. Implemented:
+- Line count chip selector (50/100/200/500) in fragment_logs.xml; LogsFragment reads selection on chip change + swipe-refresh
+- Archive search: `GET /api/services/{id}/logs/archive?q=query` added to ApiService + ServiceRepository; `searchArchive()` + `archiveState: StateFlow<ArchiveUiState>` added to LogsViewModel; archive card (service ID field, query field, search button, results RecyclerView) in layout
+- Copy FAB: ClipboardManager copies all visible log lines; Snackbar confirmation
+- Expand-on-tap: `LogLineAdapter` (ListAdapter) replaces single TextView; each line maxLines=1 by default, tap toggles full text
+- Auto-scroll: `recyclerLogs.scrollToPosition(lines.size - 1)` on Success
+- `LogsViewModelTest.kt` created (6 tests)
+- `ui/logs/ROUTER.md` created
 
-The Android Gradle project is scaffolded with:
-- `app/src/main/AndroidManifest.xml` — INTERNET permission, MainActivity placeholder
-- `app/build.gradle` — minSdk 24, targetSdk 34, compileSdk 34, ViewBinding enabled
-- `build.gradle` — AGP 8.2.2, Kotlin 1.9.22
-- `settings.gradle` — rootProject.name = "Service Manager", includes `:app`
+Total unit tests: 27 (4 repo + 8 services VM + 6 settings VM + 3 system VM + 6 logs VM), all passing.
 
-**Next action:** Begin SMA.009 (Hilt DI setup) — the foundation that unblocks SMA.010 (Navigation). Run SMA.001, SMA.007, SMA.011, SMA.012 in parallel after Hilt is in place.
-
----
-
-## PATCHSET Standards Alignment — Meta Docs Update
-Date: 2026-04-22 (Session 2)  
-Files Changed:
-  - AGENTS.md — expanded with UDF, Hilt DI, Navigation Component, testing pyramid, code quality, 10-item pitfalls list. Version bumped to 1.1
-  - .github/copilot-instructions.md — fully rewritten; old Node.js content purged; complete Android standards added (UDF + Hilt + Navigation code examples, testing pyramid, quality gates, 10-step feature checklist)
-  - Tasklist.md — expanded from 8 to 13 tasks; added SMA.009 (Hilt), SMA.010 (Navigation), SMA.011 (Testing Infra), SMA.012 (ktlint/detekt), SMA.013 (CI/CD); all ACs updated with Hilt and testing requirements
-  - docs/architecture-bible/INDEX.md — full content: layered architecture diagram, UDF flow, sealed UiState pattern, Hilt scoping, Navigation structure, optional Domain layer guidance, design decisions table
-  - docs/development-bible/INDEX.md — full content: quick setup, architecture rules table, sealed UiState pattern, testing pyramid, unit/integration test templates, MainDispatcherRule, coverage targets, code quality gate commands, CI/CD pipeline overview
-  - ops/NEXT.yaml — version 2; queue updated with SMA.009, SMA.010, SMA.011, SMA.012, SMA.013; recommended execution order documented
-  - Prompt.md — this update
-
-Summary: Completed standards-alignment pass informed by Android App Architecture & Engineering Best Practices research. All meta docs now consistently document MVVM + UDF, Hilt DI, Navigation Component, testing pyramid (JUnit/MockK/Turbine/MockWebServer/Espresso), code quality tooling (ktlint/detekt/Lint), and CI/CD patterns. Five new tasks added to backlog.
-
-Testing: Files reviewed for correctness and consistency.
-
-Next: SMA.009 — Dependency Injection / Hilt Setup
+**Next action:** All READY tasks complete. Review BACKLOG or begin C03 audit cycle.
 
 ---
 
-## PATCHSET Bootstrap — Meta Docs Setup
-Date: 2026-04-22  
+## PATCHSET SMA.006 Complete
+Date: 2026-04-24  
 Files Changed:
-  - AGENTS.md  (rewritten — Android-specific agent guide)
-  - README.md  (rewritten — Android project overview)
-  - ROUTER.md  (rewritten — Android project structure)
-  - .github/copilot-instructions.md  (rewritten — Android Copilot rules)
-  - Patch.md  (created — AI Project Manager Contract)
-  - Tasklist.md  (created — initial READY queue, 8 tasks)
-  - Prompt.md  (created — this file)
-  - ops/NEXT.yaml  (created — points to SMA.001)
-  - ops/ROUTER.yaml  (created)
-  - ops/TOUCHMAP.yaml  (created)
-  - ops/ROUTER.md  (created)
-  - .gitignore  (replaced with Android-specific gitignore)
+  - `app/src/main/java/com/servicemanager/app/data/api/ApiService.kt`: Added `searchArchiveLogs` endpoint (`GET api/services/{id}/logs/archive?q`).
+  - `app/src/main/java/com/servicemanager/app/data/repository/ServiceRepository.kt`: Added `searchArchiveLogs(serviceId, query)` method.
+  - `app/src/main/java/com/servicemanager/app/ui/logs/LogsViewModel.kt`: Added `ArchiveUiState` sealed class, `archiveState: StateFlow<ArchiveUiState>`, `searchArchive(serviceId, query)`.
+  - `app/src/main/java/com/servicemanager/app/ui/logs/LogLineAdapter.kt`: Created (ListAdapter; expand-on-tap per line).
+  - `app/src/main/java/com/servicemanager/app/ui/logs/LogsFragment.kt`: Full rewrite — chips, RecyclerView + auto-scroll, copy FAB, archive search card, dual StateFlow collectors.
+  - `app/src/main/res/layout/fragment_logs.xml`: Full redesign with CoordinatorLayout, chips, RecyclerView, archive card, FAB.
+  - `app/src/main/res/layout/item_log_line.xml`: Created (per-line log item).
+  - `app/src/main/res/values/strings.xml`: Added 6 log-related strings.
+  - `app/src/test/java/com/servicemanager/app/ui/logs/LogsViewModelTest.kt`: Created (6 tests).
+  - `app/src/main/java/com/servicemanager/app/ui/logs/ROUTER.md`: Created.
+  - `Tasklist.md`: SMA.006 marked DONE.
+  - `ops/NEXT.yaml`: SMA.006 DONE entry added.
 
-Summary: Bootstrapped all meta docs for the Android companion app project.
+Testing: `./gradlew ktlintFormat ktlintCheck detekt test lint assembleDebug` — all BUILD SUCCESSFUL. 27 unit tests, 0 failures.
 
 ---
 
 ## Active Tasks (READY)
 
-**SMA.009** — Dependency Injection / Hilt Setup (P0)  
-**SMA.001** — Network Layer Foundation (P0)  
-**SMA.007** — Network Security Config (P0)  
-**SMA.011** — Testing Infrastructure (P1)  
-**SMA.012** — Code Quality Tooling / ktlint + detekt (P1)  
-**SMA.013** — GitHub Actions CI/CD (P2)
+All READY tasks complete. Next: BACKLOG review or C03 audit cycle.
 
 ## Blocked Tasks
 
-**SMA.010** — Navigation Component Setup (blocked on SMA.009)  
-**SMA.002** — Server URL Onboarding (blocked on SMA.001, SMA.009, SMA.010)  
-**SMA.003** — Services List Screen (blocked on SMA.001, SMA.009, SMA.010)
+*(none)*
 
 ---
 
 ## Known Blockers / Issues
 
 - `app/build.gradle` has `minifyEnabled false` on release — must be set to `true` as part of SMA.008
-- No signing config yet — documented as SMA.008 acceptance criteria
-- No source code in `app/src/main/java/` yet — all features are pending
 
 ---
 
@@ -87,4 +62,5 @@ Summary: Bootstrapped all meta docs for the Android companion app project.
 
 | Date | Task | Summary |
 |------|------|---------|
-| 2026-04-22 | Bootstrap | All meta docs created/rewritten; governance structure in place |
+| 2026-04-24 | SMA.002 | Settings & Onboarding DONE. SettingsViewModelTest (6 tests). ROUTER.md for ui/settings/ + ui/onboarding/. |
+| 2026-04-24 | C02 CLOSED | C02 remediation cycle closed. Waves 0–4 complete, 5/5 QA gates GREEN. |

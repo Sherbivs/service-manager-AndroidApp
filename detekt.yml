@@ -1,0 +1,23 @@
+build:
+  maxIssues: -1
+
+complexity:
+  LongMethod:
+    threshold: 50
+  TooManyFunctions:
+    thresholdInClasses: 11
+
+style:
+  MagicNumber:
+    ignoreNumbers: ['-1', '0', '1', '2', '100']
+    ignorePropertyDeclaration: true
+    ignoreEnums: true
+  ReturnCount:
+    max: 3
+
+naming:
+  FunctionNaming:
+    functionPattern: '[a-z][a-zA-Z0-9]*'
+    excludes: ['**/test/**']
+  InvalidPackageDeclaration:
+    active: true

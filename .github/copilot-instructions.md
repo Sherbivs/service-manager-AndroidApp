@@ -108,7 +108,8 @@ viewLifecycleOwner.lifecycleScope.launch {
 @Module @InstallIn(SingletonComponent::class)
 object NetworkModule {
     @Provides @Singleton
-    fun provideRetrofit(prefs: EncryptedPrefsHelper): Retrofit { ... }
+  fun provideRetrofit(prefs: EncryptedPrefsHelper): Retrofit =
+    Retrofit.Builder().build()
     @Provides @Singleton
     fun provideApiService(retrofit: Retrofit): ApiService = retrofit.create(ApiService::class.java)
 }

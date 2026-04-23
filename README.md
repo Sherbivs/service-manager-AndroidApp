@@ -15,7 +15,8 @@ Native Android companion app for the [Service Manager](https://github.com/Sherbi
 ## Requirements
 
 - Android 7.0+ (API 24)
-- Service Manager server running at `http://<host>:3500` ([Sherbivs/service-manager](https://github.com/Sherbivs/service-manager))
+- Service Manager server running at `http://192.168.23.83:3500` ([Sherbivs/service-manager](https://github.com/Sherbivs/service-manager))
+- Shopify dev service (TCB Party Rental) running at `http://192.168.23.83:9292`
 - Android Studio Hedgehog 2023.1.1+ (for development)
 
 ## Build & Run
@@ -32,17 +33,23 @@ Or open in Android Studio and press **Run**.
 
 ## Configuration
 
-On first launch, enter your Service Manager server URL (e.g. `http://192.168.1.100:3500`). This is stored securely via `EncryptedSharedPreferences` and never hardcoded.
+On first launch, enter your Service Manager server URL (use `http://192.168.23.83:3500` for this environment). This is stored securely via `EncryptedSharedPreferences`.
 
 ## Architecture
 
 ```
 Android App (Kotlin, MVVM)
   ↕ Retrofit / OkHttp
-Service Manager API  (http://<host>:3500)
+Service Manager API  (http://192.168.23.83:3500)
   ↕
 Managed Service Processes
 ```
+
+## Environment Baseline
+
+- Service Manager API: `http://192.168.23.83:3500`
+- Shopify Dev Service (TCB Party Rental): `http://192.168.23.83:9292`
+- Service health checks are evaluated server-side and may use loopback targets (for example `http://127.0.0.1:9292`).
 
 **Stack:** Kotlin, MVVM, Retrofit, OkHttp, ViewBinding, Material 3, `androidx.security.crypto`
 
@@ -74,100 +81,6 @@ This app is the Android client only — it has no server-side components.
 ## License
 
 MIT
-
-
-## Quick Start
-
-```bash
-npm install
-npm start
-```
-
-Open `http://localhost:3500` (or your LAN IP).
-
-## Configuration
-
-Edit `services.json` to add/remove services:
-
-```json
-{
-  "port": 3500,
-  "services": [
-    {
-      "id": "my-service",
-      "name": "My Dev Server",
-      "project": "My Project",
-      "description": "What this service does",
-      "type": "web",
-      "command": "node",
-      "args": ["server.js"],
-      "workingDirectory": "C:\\path\\to\\project",
-      "healthCheck": "http://127.0.0.1:8080",
-      "url": "http://192.168.1.100:8080",
-      "autoRestart": true,
-      "restartDelay": 5000
-    }
-  ]
-}
-```
-
-### Service Config Fields
-
-| Field | Required | Description |
-|-------|----------|-------------|
-| `id` | Yes | Unique identifier |
-| `name` | Yes | Display name |
-| `project` | No | Project grouping label |
-| `description` | No | Short description |
-| `type` | No | `web` or `process` |
-| `command` | Yes | Executable to run |
-| `args` | No | Array of arguments |
-| `workingDirectory` | No | CWD for the process |
-| `healthCheck` | No | URL to poll for status |
-| `url` | No | URL shown as "Open" link in dashboard |
-| `autoRestart` | No | Auto-restart on crash (default: false) |
-| `restartDelay` | No | Milliseconds before restart (default: 5000) |
-
-## API
-
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/api/services` | GET | List all services with live status |
-| `/api/services/:id/start` | POST | Start a service |
-| `/api/services/:id/stop` | POST | Stop a service |
-| `/api/services/:id/restart` | POST | Restart a service |
-| `/api/system` | GET | System info (hostname, IP, memory, uptime) |
-| `/api/logs?lines=50` | GET | Recent log lines |
-
-## Auto-Start on Boot (Windows)
-
-Register as a scheduled task to run at login:
-
-```powershell
-$action = New-ScheduledTaskAction `
-  -Execute "node.exe" `
-  -Argument '"C:\path\to\service-manager\server.js"' `
-  -WorkingDirectory "C:\path\to\service-manager"
-
-$trigger = New-ScheduledTaskTrigger -AtLogOn -User "$env:USERDOMAIN\$env:USERNAME"
-
-$settings = New-ScheduledTaskSettingsSet `
-  -ExecutionTimeLimit ([TimeSpan]::Zero) `
-  -RestartCount 10 `
-  -RestartInterval (New-TimeSpan -Minutes 1) `
-  -StartWhenAvailable
-
-Register-ScheduledTask `
-  -TaskName "ServiceManager" `
-  -Action $action -Trigger $trigger -Settings $settings `
-  -Description "Service Manager dashboard" -Force
-```
-
-## Stack
-
-- Node.js + Express
-- Vanilla HTML/CSS/JS (no build step)
-- Dark theme with responsive grid layout
 
 ## License
 

@@ -1,0 +1,206 @@
+{
+  "totals": {
+    "processedFiles": 17,
+    "totalIssues": 146
+  },
+  "severityTotals": [
+    {
+      "severity": "WARNING",
+      "count": 73
+    },
+    {
+      "severity": "TYPO",
+      "count": 47
+    },
+    {
+      "severity": "WEAK WARNING",
+      "count": 15
+    },
+    {
+      "severity": "GRAMMAR_ERROR",
+      "count": 4
+    },
+    {
+      "severity": "STYLE_SUGGESTION",
+      "count": 4
+    },
+    {
+      "severity": "ERROR",
+      "count": 3
+    }
+  ],
+  "byInspection": [
+    {
+      "problem": "SpellCheckingInspection",
+      "description": "Spelling",
+      "count": 47
+    },
+    {
+      "problem": "UnusedSymbol",
+      "description": "Unused symbol",
+      "count": 39
+    },
+    {
+      "problem": "MarkdownIncorrectTableFormatting",
+      "description": "Incorrect table formatting",
+      "count": 13
+    },
+    {
+      "problem": "MarkdownUnresolvedFileReference",
+      "description": "Unresolved file references",
+      "count": 12
+    },
+    {
+      "problem": "AndroidLintNewerVersionAvailable",
+      "description": "Newer Library Versions Available",
+      "count": 8
+    },
+    {
+      "problem": "AndroidLintSetTextI18n",
+      "description": "TextView Internationalization",
+      "count": 5
+    },
+    {
+      "problem": "GrazieStyle",
+      "description": "Style",
+      "count": 4
+    },
+    {
+      "problem": "GrazieInspection",
+      "description": "Grammar",
+      "count": 4
+    },
+    {
+      "problem": "FunctionName",
+      "description": "Function naming convention",
+      "count": 2
+    },
+    {
+      "problem": "GrDeprecatedAPIUsage",
+      "description": "Deprecated API usage",
+      "count": 2
+    },
+    {
+      "problem": "UnusedVersionCatalogEntry",
+      "description": "Unused version catalog entry",
+      "count": 2
+    },
+    {
+      "problem": "Annotator",
+      "description": "Annotator",
+      "count": 2
+    },
+    {
+      "problem": "ExpensiveKeepRuleInspection",
+      "description": "An inspection that identifies expensive keep rules",
+      "count": 2
+    },
+    {
+      "problem": "AndroidLintUseKtx",
+      "description": "Use KTX extension function",
+      "count": 1
+    },
+    {
+      "problem": "AndroidLintPropertyEscape",
+      "description": "Incorrect property escapes",
+      "count": 1
+    },
+    {
+      "problem": "AndroidLintOldTargetApi",
+      "description": "Target SDK attribute is not targeting latest version",
+      "count": 1
+    },
+    {
+      "problem": "AndroidLintInsecureBaseConfiguration",
+      "description": "Insecure Base Configuration",
+      "count": 1
+    }
+  ],
+  "byExportFile": [
+    {
+      "file": "AndroidLintInsecureBaseConfiguration.xml",
+      "count": 1,
+      "severities": "WARNING:1"
+    },
+    {
+      "file": "AndroidLintNewerVersionAvailable.xml",
+      "count": 8,
+      "severities": "WARNING:8"
+    },
+    {
+      "file": "AndroidLintOldTargetApi.xml",
+      "count": 1,
+      "severities": "WARNING:1"
+    },
+    {
+      "file": "AndroidLintPropertyEscape.xml",
+      "count": 1,
+      "severities": "ERROR:1"
+    },
+    {
+      "file": "AndroidLintSetTextI18n.xml",
+      "count": 5,
+      "severities": "WARNING:5"
+    },
+    {
+      "file": "AndroidLintUseKtx.xml",
+      "count": 1,
+      "severities": "WARNING:1"
+    },
+    {
+      "file": "Annotator.xml",
+      "count": 2,
+      "severities": "ERROR:2"
+    },
+    {
+      "file": "ExpensiveKeepRuleInspection.xml",
+      "count": 2,
+      "severities": "WARNING:2"
+    },
+    {
+      "file": "FunctionName.xml",
+      "count": 2,
+      "severities": "WEAK WARNING:2"
+    },
+    {
+      "file": "GrazieInspection.xml",
+      "count": 4,
+      "severities": "GRAMMAR_ERROR:4"
+    },
+    {
+      "file": "GrazieStyle.xml",
+      "count": 4,
+      "severities": "STYLE_SUGGESTION:4"
+    },
+    {
+      "file": "GrDeprecatedAPIUsage.xml",
+      "count": 2,
+      "severities": "WARNING:2"
+    },
+    {
+      "file": "MarkdownIncorrectTableFormatting.xml",
+      "count": 13,
+      "severities": "WEAK WARNING:13"
+    },
+    {
+      "file": "MarkdownUnresolvedFileReference.xml",
+      "count": 12,
+      "severities": "WARNING:12"
+    },
+    {
+      "file": "SpellCheckingInspection.xml",
+      "count": 47,
+      "severities": "TYPO:47"
+    },
+    {
+      "file": "UnusedSymbol.xml",
+      "count": 39,
+      "severities": "WARNING:39"
+    },
+    {
+      "file": "UnusedVersionCatalogEntry.xml",
+      "count": 2,
+      "severities": "WARNING:2"
+    }
+  ]
+}

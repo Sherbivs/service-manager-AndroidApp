@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/servicesFragment">
+
+    <fragment
+        android:id="@+id/onboardingFragment"
+        android:name="com.servicemanager.app.ui.onboarding.OnboardingFragment"
+        android:label="@string/onboarding_title">
+        <action
+            android:id="@+id/action_onboarding_to_services"
+            app:destination="@id/servicesFragment"
+            app:popUpTo="@id/onboardingFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/servicesFragment"
+        android:name="com.servicemanager.app.ui.services.ServicesFragment"
+        android:label="@string/nav_services" />
+
+    <fragment
+        android:id="@+id/systemFragment"
+        android:name="com.servicemanager.app.ui.system.SystemFragment"
+        android:label="@string/nav_system" />
+
+    <fragment
+        android:id="@+id/logsFragment"
+        android:name="com.servicemanager.app.ui.logs.LogsFragment"
+        android:label="@string/nav_logs" />
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.servicemanager.app.ui.settings.SettingsFragment"
+        android:label="@string/nav_settings" />
+
+</navigation>
