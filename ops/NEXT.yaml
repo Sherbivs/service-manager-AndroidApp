@@ -1,6 +1,6 @@
 title: Service Manager AndroidApp — Next Task Pointer
-version: 1
-last_updated: "2026-04-22T00:00:00Z"
+version: 2
+last_updated: "2026-04-22T01:00:00Z"
 
 queue:
   - id: SMA.001
@@ -10,7 +10,7 @@ queue:
     description: >
       Create data/ApiService.kt (Retrofit interface), data/ServiceRepository.kt,
       data/RetrofitClient.kt. All 7 API endpoints. Base URL read from
-      EncryptedSharedPreferences. Unit tests with mocked responses.
+      EncryptedSharedPreferences. Unit tests with MockK + MockWebServer.
     acceptance_criteria_ref: "Tasklist.md#SMA.001"
 
   - id: SMA.007
@@ -23,16 +23,36 @@ queue:
       Do NOT set usesCleartextTraffic=true globally.
     acceptance_criteria_ref: "Tasklist.md#SMA.007"
 
-  - id: SMA.002
-    title: Server URL Onboarding / Settings Screen
-    status: BLOCKED
-    blocked_by: [SMA.001]
+  - id: SMA.009
+    title: Hilt Dependency Injection Setup
+    status: READY
     priority: P0
     description: >
-      First-run onboarding screen and settings screen for configuring
-      the Service Manager server URL. Store via EncryptedSharedPreferences.
+      Add hilt-android + hilt-compiler. Create Application class with @HiltAndroidApp.
+      NetworkModule (OkHttpClient, Retrofit, ApiService) and DataModule
+      (ServiceRepository, EncryptedPrefsHelper). No manual DI anywhere.
+    acceptance_criteria_ref: "Tasklist.md#SMA.009"
+
+  - id: SMA.010
+    title: Jetpack Navigation Component
+    status: READY
+    priority: P0
+    description: >
+      Add navigation-fragment-ktx, navigation-ui-ktx, safe-args-gradle-plugin.
+      Create res/navigation/nav_graph.xml. Single-activity with NavHostFragment.
+      All in-app transitions via NavController.navigate().
+    acceptance_criteria_ref: "Tasklist.md#SMA.010"
+
+  - id: SMA.011
+    title: Code Quality Toolchain & CI
+    status: READY
+    priority: P1
+    description: >
+      Configure ktlint (.editorconfig), Detekt (detekt.yml), Lint (lint.xml).
+      Create .github/workflows/ci.yml: lint + ktlintCheck + detekt + test on every push/PR to main.
+    acceptance_criteria_ref: "Tasklist.md#SMA.011"
 
 notes: >
-  Bootstrap complete as of 2026-04-22. No application source code written yet.
-  Begin with SMA.001 (network layer) and SMA.007 (network security config) in parallel.
-  Both are independent P0 tasks.
+  SMA.001, SMA.007, SMA.009, SMA.010, SMA.011 are all READY with no dependencies.
+  SMA.001 + SMA.009 should be done first as they unblock SMA.002–SMA.006.
+  SMA.007 + SMA.010 + SMA.011 can be done in parallel.

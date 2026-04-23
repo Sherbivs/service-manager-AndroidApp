@@ -57,11 +57,30 @@ Managed Service Processes
 ```
 
 ### Key Components
-- **UI Layer** — Activities / Fragments + ViewBinding; Material 3 design
-- **ViewModel Layer** — StateFlow/LiveData; survives rotation
-- **Repository** — Single source of truth; wraps API client
-- **API Client** — Retrofit + OkHttp; configurable base URL (stored in EncryptedSharedPreferences)
-- **EncryptedPrefs** — Stores server URL and any credentials securely via `androidx.security.crypto`
+- **UI Layer** — Activities / Fragments + ViewBinding; Material 3 design. Zero business logic — only observe state, forward events.
+- **ViewModel Layer** — Exposes `StateFlow<UiState>` (sealed `Loading`/`Success`/`Error`). All coroutines in `viewModelScope`. Survives rotation.
+- **Repository** — `ServiceRepository` is the single source of truth. Wraps Retrofit calls, maps to domain models, emits `Result<T>`.
+- **API Client** — Retrofit + OkHttp; configurable base URL read from `EncryptedSharedPreferences`.
+- **EncryptedPrefs** — Stores server URL and credentials via `androidx.security.crypto`.
+- **Dependency Injection** — **Hilt** (`hilt-android`) wires ViewModel, Repository, and RetrofitClient. No manual `new`/factory chains.
+- **Navigation** — Jetpack Navigation Component (single-activity, `NavController`, Safe Args) manages all screen transitions and back stack.
+
+### Unidirectional Data Flow (UDF) — Mandatory
+All screens must follow the UDF pattern enforced by the Android architecture guide:
+```
+User Event → ViewModel.onEvent() → update MutableStateFlow → UI collects StateFlow
+```
+- ViewModel exposes: `val uiState: StateFlow<ScreenUiState> = _uiState.asStateFlow()`
+- UI only: collects state and calls ViewModel methods on user interaction
+- **Never** mutate UI state from a Fragment/Activity directly
+- Sealed class for each screen's state:
+  ```kotlin
+  sealed class ServicesUiState {
+      object Loading : ServicesUiState()
+      data class Success(val services: List<ServiceModel>) : ServicesUiState()
+      data class Error(val message: String) : ServicesUiState()
+  }
+  ```
 
 ### Service Manager API Quick Reference
 | Endpoint | Method | Description |
@@ -73,6 +92,52 @@ Managed Service Processes
 | `/api/services/:id/logs` | GET | Recent log lines (`?lines=N`) |
 | `/api/services/:id/logs/archive` | GET | Search archived logs |
 | `/api/system` | GET | System info (hostname, IP, memory, uptime) |
+
+## Testing Standards (Required)
+
+Every ViewModel and Repository change requires corresponding tests. No task is complete without them.
+
+### Test Layers
+| Layer | Location | Framework | What to Test |
+|-------|----------|-----------|-------------|
+| Unit | `app/src/test/` | JUnit 5, MockK, Turbine | ViewModels, Repository logic, use cases |
+| Integration | `app/src/test/` | MockWebServer (OkHttp) | Network layer, Retrofit parsing |
+| UI | `app/src/androidTest/` | Espresso, UIAutomator | Screen flows, navigation, accessibility |
+
+### Unit Test Rules
+- Every `ViewModel` method that changes state → test that `uiState` emits the right sequence using **Turbine** (`app.cash.turbine`)
+- Every `Repository` call → test with **MockK** mocks, verify success + error branches
+- Use `TestCoroutineDispatcher` / `runTest` — never real delays in tests
+- Aim for: **≥80% line coverage** on ViewModel and Repository classes
+
+### Integration Test Rules
+- `RetrofitClient` / `ApiService` → test with `MockWebServer`; verify correct URL construction, headers, and JSON parsing for each endpoint
+- Test base URL trailing-slash normalization
+
+### UI Test Rules
+- Every new screen → at least one smoke Espresso test (screen launches, key elements visible)
+- Navigation paths: test forward and back navigation with NavController test APIs
+
+## Code Quality
+
+The following tools run on every build and block PR merges if they fail:
+
+| Tool | Purpose | Config File |
+|------|---------|-------------|
+| **Android Lint** | Android-specific anti-patterns | `lint.xml` |
+| **ktlint** | Kotlin formatting | `.editorconfig` |
+| **Detekt** | Kotlin static analysis (complexity, smells) | `detekt.yml` |
+
+### Commands
+```bash
+./gradlew lint                 # Android Lint
+./gradlew ktlintCheck          # ktlint format check
+./gradlew detekt               # Detekt static analysis
+./gradlew test                 # Unit tests
+./gradlew connectedAndroidTest # Instrumented tests (device required)
+```
+
+All four must pass before any commit is considered complete.
 
 ## Capabilities & Routing Hints
 - **planner:** Break down goals into measurable tasks. Use Patch.md workflow.
@@ -136,8 +201,13 @@ Recovery (in order):
 1. **LAN HTTP** — The service manager runs plain HTTP on LAN. Use `network_security_config.xml` with a `<domain>` exception for the LAN host rather than enabling cleartext globally.
 2. **ViewModel scope** — Don't launch coroutines from Activity; always use `viewModelScope`.
 3. **Base URL** — The server IP is user-configurable; never hardcode `192.168.x.x`. Read from `EncryptedSharedPreferences`.
-4. **Rotation** — Use `StateFlow`/`LiveData` so UI survives config changes without redundant API calls.
-5. **Release signing** — `keystore.properties` is gitignored. CI must inject it via secrets.
+4. **Rotation** — UDF + `StateFlow` means rotation is free. Don't re-fetch if data is fresh (< 10s).
+5. **Release signing** — `keystore.properties` is gitignored. CI must inject via secrets.
+6. **UDF violation** — Never mutate UI state from a Fragment. Always go through ViewModel.
+7. **Hilt missing** — Don't manually construct Repository or RetrofitClient. Use `@Inject` and `@HiltViewModel`.
+8. **Navigation** — Don't use `startActivity()` for screen transitions. Use `NavController.navigate()` with Safe Args.
+9. **No tests** — A ViewModel with no unit tests is incomplete. Turbine + MockK are required.
+10. **Bloated ViewModel** — If a ViewModel has >3 distinct concerns, extract Use Case classes.
 
 ## Checklist Before Exit
 - `Prompt.md` updated with accurate summary and NEXT pointer status.
@@ -145,19 +215,12 @@ Recovery (in order):
 - `Tasklist.md` updated with task status changes.
 - Routers synchronized if structural changes made.
 - Commit message references task ID and change summary.
+- `./gradlew lint ktlintCheck detekt test` — all pass.
+- Unit tests written for all new ViewModel and Repository code.
 
 ---
-**Document Version:** 1.0 (2026-04-22) — Initial Android bootstrap
+**Document Version:** 1.1 (2026-04-22) — Architecture + testing + quality standards
 **Last Updated:** 2026-04-22T00:00:00Z
-  - `docs/operations-bible/` — Install, configure, monitor, troubleshoot
-  - `docs/development-bible/` — Setup, conventions, contributing
-- Transient notes go in `Tasklist.md` or `Prompt.md`, NOT standalone docs.
-- Every directory has a `ROUTER.md`.
-
-## Common Pitfalls
-1. **Don't add dependencies** — Express only unless strongly justified.
-2. **Router updates** — Forgetting breaks AI navigation.
-3. **services.json** — User configuration, never overwrite without permission.
 4. **Windows-specific** — `taskkill` is Windows-only.
 5. **No TypeScript** — Vanilla JS, no build step.
 
