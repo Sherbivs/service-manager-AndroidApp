@@ -1,0 +1,28 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/servicemanager/app/ui/services/ServicesViewModel.kt</file>
+  <line>137</line>
+  <module>Service_Manager.app.main</module>
+  <package>com.servicemanager.app.ui.services</package>
+  <entry_point TYPE="method" FQNAME="com.servicemanager.app.ui.services.ServicesViewModel void triggerAction(java.lang.String id, kotlin.jvm.functions.Function2&lt;? super java.lang.String,? super kotlin.coroutines.Continuation&lt;? super kotlin.Result&lt;? extends kotlin.Unit&gt;&gt;,? extends java.lang.Object&gt; action, java.lang.String successMessage, java.lang.String errorFallback)" />
+  <problem_class id="ReplaceWithOperatorAssignment" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Assignment can be replaced with operator assignment</problem_class>
+  <description>Replaceable with operator-assignment</description>
+  <highlighted_element>_pendingActions.value = _pendingActions.value + id</highlighted_element>
+  <language>kotlin</language>
+  <offset>16</offset>
+  <length>50</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/servicemanager/app/ui/services/ServicesViewModel.kt</file>
+  <line>144</line>
+  <module>Service_Manager.app.main</module>
+  <package>com.servicemanager.app.ui.services</package>
+  <entry_point TYPE="method" FQNAME="com.servicemanager.app.ui.services.ServicesViewModel void triggerAction(java.lang.String id, kotlin.jvm.functions.Function2&lt;? super java.lang.String,? super kotlin.coroutines.Continuation&lt;? super kotlin.Result&lt;? extends kotlin.Unit&gt;&gt;,? extends java.lang.Object&gt; action, java.lang.String successMessage, java.lang.String errorFallback)" />
+  <problem_class id="ReplaceWithOperatorAssignment" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Assignment can be replaced with operator assignment</problem_class>
+  <description>Replaceable with operator-assignment</description>
+  <highlighted_element>_pendingActions.value = _pendingActions.value - id</highlighted_element>
+  <language>kotlin</language>
+  <offset>16</offset>
+  <length>50</length>
+</problem>
+</problems>

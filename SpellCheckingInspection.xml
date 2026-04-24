@@ -1,0 +1,986 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/.github/copilot-instructions.md</file>
+  <line>150</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/.github/copilot-instructions.md" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'gitignored'</description>
+  <highlighted_element>gitignored</highlighted_element>
+  <language>Markdown</language>
+  <offset>67</offset>
+  <length>10</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/.github/workflows/quality-gate.yml</file>
+  <line>20</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/.github/workflows/quality-gate.yml" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'temurin'</description>
+  <highlighted_element>temurin</highlighted_element>
+  <language>yaml</language>
+  <offset>25</offset>
+  <length>7</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/.github/workflows/quality-gate.yml</file>
+  <line>26</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/.github/workflows/quality-gate.yml" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'ktlint'</description>
+  <highlighted_element>ktlint</highlighted_element>
+  <language>yaml</language>
+  <offset>40</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/.github/workflows/quality-gate.yml</file>
+  <line>26</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/.github/workflows/quality-gate.yml" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'detekt'</description>
+  <highlighted_element>detekt</highlighted_element>
+  <language>yaml</language>
+  <offset>48</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/.github/workflows/quality-gate.yml</file>
+  <line>27</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/.github/workflows/quality-gate.yml" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'ktlintCheck'</description>
+  <highlighted_element>ktlintCheck</highlighted_element>
+  <language>yaml</language>
+  <offset>28</offset>
+  <length>11</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/.github/workflows/quality-gate.yml</file>
+  <line>27</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/.github/workflows/quality-gate.yml" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'detekt'</description>
+  <highlighted_element>detekt</highlighted_element>
+  <language>yaml</language>
+  <offset>40</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/.kotlin/errors/errors-1776981184871.log</file>
+  <line>2</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/.kotlin/errors/errors-1776981184871.log" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'sherb'</description>
+  <highlighted_element>sherb</highlighted_element>
+  <language>textmate</language>
+  <offset>89</offset>
+  <length>5</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/.kotlin/errors/errors-1776981184871.log</file>
+  <line>2</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/.kotlin/errors/errors-1776981184871.log" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'servicemanager'</description>
+  <highlighted_element>servicemanager</highlighted_element>
+  <language>textmate</language>
+  <offset>159</offset>
+  <length>14</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/.tmp/detekt.log</file>
+  <line>3</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/.tmp/detekt.log" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'sherb'</description>
+  <highlighted_element>sherb</highlighted_element>
+  <language>textmate</language>
+  <offset>9</offset>
+  <length>5</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/.tmp/detekt.log</file>
+  <line>3</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/.tmp/detekt.log" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'servicemanager'</description>
+  <highlighted_element>servicemanager</highlighted_element>
+  <language>textmate</language>
+  <offset>79</offset>
+  <length>14</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/.tmp/kapt_stacktrace.log</file>
+  <line>23</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/.tmp/kapt_stacktrace.log" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'sherb'</description>
+  <highlighted_element>sherb</highlighted_element>
+  <language>textmate</language>
+  <offset>63</offset>
+  <length>5</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/.tmp/kapt_stacktrace.log</file>
+  <line>29</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/.tmp/kapt_stacktrace.log" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'Kotlinc'</description>
+  <highlighted_element>Kotlinc</highlighted_element>
+  <language>textmate</language>
+  <offset>85</offset>
+  <length>7</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/.tmp/kapt_stacktrace.log</file>
+  <line>38</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/.tmp/kapt_stacktrace.log" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'Executer'</description>
+  <highlighted_element>Executer</highlighted_element>
+  <language>textmate</language>
+  <offset>62</offset>
+  <length>8</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/.tmp/kapt_stacktrace.log</file>
+  <line>60</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/.tmp/kapt_stacktrace.log" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'taskgraph'</description>
+  <highlighted_element>taskgraph</highlighted_element>
+  <language>textmate</language>
+  <offset>25</offset>
+  <length>9</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/.tmp/ktlint.log</file>
+  <line>1</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/.tmp/ktlint.log" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'Ktlint'</description>
+  <highlighted_element>Ktlint</highlighted_element>
+  <language>textmate</language>
+  <offset>16</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/.tmp/ktlint.log</file>
+  <line>3</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/.tmp/ktlint.log" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'ktlint'</description>
+  <highlighted_element>ktlint</highlighted_element>
+  <language>textmate</language>
+  <offset>12</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/.tmp/ktlint.log</file>
+  <line>29</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/.tmp/ktlint.log" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'sherb'</description>
+  <highlighted_element>sherb</highlighted_element>
+  <language>textmate</language>
+  <offset>9</offset>
+  <length>5</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/.tmp/ktlint.log</file>
+  <line>29</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/.tmp/ktlint.log" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'servicemanager'</description>
+  <highlighted_element>servicemanager</highlighted_element>
+  <language>textmate</language>
+  <offset>79</offset>
+  <length>14</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/.tmp/ktlint.log</file>
+  <line>43</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/.tmp/ktlint.log" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'jlleitschuh'</description>
+  <highlighted_element>jlleitschuh</highlighted_element>
+  <language>textmate</language>
+  <offset>41</offset>
+  <length>11</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/.tmp/ktlintCheck.log</file>
+  <line>5</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/.tmp/ktlintCheck.log" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'sherb'</description>
+  <highlighted_element>sherb</highlighted_element>
+  <language>textmate</language>
+  <offset>21</offset>
+  <length>5</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/.tmp/ktlintFormat.log</file>
+  <line>5</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/.tmp/ktlintFormat.log" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'sherb'</description>
+  <highlighted_element>sherb</highlighted_element>
+  <language>textmate</language>
+  <offset>21</offset>
+  <length>5</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/.tmp/lint.log</file>
+  <line>5</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/.tmp/lint.log" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'sherb'</description>
+  <highlighted_element>sherb</highlighted_element>
+  <language>textmate</language>
+  <offset>21</offset>
+  <length>5</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/.tmp/lint2.log</file>
+  <line>28</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/.tmp/lint2.log" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'sherb'</description>
+  <highlighted_element>sherb</highlighted_element>
+  <language>textmate</language>
+  <offset>63</offset>
+  <length>5</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/.tmp/lint2.log</file>
+  <line>34</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/.tmp/lint2.log" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'Kotlinc'</description>
+  <highlighted_element>Kotlinc</highlighted_element>
+  <language>textmate</language>
+  <offset>85</offset>
+  <length>7</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/.tmp/test.log</file>
+  <line>5</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/.tmp/test.log" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'sherb'</description>
+  <highlighted_element>sherb</highlighted_element>
+  <language>textmate</language>
+  <offset>21</offset>
+  <length>5</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/.tmp/test2.log</file>
+  <line>48</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/.tmp/test2.log" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'Xskip'</description>
+  <highlighted_element>Xskip</highlighted_element>
+  <language>textmate</language>
+  <offset>92</offset>
+  <length>5</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/.tmp/test2.log</file>
+  <line>49</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/.tmp/test2.log" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'sherb'</description>
+  <highlighted_element>sherb</highlighted_element>
+  <language>textmate</language>
+  <offset>20</offset>
+  <length>5</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/.tmp/test2.log</file>
+  <line>50</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/.tmp/test2.log" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'afcdaa'</description>
+  <highlighted_element>afcdaa</highlighted_element>
+  <language>textmate</language>
+  <offset>72</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/.tmp/test2.log</file>
+  <line>59</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/.tmp/test2.log" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'dafbf'</description>
+  <highlighted_element>dafbf</highlighted_element>
+  <language>textmate</language>
+  <offset>153</offset>
+  <length>5</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/.tmp/test2.log</file>
+  <line>60</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/.tmp/test2.log" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'servicemanager'</description>
+  <highlighted_element>servicemanager</highlighted_element>
+  <language>textmate</language>
+  <offset>90</offset>
+  <length>14</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/AGENTS.md</file>
+  <line>71</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/AGENTS.md" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'Sherbivs'</description>
+  <highlighted_element>Sherbivs</highlighted_element>
+  <language>Markdown</language>
+  <offset>45</offset>
+  <length>8</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/AGENTS.md</file>
+  <line>188</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/AGENTS.md" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'gitignored'</description>
+  <highlighted_element>gitignored</highlighted_element>
+  <language>Markdown</language>
+  <offset>67</offset>
+  <length>10</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/AGENTS.md</file>
+  <line>244</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/AGENTS.md" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'ktlint'</description>
+  <highlighted_element>ktlint</highlighted_element>
+  <language>Markdown</language>
+  <offset>4</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/AGENTS.md</file>
+  <line>245</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/AGENTS.md" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'detekt'</description>
+  <highlighted_element>detekt</highlighted_element>
+  <language>Markdown</language>
+  <offset>4</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/AGENTS.md</file>
+  <line>321</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/AGENTS.md" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'gitignored'</description>
+  <highlighted_element>gitignored</highlighted_element>
+  <language>Markdown</language>
+  <offset>50</offset>
+  <length>10</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/Patch.md</file>
+  <line>10</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/Patch.md" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'gitignored'</description>
+  <highlighted_element>gitignored</highlighted_element>
+  <language>Markdown</language>
+  <offset>177</offset>
+  <length>10</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/Prompt.md</file>
+  <line>13</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/Prompt.md" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'Snackbar'</description>
+  <highlighted_element>Snackbar</highlighted_element>
+  <language>Markdown</language>
+  <offset>59</offset>
+  <length>8</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/README.md</file>
+  <line>74</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/README.md" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'gitignored'</description>
+  <highlighted_element>gitignored</highlighted_element>
+  <language>Markdown</language>
+  <offset>47</offset>
+  <length>10</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/ROUTER.md</file>
+  <line>27</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/ROUTER.md" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'Subrouters'</description>
+  <highlighted_element>Subrouters</highlighted_element>
+  <language>Markdown</language>
+  <offset>0</offset>
+  <length>10</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/Tasklist.md</file>
+  <line>45</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/Tasklist.md" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'Snackbar'</description>
+  <highlighted_element>Snackbar</highlighted_element>
+  <language>Markdown</language>
+  <offset>6</offset>
+  <length>8</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/Tasklist.md</file>
+  <line>92</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/Tasklist.md" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'ktlint'</description>
+  <highlighted_element>ktlint</highlighted_element>
+  <language>Markdown</language>
+  <offset>36</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/Tasklist.md</file>
+  <line>92</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/Tasklist.md" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'detekt'</description>
+  <highlighted_element>detekt</highlighted_element>
+  <language>Markdown</language>
+  <offset>45</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/navigation/nav_graph.xml</file>
+  <line>9</line>
+  <module>Service_Manager.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/navigation/nav_graph.xml" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'servicemanager'</description>
+  <highlighted_element>servicemanager</highlighted_element>
+  <language>XML</language>
+  <offset>26</offset>
+  <length>14</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/navigation/nav_graph.xml</file>
+  <line>20</line>
+  <module>Service_Manager.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/navigation/nav_graph.xml" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'servicemanager'</description>
+  <highlighted_element>servicemanager</highlighted_element>
+  <language>XML</language>
+  <offset>26</offset>
+  <length>14</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/navigation/nav_graph.xml</file>
+  <line>25</line>
+  <module>Service_Manager.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/navigation/nav_graph.xml" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'servicemanager'</description>
+  <highlighted_element>servicemanager</highlighted_element>
+  <language>XML</language>
+  <offset>26</offset>
+  <length>14</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/navigation/nav_graph.xml</file>
+  <line>30</line>
+  <module>Service_Manager.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/navigation/nav_graph.xml" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'servicemanager'</description>
+  <highlighted_element>servicemanager</highlighted_element>
+  <language>XML</language>
+  <offset>26</offset>
+  <length>14</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/navigation/nav_graph.xml</file>
+  <line>35</line>
+  <module>Service_Manager.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/navigation/nav_graph.xml" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'servicemanager'</description>
+  <highlighted_element>servicemanager</highlighted_element>
+  <language>XML</language>
+  <offset>26</offset>
+  <length>14</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/detekt_run.log</file>
+  <line>3</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/detekt_run.log" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'sherb'</description>
+  <highlighted_element>sherb</highlighted_element>
+  <language>textmate</language>
+  <offset>63</offset>
+  <length>5</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/docs/archive/ROUTER.md</file>
+  <line>10</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/docs/archive/ROUTER.md" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'remediations'</description>
+  <highlighted_element>remediations</highlighted_element>
+  <language>Markdown</language>
+  <offset>52</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/docs/archive/tasks/closed/C02-QA-AUDIT-002.md</file>
+  <line>140</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/docs/archive/tasks/closed/C02-QA-AUDIT-002.md" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'baselining'</description>
+  <highlighted_element>baselining</highlighted_element>
+  <language>Markdown</language>
+  <offset>37</offset>
+  <length>10</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/docs/archive/tasks/closed/C02-QA-AUDIT-002.md</file>
+  <line>172</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/docs/archive/tasks/closed/C02-QA-AUDIT-002.md" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'callsites'</description>
+  <highlighted_element>callsites</highlighted_element>
+  <language>Markdown</language>
+  <offset>134</offset>
+  <length>9</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/docs/archive/tasks/closed/C02-QA-AUDIT-002.md</file>
+  <line>173</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/docs/archive/tasks/closed/C02-QA-AUDIT-002.md" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'detekt'</description>
+  <highlighted_element>detekt</highlighted_element>
+  <language>Markdown</language>
+  <offset>55</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/docs/archive/tasks/in-progress/C02-QA-AUDIT-002.md</file>
+  <line>140</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/docs/archive/tasks/in-progress/C02-QA-AUDIT-002.md" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'baselining'</description>
+  <highlighted_element>baselining</highlighted_element>
+  <language>Markdown</language>
+  <offset>37</offset>
+  <length>10</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/docs/archive/tasks/in-progress/C02-QA-AUDIT-002.md</file>
+  <line>172</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/docs/archive/tasks/in-progress/C02-QA-AUDIT-002.md" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'callsites'</description>
+  <highlighted_element>callsites</highlighted_element>
+  <language>Markdown</language>
+  <offset>134</offset>
+  <length>9</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/docs/archive/tasks/in-progress/C02-QA-AUDIT-002.md</file>
+  <line>173</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/docs/archive/tasks/in-progress/C02-QA-AUDIT-002.md" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'detekt'</description>
+  <highlighted_element>detekt</highlighted_element>
+  <language>Markdown</language>
+  <offset>55</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/docs/archive/tasks/new/C02-QA-AUDIT-002.issue-summary.json</file>
+  <line>99</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/docs/archive/tasks/new/C02-QA-AUDIT-002.issue-summary.json" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'AndroidLintUseKtx'</description>
+  <highlighted_element>AndroidLintUseKtx</highlighted_element>
+  <language>JSON</language>
+  <offset>18</offset>
+  <length>17</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/docs/development-bible/02-coding-conventions.md</file>
+  <line>10</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/docs/development-bible/02-coding-conventions.md" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'ktlint'</description>
+  <highlighted_element>ktlint</highlighted_element>
+  <language>Markdown</language>
+  <offset>22</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/docs/development-bible/INDEX.md</file>
+  <line>38</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/docs/development-bible/INDEX.md" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'ktlint'</description>
+  <highlighted_element>ktlint</highlighted_element>
+  <language>Markdown</language>
+  <offset>22</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/docs/development-bible/INDEX.md</file>
+  <line>39</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/docs/development-bible/INDEX.md" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'detekt'</description>
+  <highlighted_element>detekt</highlighted_element>
+  <language>Markdown</language>
+  <offset>23</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/docs/development-bible/INDEX.md</file>
+  <line>39</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/docs/development-bible/INDEX.md" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'WARNINGs'</description>
+  <highlighted_element>WARNINGs</highlighted_element>
+  <language>Markdown</language>
+  <offset>61</offset>
+  <length>8</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/docs/operations-bible/02-release-signing.md</file>
+  <line>9</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/docs/operations-bible/02-release-signing.md" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'gitignored'</description>
+  <highlighted_element>gitignored</highlighted_element>
+  <language>Markdown</language>
+  <offset>155</offset>
+  <length>10</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/docs/operations-bible/INDEX.md</file>
+  <line>32</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/docs/operations-bible/INDEX.md" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'gitignored'</description>
+  <highlighted_element>gitignored</highlighted_element>
+  <language>Markdown</language>
+  <offset>15</offset>
+  <length>10</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/gradle/gradle-daemon-jvm.properties</file>
+  <line>2</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/gradle/gradle-daemon-jvm.properties" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'AARCH'</description>
+  <highlighted_element>AARCH</highlighted_element>
+  <language>Properties</language>
+  <offset>22</offset>
+  <length>5</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/gradle/gradle-daemon-jvm.properties</file>
+  <line>4</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/gradle/gradle-daemon-jvm.properties" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'AARCH'</description>
+  <highlighted_element>AARCH</highlighted_element>
+  <language>Properties</language>
+  <offset>19</offset>
+  <length>5</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/gradle/gradle-daemon-jvm.properties</file>
+  <line>6</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/gradle/gradle-daemon-jvm.properties" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'AARCH'</description>
+  <highlighted_element>AARCH</highlighted_element>
+  <language>Properties</language>
+  <offset>20</offset>
+  <length>5</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/gradle/gradle-daemon-jvm.properties</file>
+  <line>8</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/gradle/gradle-daemon-jvm.properties" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'AARCH'</description>
+  <highlighted_element>AARCH</highlighted_element>
+  <language>Properties</language>
+  <offset>18</offset>
+  <length>5</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/gradle/gradle-daemon-jvm.properties</file>
+  <line>10</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/gradle/gradle-daemon-jvm.properties" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'AARCH'</description>
+  <highlighted_element>AARCH</highlighted_element>
+  <language>Properties</language>
+  <offset>21</offset>
+  <length>5</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/gradlew.bat</file>
+  <line>25</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/gradlew.bat" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'setlocal'</description>
+  <highlighted_element>setlocal</highlighted_element>
+  <language>textmate</language>
+  <offset>24</offset>
+  <length>8</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/gradlew.bat</file>
+  <line>44</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/gradlew.bat" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'ERRORLEVEL'</description>
+  <highlighted_element>ERRORLEVEL</highlighted_element>
+  <language>textmate</language>
+  <offset>4</offset>
+  <length>10</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/gradlew.bat</file>
+  <line>75</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/gradlew.bat" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'Dorg'</description>
+  <highlighted_element>Dorg</highlighted_element>
+  <language>textmate</language>
+  <offset>60</offset>
+  <length>4</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/gradlew.bat</file>
+  <line>75</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/gradlew.bat" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'appname'</description>
+  <highlighted_element>appname</highlighted_element>
+  <language>textmate</language>
+  <offset>72</offset>
+  <length>7</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/gradlew.bat</file>
+  <line>90</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/gradlew.bat" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'endlocal'</description>
+  <highlighted_element>endlocal</highlighted_element>
+  <language>textmate</language>
+  <offset>24</offset>
+  <length>8</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/ops/NEXT.yaml</file>
+  <line>28</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/ops/NEXT.yaml" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'ktlint'</description>
+  <highlighted_element>ktlint</highlighted_element>
+  <language>yaml</language>
+  <offset>33</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/ops/NEXT.yaml</file>
+  <line>28</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/ops/NEXT.yaml" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'detekt'</description>
+  <highlighted_element>detekt</highlighted_element>
+  <language>yaml</language>
+  <offset>42</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/ops/NEXT.yaml</file>
+  <line>32</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/ops/NEXT.yaml" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'ktlint'</description>
+  <highlighted_element>ktlint</highlighted_element>
+  <language>yaml</language>
+  <offset>12</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/ops/NEXT.yaml</file>
+  <line>32</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/ops/NEXT.yaml" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'detekt'</description>
+  <highlighted_element>detekt</highlighted_element>
+  <language>yaml</language>
+  <offset>23</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/ops/NEXT.yaml</file>
+  <line>33</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/ops/NEXT.yaml" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'ktlint'</description>
+  <highlighted_element>ktlint</highlighted_element>
+  <language>yaml</language>
+  <offset>28</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/ops/NEXT.yaml</file>
+  <line>33</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/ops/NEXT.yaml" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'ktlintCheck'</description>
+  <highlighted_element>ktlintCheck</highlighted_element>
+  <language>yaml</language>
+  <offset>58</offset>
+  <length>11</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/ops/NEXT.yaml</file>
+  <line>33</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/ops/NEXT.yaml" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'detekt'</description>
+  <highlighted_element>detekt</highlighted_element>
+  <language>yaml</language>
+  <offset>70</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/ops/NEXT.yaml</file>
+  <line>71</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/ops/NEXT.yaml" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'ktlintCheck'</description>
+  <highlighted_element>ktlintCheck</highlighted_element>
+  <language>yaml</language>
+  <offset>59</offset>
+  <length>11</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/ops/NEXT.yaml</file>
+  <line>71</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/ops/NEXT.yaml" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'detekt'</description>
+  <highlighted_element>detekt</highlighted_element>
+  <language>yaml</language>
+  <offset>73</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/ops/NEXT.yaml</file>
+  <line>85</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/ops/NEXT.yaml" />
+  <problem_class id="SpellCheckingInspection" severity="TYPO" attribute_key="TYPO">Spelling</problem_class>
+  <description>Typo: In word 'Snackbar'</description>
+  <highlighted_element>Snackbar</highlighted_element>
+  <language>yaml</language>
+  <offset>12</offset>
+  <length>8</length>
+</problem>
+</problems>

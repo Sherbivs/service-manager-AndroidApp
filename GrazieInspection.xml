@@ -1,0 +1,147 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/.github/ROUTER.md</file>
+  <line>4</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/.github/ROUTER.md" />
+  <problem_class id="GrazieInspection" severity="GRAMMAR_ERROR" attribute_key="GRAMMAR_ERROR">Grammar</problem_class>
+  <description>The official name of this software platform is spelled with a capital &quot;H&quot;.</description>
+  <highlighted_element>github</highlighted_element>
+  <language>Markdown</language>
+  <offset>14</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/ROUTER.md</file>
+  <line>25</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/ROUTER.md" />
+  <problem_class id="GrazieInspection" severity="GRAMMAR_ERROR" attribute_key="GRAMMAR_ERROR">Grammar</problem_class>
+  <description>The official name of this software platform is spelled with a capital &quot;H&quot;.</description>
+  <highlighted_element>github</highlighted_element>
+  <language>Markdown</language>
+  <offset>3</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/ROUTER.md</file>
+  <line>31</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/ROUTER.md" />
+  <problem_class id="GrazieInspection" severity="GRAMMAR_ERROR" attribute_key="GRAMMAR_ERROR">Grammar</problem_class>
+  <description>The official name of this software platform is spelled with a capital &quot;H&quot;.</description>
+  <highlighted_element>github</highlighted_element>
+  <language>Markdown</language>
+  <offset>3</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/servicemanager/app/MainActivity.kt</file>
+  <line>34</line>
+  <module>Service_Manager.app.main</module>
+  <package>com.servicemanager.app</package>
+  <entry_point TYPE="method" FQNAME="com.servicemanager.app.MainActivity void onCreate(android.os.Bundle savedInstanceState)" />
+  <problem_class id="GrazieInspection" severity="GRAMMAR_ERROR" attribute_key="GRAMMAR_ERROR">Grammar</problem_class>
+  <description>Use a comma before 'and' if it connects two independent clauses (unless they are closely connected and short).</description>
+  <highlighted_element>and</highlighted_element>
+  <language>kotlin</language>
+  <offset>55</offset>
+  <length>4</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/docs/archive/tasks/closed/C02-QA-AUDIT-002.md</file>
+  <line>11</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/docs/archive/tasks/closed/C02-QA-AUDIT-002.md" />
+  <problem_class id="GrazieInspection" severity="GRAMMAR_ERROR" attribute_key="GRAMMAR_ERROR">Grammar</problem_class>
+  <description>Did you mean the formatting language?</description>
+  <highlighted_element>markdown</highlighted_element>
+  <language>Markdown</language>
+  <offset>105</offset>
+  <length>8</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/docs/archive/tasks/closed/C02-QA-AUDIT-002.md</file>
+  <line>20</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/docs/archive/tasks/closed/C02-QA-AUDIT-002.md" />
+  <problem_class id="GrazieInspection" severity="GRAMMAR_ERROR" attribute_key="GRAMMAR_ERROR">Grammar</problem_class>
+  <description>Did you mean the formatting language?</description>
+  <highlighted_element>markdown</highlighted_element>
+  <language>Markdown</language>
+  <offset>84</offset>
+  <length>8</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/docs/archive/tasks/closed/C02-QA-AUDIT-002.md</file>
+  <line>35</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/docs/archive/tasks/closed/C02-QA-AUDIT-002.md" />
+  <problem_class id="GrazieInspection" severity="GRAMMAR_ERROR" attribute_key="GRAMMAR_ERROR">Grammar</problem_class>
+  <description>Did you mean the formatting language?</description>
+  <highlighted_element>markdown</highlighted_element>
+  <language>Markdown</language>
+  <offset>24</offset>
+  <length>8</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/docs/archive/tasks/closed/C02-QA-AUDIT-002.md</file>
+  <line>74</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/docs/archive/tasks/closed/C02-QA-AUDIT-002.md" />
+  <problem_class id="GrazieInspection" severity="GRAMMAR_ERROR" attribute_key="GRAMMAR_ERROR">Grammar</problem_class>
+  <description>Did you mean the formatting language?</description>
+  <highlighted_element>markdown</highlighted_element>
+  <language>Markdown</language>
+  <offset>19</offset>
+  <length>8</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/docs/archive/tasks/in-progress/C02-QA-AUDIT-002.md</file>
+  <line>11</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/docs/archive/tasks/in-progress/C02-QA-AUDIT-002.md" />
+  <problem_class id="GrazieInspection" severity="GRAMMAR_ERROR" attribute_key="GRAMMAR_ERROR">Grammar</problem_class>
+  <description>Did you mean the formatting language?</description>
+  <highlighted_element>markdown</highlighted_element>
+  <language>Markdown</language>
+  <offset>105</offset>
+  <length>8</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/docs/archive/tasks/in-progress/C02-QA-AUDIT-002.md</file>
+  <line>20</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/docs/archive/tasks/in-progress/C02-QA-AUDIT-002.md" />
+  <problem_class id="GrazieInspection" severity="GRAMMAR_ERROR" attribute_key="GRAMMAR_ERROR">Grammar</problem_class>
+  <description>Did you mean the formatting language?</description>
+  <highlighted_element>markdown</highlighted_element>
+  <language>Markdown</language>
+  <offset>84</offset>
+  <length>8</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/docs/archive/tasks/in-progress/C02-QA-AUDIT-002.md</file>
+  <line>35</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/docs/archive/tasks/in-progress/C02-QA-AUDIT-002.md" />
+  <problem_class id="GrazieInspection" severity="GRAMMAR_ERROR" attribute_key="GRAMMAR_ERROR">Grammar</problem_class>
+  <description>Did you mean the formatting language?</description>
+  <highlighted_element>markdown</highlighted_element>
+  <language>Markdown</language>
+  <offset>24</offset>
+  <length>8</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/docs/archive/tasks/in-progress/C02-QA-AUDIT-002.md</file>
+  <line>74</line>
+  <module>Service_Manager</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/docs/archive/tasks/in-progress/C02-QA-AUDIT-002.md" />
+  <problem_class id="GrazieInspection" severity="GRAMMAR_ERROR" attribute_key="GRAMMAR_ERROR">Grammar</problem_class>
+  <description>Did you mean the formatting language?</description>
+  <highlighted_element>markdown</highlighted_element>
+  <language>Markdown</language>
+  <offset>19</offset>
+  <length>8</length>
+</problem>
+</problems>

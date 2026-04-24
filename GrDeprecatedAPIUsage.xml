@@ -1,0 +1,14 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/app/build.gradle</file>
+  <line>66</line>
+  <module>Service_Manager.app</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/build.gradle" />
+  <problem_class id="GrDeprecatedAPIUsage" severity="WARNING" attribute_key="DEPRECATED_ATTRIBUTES">Deprecated API usage</problem_class>
+  <description>'excludes' is deprecated</description>
+  <highlighted_element>excludes</highlighted_element>
+  <language>Groovy</language>
+  <offset>12</offset>
+  <length>8</length>
+</problem>
+</problems>

@@ -1,0 +1,54 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/xml/network_security_config.xml</file>
+  <line>17</line>
+  <module>Service_Manager.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/xml/network_security_config.xml" />
+  <problem_class id="AndroidLintNetworkSecurityConfig" severity="ERROR" attribute_key="ERRORS_ATTRIBUTES">Valid Network Security Config File</problem_class>
+  <hints />
+  <description>&lt;html&gt;Missing &lt;code&gt;includeSubdomains&lt;/code&gt; attribute&lt;/html&gt;</description>
+  <highlighted_element>domain</highlighted_element>
+  <language>XML</language>
+  <offset>9</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/xml/network_security_config.xml</file>
+  <line>22</line>
+  <module>Service_Manager.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/xml/network_security_config.xml" />
+  <problem_class id="AndroidLintNetworkSecurityConfig" severity="ERROR" attribute_key="ERRORS_ATTRIBUTES">Valid Network Security Config File</problem_class>
+  <hints />
+  <description>&lt;html&gt;Missing &lt;code&gt;includeSubdomains&lt;/code&gt; attribute&lt;/html&gt;</description>
+  <highlighted_element>domain</highlighted_element>
+  <language>XML</language>
+  <offset>9</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/xml/network_security_config.xml</file>
+  <line>23</line>
+  <module>Service_Manager.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/xml/network_security_config.xml" />
+  <problem_class id="AndroidLintNetworkSecurityConfig" severity="ERROR" attribute_key="ERRORS_ATTRIBUTES">Valid Network Security Config File</problem_class>
+  <hints />
+  <description>&lt;html&gt;Missing &lt;code&gt;includeSubdomains&lt;/code&gt; attribute&lt;/html&gt;</description>
+  <highlighted_element>domain</highlighted_element>
+  <language>XML</language>
+  <offset>9</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/xml/network_security_config.xml</file>
+  <line>24</line>
+  <module>Service_Manager.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/xml/network_security_config.xml" />
+  <problem_class id="AndroidLintNetworkSecurityConfig" severity="ERROR" attribute_key="ERRORS_ATTRIBUTES">Valid Network Security Config File</problem_class>
+  <hints />
+  <description>&lt;html&gt;Missing &lt;code&gt;includeSubdomains&lt;/code&gt; attribute&lt;/html&gt;</description>
+  <highlighted_element>domain</highlighted_element>
+  <language>XML</language>
+  <offset>9</offset>
+  <length>6</length>
+</problem>
+</problems>

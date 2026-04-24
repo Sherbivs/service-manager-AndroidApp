@@ -1,0 +1,28 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/servicemanager/app/util/EncryptedPrefsHelper.kt</file>
+  <line>14</line>
+  <module>Service_Manager.app.main</module>
+  <package>com.servicemanager.app.util</package>
+  <entry_point TYPE="method" FQNAME="com.servicemanager.app.util.EncryptedPrefsHelper EncryptedPrefsHelper(android.content.Context context)" />
+  <problem_class id="AddExplicitTargetToParameterAnnotation" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Redundant interpolation prefix</problem_class>
+  <description>The annotation is only applied to the parameter. An explicit annotation use-site target is recommended.</description>
+  <highlighted_element>@ApplicationContext</highlighted_element>
+  <language>kotlin</language>
+  <offset>8</offset>
+  <length>19</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/servicemanager/app/util/ResourceProvider.kt</file>
+  <line>13</line>
+  <module>Service_Manager.app.main</module>
+  <package>com.servicemanager.app.util</package>
+  <entry_point TYPE="method" FQNAME="com.servicemanager.app.util.ResourceProvider ResourceProvider(android.content.Context context)" />
+  <problem_class id="AddExplicitTargetToParameterAnnotation" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Redundant interpolation prefix</problem_class>
+  <description>The annotation is only applied to the parameter. An explicit annotation use-site target is recommended.</description>
+  <highlighted_element>@ApplicationContext</highlighted_element>
+  <language>kotlin</language>
+  <offset>8</offset>
+  <length>19</length>
+</problem>
+</problems>

@@ -1,0 +1,28 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/androidTest/java/com/servicemanager/app/HiltTestRunner.kt</file>
+  <line>8</line>
+  <module>Service_Manager.app.androidTest</module>
+  <package>com.servicemanager.app</package>
+  <entry_point TYPE="class" FQNAME="com.servicemanager.app.HiltTestRunner" />
+  <problem_class id="UnusedSymbol" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused symbol</problem_class>
+  <description>Class &quot;HiltTestRunner&quot; is never used</description>
+  <highlighted_element>HiltTestRunner</highlighted_element>
+  <language>kotlin</language>
+  <offset>6</offset>
+  <length>14</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/servicemanager/app/data/repository/ServiceRepository.kt</file>
+  <line>41</line>
+  <module>Service_Manager.app.main</module>
+  <package>com.servicemanager.app.data.repository</package>
+  <entry_point TYPE="method" FQNAME="com.servicemanager.app.data.repository.ServiceRepository java.lang.Object getServiceLogs(java.lang.String id, int lines, kotlin.coroutines.Continuation&lt;? super kotlin.Result&lt;? extends java.util.List&lt;? extends java.lang.String&gt;&gt;&gt; $completion)" />
+  <problem_class id="UnusedSymbol" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused symbol</problem_class>
+  <description>Function &quot;getServiceLogs&quot; is never used</description>
+  <highlighted_element>getServiceLogs</highlighted_element>
+  <language>kotlin</language>
+  <offset>20</offset>
+  <length>14</length>
+</problem>
+</problems>
