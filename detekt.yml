@@ -21,3 +21,7 @@ naming:
     excludes: ['**/test/**']
   InvalidPackageDeclaration:
     active: true
+
+formatting:
+  Indentation:
+    active: false

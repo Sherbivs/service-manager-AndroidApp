@@ -2,6 +2,7 @@ package com.servicemanager.app.data.repository
 
 import com.servicemanager.app.R
 import com.servicemanager.app.data.api.ApiService
+import com.servicemanager.app.data.model.ArchiveResponseDto
 import com.servicemanager.app.data.model.ServiceDto
 import com.servicemanager.app.data.model.SystemInfoDto
 import com.servicemanager.app.util.ResourceProvider
@@ -38,20 +39,40 @@ class ServiceRepository
                 if (!resp.success) error(resp.message ?: "Restart failed")
             }
 
-        suspend fun getServiceLogs(
-            id: String,
-            lines: Int = 100,
-        ): Result<List<String>> = safeApiCall { api.getServiceLogs(id, lines).lines }
+        suspend fun resetCircuitBreaker(id: String): Result<Unit> =
+            safeApiCall {
+                val resp = api.resetCircuitBreaker(id)
+                if (!resp.success) error(resp.message ?: "Reset failed")
+            }
 
         suspend fun getSystemInfo(): Result<SystemInfoDto> = safeApiCall { api.getSystemInfo() }
 
-        suspend fun getGlobalLogs(lines: Int = 100): Result<List<String>> =
-            safeApiCall { api.getGlobalLogs(lines).lines }
+        suspend fun getGlobalLogs(lines: Int = 100): Result<List<String>> = safeApiCall { api.getGlobalLogs(lines) }
 
         suspend fun searchArchiveLogs(
             serviceId: String,
             query: String,
-        ): Result<List<String>> = safeApiCall { api.searchArchiveLogs(serviceId, query).lines }
+            level: String = "",
+            from: Long = 0,
+            to: Long = 0,
+            limit: Int = 100,
+            offset: Int = 0,
+        ): Result<ArchiveResponseDto> =
+            safeApiCall { api.searchArchiveLogs(serviceId, query, level, from, to, limit, offset) }
+
+        suspend fun searchGlobalArchiveLogs(
+            query: String = "",
+            project: String = "",
+            level: String = "",
+            from: Long = 0,
+            to: Long = 0,
+            limit: Int = 100,
+            offset: Int = 0,
+        ): Result<ArchiveResponseDto> = safeApiCall {
+            api.searchGlobalArchiveLogs(query, project, level, from, to, limit, offset)
+        }
+
+        suspend fun getLogProjects(): Result<List<String>> = safeApiCall { api.getLogProjects() }
 
         private suspend fun <T> safeApiCall(call: suspend () -> T): Result<T> {
             val result = runCatching { call() }

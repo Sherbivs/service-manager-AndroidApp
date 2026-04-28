@@ -5,10 +5,10 @@
 
 | # | Title | Status |
 |---|-------|--------|
-| 01 | [System Overview](01-system-overview.md) | Pending |
-| 02 | [Android Architecture (MVVM + UDF)](02-android-architecture.md) | Pending |
-| 03 | [API Integration](03-api-integration.md) | Pending |
-| 04 | [Security Architecture](04-security-architecture.md) | Pending |
+| 01 | [System Overview](01-system-overview.md) | Active |
+| 02 | [Android Architecture (MVVM + UDF)](02-android-architecture.md) | Active |
+| 03 | [API Integration](03-api-integration.md) | Active |
+| 04 | [Security Architecture](04-security-architecture.md) | Active |
 
 ---
 
@@ -35,7 +35,7 @@ ViewModel Layer (survives rotation)
 Data Layer
   ├── ServiceRepository  ← single source of truth
   ├── ApiService (Retrofit interface)
-  └── EncryptedPrefsHelper
+  └── SecurePrefsHelper
 ```
 
 **Layer rules (strictly enforced):**
@@ -82,11 +82,11 @@ Hilt is the official Android DI library (built on Dagger 2). It provides:
 ```
 di/
   NetworkModule.kt    — Retrofit, OkHttpClient, ApiService (@Singleton)
-  AppModule.kt        — EncryptedPrefsHelper, any other app-wide deps
+  AppModule.kt        — SecurePrefsHelper, any other app-wide deps
 ```
 
 **Scoping:**
-- `@Singleton` — Retrofit, OkHttpClient, ApiService, ServiceRepository, EncryptedPrefsHelper
+- `@Singleton` — Retrofit, OkHttpClient, ApiService, ServiceRepository, SecurePrefsHelper
 - `@HiltViewModel` + `@Inject` — All ViewModels
 - `@ActivityScoped` — Only if a dependency must be tied to a single Activity
 
@@ -134,7 +134,7 @@ For this app, Use Cases are NOT required in initial implementation.
 | DI framework | Hilt | Official Android recommendation, compile-time safe |
 | Navigation | Navigation Component | Single back stack, Safe Args, deep link ready |
 | Network | Retrofit + OkHttp | Industry standard, Hilt-injectable, MockWebServer testable |
-| Secrets | EncryptedSharedPreferences | MASVS M2 compliant, hardware-backed on API 23+ |
+| Secrets | Jetpack DataStore + Tink | MASVS M2 compliant, hardware-backed on API 23+ |
 | Cleartext | domain exception only | MASVS M3; `usesCleartextTraffic` never global |
 | View system | ViewBinding | Null-safe, no reflection, simpler than DataBinding |
 | Background | foreground polling only | WorkManager added only if background sync is needed |

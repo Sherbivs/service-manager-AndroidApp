@@ -1,7 +1,7 @@
 package com.servicemanager.app.di
 
 import com.servicemanager.app.data.api.ApiService
-import com.servicemanager.app.util.EncryptedPrefsHelper
+import com.servicemanager.app.util.SecurePrefsHelper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,10 +22,10 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(prefsHelper: EncryptedPrefsHelper): OkHttpClient {
+    fun provideOkHttpClient(prefsHelper: SecurePrefsHelper): OkHttpClient {
         val logging =
             HttpLoggingInterceptor().apply {
-                level = HttpLoggingInterceptor.Level.BASIC
+                level = HttpLoggingInterceptor.Level.NONE
             }
         return OkHttpClient
             .Builder()

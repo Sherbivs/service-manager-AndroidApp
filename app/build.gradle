@@ -1,7 +1,8 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
     alias(libs.plugins.navigation.safeargs)
     alias(libs.plugins.ktlint)
@@ -15,50 +16,55 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace 'com.servicemanager.app'
-    compileSdk 36
+    namespace = 'com.servicemanager.app'
+    compileSdk = 37
 
     signingConfigs {
         release {
             if (keystorePropertiesFile.exists()) {
-                keyAlias keystoreProperties['keyAlias']
-                keyPassword keystoreProperties['keyPassword']
-                storeFile file(keystoreProperties['storeFile'])
-                storePassword keystoreProperties['storePassword']
+                keyAlias = keystoreProperties['keyAlias']
+                keyPassword = keystoreProperties['keyPassword']
+                storeFile = file(keystoreProperties['storeFile'])
+                storePassword = keystoreProperties['storePassword']
             }
         }
     }
 
     defaultConfig {
-        applicationId "com.servicemanager.app"
-        minSdk 24
-        targetSdk 36
-        versionCode 1
-        versionName "1.0"
-        testInstrumentationRunner "com.servicemanager.app.HiltTestRunner"
+        applicationId = "com.servicemanager.app"
+        minSdk = 24
+        // targetSdk updated to 37 manually as verified stable on 2026-04-24.
+        // noinspection EditedTargetSdkVersion
+        targetSdk = 37
+        versionCode = 1
+        versionName = "1.0"
+        testInstrumentationRunner = "com.servicemanager.app.HiltTestRunner"
     }
 
     buildTypes {
         release {
-            debuggable false
-            minifyEnabled true
-            shrinkResources true
-            signingConfig keystorePropertiesFile.exists() ? signingConfigs.release : signingConfigs.debug
+            debuggable = false
+            minifyEnabled = true
+            shrinkResources = true
+            signingConfig = keystorePropertiesFile.exists() ? signingConfigs.release : signingConfigs.debug
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = '17'
+    kotlin {
+        compilerOptions {
+            jvmTarget = JvmTarget.JVM_17
+            freeCompilerArgs.add("-Xannotation-default-target=param-property")
+        }
     }
 
     buildFeatures {
-        viewBinding true
+        viewBinding = true
     }
 
     packaging {
@@ -68,8 +74,8 @@ android {
     }
 
     lint {
-        abortOnError false
-        checkReleaseBuilds false
+        abortOnError = false
+        checkReleaseBuilds = false
     }
 }
 
@@ -84,7 +90,7 @@ dependencies {
 
     // Hilt DI
     implementation libs.hilt.android
-    kapt libs.hilt.compiler
+    ksp libs.hilt.compiler
 
     // Navigation Component
     implementation libs.androidx.navigation.fragment.ktx
@@ -103,8 +109,9 @@ dependencies {
     // Coroutines
     implementation libs.kotlinx.coroutines.android
 
-    // Encrypted SharedPreferences
-    implementation libs.androidx.security.crypto
+    // Secure DataStore
+    implementation libs.androidx.datastore.preferences
+    implementation libs.google.tink.android
 
     // --- Unit Tests ---
     testImplementation libs.junit
@@ -113,21 +120,21 @@ dependencies {
     testImplementation libs.kotlinx.coroutines.test
     testImplementation libs.mockwebserver
     testImplementation libs.hilt.android.testing
-    kaptTest libs.hilt.compiler
+    kspTest libs.hilt.compiler
 
     // --- Instrumented Tests ---
     androidTestImplementation libs.androidx.junit
     androidTestImplementation libs.androidx.espresso.core
     androidTestImplementation libs.androidx.fragment.testing
     androidTestImplementation libs.hilt.android.testing
-    kaptAndroidTest libs.hilt.compiler
+    kspAndroidTest libs.hilt.compiler
     androidTestImplementation libs.androidx.navigation.testing
 
-    detektPlugins libs.detekt.formatting
+detektPlugins libs.detekt.formatting
 }
 
-kapt {
-    correctErrorTypes true
+hilt {
+    enableAggregatingTask = true
 }
 
 detekt {

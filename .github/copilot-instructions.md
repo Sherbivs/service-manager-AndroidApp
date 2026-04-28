@@ -46,7 +46,7 @@ app/src/main/
       model/              — DTOs (ServiceDto, SystemInfoDto, etc.)
       repository/         — ServiceRepository.kt
     domain/               — Use Cases (optional; only for complex shared logic)
-    util/                 — EncryptedPrefsHelper, Extensions
+    util/                 — SecurePrefsHelper, Extensions
   res/
     layout/               — XML layouts
     navigation/           — nav_graph.xml (Navigation Component)
@@ -61,7 +61,7 @@ docs/            — Bible documentation
 - **MVVM + UDF** — State flows *down* (ViewModel → UI); events flow *up* (UI → ViewModel).
 - **Single activity** — `MainActivity` hosts a `NavHostFragment`. All screens are Fragments.
 - **Hilt DI** — All dependencies injected via Hilt. No manual `new Retrofit(...)` in ViewModels.
-- **Configurable base URL** — Never hardcode server IP. Read from `EncryptedSharedPreferences`.
+- **Configurable base URL** — Never hardcode server IP. Read from `Secure DataStore + Tink`.
 - **No coroutines in Activities** — Always use `viewModelScope` for coroutine launches.
 - **ViewBinding only** — No `findViewById`, no data binding.
 - **One `StateFlow<UiState>` per screen** — ViewModel exposes a single sealed-class UiState.
@@ -108,7 +108,7 @@ viewLifecycleOwner.lifecycleScope.launch {
 @Module @InstallIn(SingletonComponent::class)
 object NetworkModule {
     @Provides @Singleton
-  fun provideRetrofit(prefs: EncryptedPrefsHelper): Retrofit =
+  fun provideRetrofit(prefs: SecurePrefsHelper): Retrofit =
     Retrofit.Builder().build()
     @Provides @Singleton
     fun provideApiService(retrofit: Retrofit): ApiService = retrofit.create(ApiService::class.java)
@@ -129,6 +129,7 @@ class ServicesViewModel @Inject constructor(private val repo: ServiceRepository)
 - Use Safe Args plugin for type-safe argument passing between destinations
 
 ### Service Manager API (what this app calls)
+
 | Endpoint | Method | Description |
 |----------|--------|-------------|
 | `/api/services` | GET | List all services with live status |
@@ -143,7 +144,7 @@ class ServicesViewModel @Inject constructor(private val repo: ServiceRepository)
 
 ### Mandatory Rules
 - **Never hardcode** server URLs, API tokens, or credentials in source code or resources.
-- **Store secrets** in `EncryptedSharedPreferences` (androidx.security.crypto) or Android Keystore.
+- **Store secrets** in Jetpack DataStore + Google Tink or Android Keystore.
 - **Network:** HTTPS enforced via `network_security_config.xml`. For LAN HTTP, add an explicit `<domain>` exception — do NOT set `usesCleartextTraffic="true"` globally.
 - **Manifest:** `android:exported="false"` on all components not requiring external launch.
 - **Release builds:** `minifyEnabled true`, `shrinkResources true`, `debuggable false`.
@@ -152,7 +153,7 @@ class ServicesViewModel @Inject constructor(private val repo: ServiceRepository)
 
 ### OWASP MASVS Alignment
 - M1 (Improper Platform Usage): Use runtime permissions for dangerous perms; declare minimum perms.
-- M2 (Insecure Data Storage): EncryptedSharedPreferences for all sensitive values.
+- M2 (Insecure Data Storage): Secure DataStore + Tink for all sensitive values.
 - M3 (Insecure Communication): TLS 1.2+; network_security_config blocks cleartext globally.
 - M9 (Reverse Engineering): R8 obfuscation on release; no sensitive strings in code.
 

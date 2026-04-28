@@ -46,6 +46,11 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             val url = validateUrl() ?: return@setOnClickListener
             viewModel.testConnection(url)
         }
+
+        binding.btnPing.setOnClickListener {
+            val url = validateUrl() ?: return@setOnClickListener
+            viewModel.pingServer(url)
+        }
     }
 
     private fun setupObservers() {
@@ -59,6 +64,11 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
                 launch {
                     viewModel.connectionTestStatus.collect { status ->
                         handleConnectionStatus(status)
+                    }
+                }
+                launch {
+                    viewModel.pingResult.collect { status ->
+                        handlePingStatus(status)
                     }
                 }
             }
@@ -93,21 +103,58 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         }
     }
 
+    private fun handlePingStatus(status: SettingsViewModel.PingStatus) {
+        when (status) {
+            is SettingsViewModel.PingStatus.Loading -> {
+                binding.btnPing.isEnabled = false
+                binding.btnPing.setText(R.string.pinging)
+                binding.textPingResult.visibility = View.VISIBLE
+                binding.textPingResult.text = getString(R.string.pinging)
+            }
+            is SettingsViewModel.PingStatus.Result -> {
+                binding.btnPing.isEnabled = true
+                binding.btnPing.setText(R.string.btn_ping)
+                binding.textPingResult.text =
+                    getString(
+                        R.string.format_ping_result,
+                        status.min,
+                        status.max,
+                        status.avg,
+                        status.successRate,
+                    )
+            }
+            is SettingsViewModel.PingStatus.Error -> {
+                binding.btnPing.isEnabled = true
+                binding.btnPing.setText(R.string.btn_ping)
+                binding.textPingResult.text = status.message
+            }
+            is SettingsViewModel.PingStatus.Idle -> {
+                binding.btnPing.isEnabled = true
+                binding.btnPing.setText(R.string.btn_ping)
+                binding.textPingResult.visibility = View.GONE
+            }
+        }
+    }
+
     private fun validateUrl(): String? {
         val url =
             binding.editServerUrl.text
                 ?.toString()
                 ?.trim() ?: return null
-        if (url.isBlank()) {
-            binding.layoutServerUrl.error = getString(R.string.error_url_required)
-            return null
+        return when {
+            url.isBlank() -> {
+                binding.layoutServerUrl.error = getString(R.string.error_url_required)
+                null
+            }
+            !url.startsWith("http://") && !url.startsWith("https://") -> {
+                binding.layoutServerUrl.error = getString(R.string.error_invalid_url)
+                null
+            }
+            else -> {
+                binding.layoutServerUrl.error = null
+                url
+            }
         }
-        if (!url.startsWith("http://") && !url.startsWith("https://")) {
-            binding.layoutServerUrl.error = getString(R.string.error_invalid_url)
-            return null
-        }
-        binding.layoutServerUrl.error = null
-        return url
     }
 
     override fun onDestroyView() {

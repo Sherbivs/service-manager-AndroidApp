@@ -4,8 +4,8 @@ import app.cash.turbine.test
 import com.servicemanager.app.data.model.MemoryInfoDto
 import com.servicemanager.app.data.model.SystemInfoDto
 import com.servicemanager.app.data.repository.ServiceRepository
-import com.servicemanager.app.util.EncryptedPrefsHelper
 import com.servicemanager.app.util.MainDispatcherRule
+import com.servicemanager.app.util.SecurePrefsHelper
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -23,7 +23,7 @@ class SettingsViewModelTest {
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
-    private val prefs: EncryptedPrefsHelper = mockk(relaxed = true)
+    private val prefs: SecurePrefsHelper = mockk(relaxed = true)
     private val repo: ServiceRepository = mockk()
     private lateinit var viewModel: SettingsViewModel
 

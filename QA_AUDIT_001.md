@@ -4,6 +4,7 @@
 This audit evaluates the current state of the Service Manager Android application following the implementation of core features (Onboarding, Services Polling, and "Usage-First" defaults).
 
 ## 1. Technical Health & Quality Gates
+
 | Gate | Status | Notes |
 |------|--------|-------|
 | **Lint** | PASS | Standard Android linting passes with no critical issues. |
@@ -15,7 +16,7 @@ This audit evaluates the current state of the Service Manager Android applicatio
 ### SMA.002: Server URL Onboarding / Settings
 - **Usage-First Logic:** Successfully implemented.
 - **Validation:** Connection testing logic is functional.
-- **Persistence:** Secure storage using `EncryptedSharedPreferences`.
+- **Persistence:** Secure storage using `Secure DataStore + Tink`.
 
 ### SMA.003: Services List Screen
 - **Polling:** Lifecycle-aware 10s polling implemented.

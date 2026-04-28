@@ -9,7 +9,7 @@ Native Android companion app for the [Service Manager](https://github.com/Sherbi
 - **System overview** — hostname, IP, memory, Node version, uptime
 - **Log viewer** — tail live logs and search the archive
 - **Configurable server URL** — point to any Service Manager instance on your LAN
-- **Secure storage** — server URL and credentials stored in EncryptedSharedPreferences
+- **Secure storage** — server URL and credentials stored in Secure DataStore + Tink
 - **Material 3 design** — dark-theme ready, responsive layout
 
 ## Requirements
@@ -67,7 +67,7 @@ app/src/main/
 
 ## Security
 
-- All secrets stored in Android Keystore / EncryptedSharedPreferences
+- All secrets stored in Android Keystore / Secure DataStore + Tink
 - Network security configured via `network_security_config.xml`
 - Release builds use R8 minification + resource shrinking
 - `android:debuggable="false"` enforced in release

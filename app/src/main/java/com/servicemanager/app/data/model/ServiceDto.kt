@@ -18,9 +18,9 @@ data class ServiceDto(
     val healthPercent: Int?,
     val avgLatency: Int?,
     val consecutiveFailures: Int = 0,
+    val circuitBreakerTripped: Boolean = false,
 )
 
-@Suppress("unused") // Fields populated by Gson deserialization; not all accessed in UI
 data class HealthCheckDto(
     val latency: Int,
     val statusCode: Int?,

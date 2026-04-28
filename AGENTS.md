@@ -30,7 +30,7 @@ app/                    — Android application module
         model/          — DTOs (ServiceDto, SystemInfoDto, etc.)
         repository/     — ServiceRepository.kt
       domain/           — Use Cases (optional; add when logic is shared/complex)
-      util/             — EncryptedPrefsHelper, Extensions
+      util/             — SecurePrefsHelper, Extensions
     res/
       navigation/       — nav_graph.xml (Navigation Component)
       xml/              — network_security_config.xml
@@ -116,7 +116,7 @@ Use **Hilt** (official Android DI library) for all dependency wiring. Never cons
 @Module @InstallIn(SingletonComponent::class)
 object NetworkModule {
     @Provides @Singleton
-  fun provideRetrofit(prefs: EncryptedPrefsHelper): Retrofit =
+  fun provideRetrofit(prefs: SecurePrefsHelper): Retrofit =
     Retrofit.Builder().build()
     @Provides @Singleton
     fun provideApiService(retrofit: Retrofit): ApiService = retrofit.create()
@@ -135,11 +135,12 @@ Single-activity architecture with `NavHostFragment`. Each screen is a Fragment. 
 - **UI Layer** — Fragments + ViewBinding; Material 3; collects StateFlow via `repeatOnLifecycle`
 - **ViewModel Layer** — `@HiltViewModel`; exposes `StateFlow<UiState>`; no `Context` access
 - **Repository** — `@Singleton`; wraps `ApiService`; returns `Result<T>` sealed types
-- **API Client** — Retrofit + OkHttp via Hilt `NetworkModule`; base URL from `EncryptedSharedPreferences`
+- **API Client** — Retrofit + OkHttp via Hilt `NetworkModule`; base URL from `Secure DataStore + Tink`
 - **DI Modules** — `di/NetworkModule.kt`, `di/AppModule.kt` wired via Hilt
-- **EncryptedPrefs** — `util/EncryptedPrefsHelper.kt`; stores server URL via `androidx.security.crypto`
+- **SecurePrefs** — `util/SecurePrefsHelper.kt`; stores server URL via Jetpack DataStore + Google Tink
 
 ### Service Manager API Quick Reference
+
 | Endpoint | Method | Description |
 |----------|--------|-------------|
 | `/api/services` | GET | List all services with live status |
@@ -171,7 +172,7 @@ Single-activity architecture with `NavHostFragment`. Each screen is a Fragment. 
 
 ## Safety Invariants
 - Never exfiltrate secrets in outputs.
-- Never hardcode API keys, tokens, or server URLs in source code — use `EncryptedSharedPreferences`.
+- Never hardcode API keys, tokens, or server URLs in source code — use `Secure DataStore + Tink`.
 - `android:debuggable` must be `false` in release builds.
 - Never commit `keystore.properties`, `*.jks`, or `*.keystore` files.
 - All network traffic must use HTTPS (TLS 1.2+) — no `usesCleartextTraffic` except for LAN development builds.
@@ -180,7 +181,7 @@ Single-activity architecture with `NavHostFragment`. Each screen is a Fragment. 
 - Keep every change reversible and minimal.
 
 ## Android Security Baseline (OWASP MASVS)
-- **Secrets:** Store in Android Keystore or `EncryptedSharedPreferences`, never in plaintext prefs, source, or logs.
+- **Secrets:** Store in Android Keystore or `Secure DataStore + Tink`, never in plaintext prefs, source, or logs.
 - **Network:** HTTPS only. Configure `network_security_config.xml`. For LAN-only use, trust user-added CAs explicitly rather than enabling cleartext globally.
 - **Permissions:** Declare only required permissions in manifest; use runtime permission flow for dangerous permissions.
 - **Manifest:** `android:exported="false"` on all components not intended for external launch.
@@ -233,6 +234,7 @@ Every feature task must include tests before it can be marked DONE.
 All PRs and task completions must pass quality gates before merging.
 
 ### Tools
+
 | Tool | Purpose | Command |
 |------|---------|---------|
 | Android Lint | Resource, manifest, API-level issues | `./gradlew lint` |
@@ -316,7 +318,7 @@ On every audit create/move/close action, update all of the following in the same
 ## Common Pitfalls
 1. **LAN HTTP** — The service manager runs plain HTTP on LAN. Use `network_security_config.xml` with a `<domain>` exception for the LAN host rather than enabling cleartext globally.
 2. **ViewModel scope** — Don't launch coroutines from Activity; always use `viewModelScope`.
-3. **Base URL** — The server IP is user-configurable; never hardcode `192.168.x.x`. Read from `EncryptedSharedPreferences`.
+3. **Base URL** — The server IP is user-configurable; never hardcode `192.168.x.x`. Read from `Secure DataStore + Tink`.
 4. **Rotation** — Use `StateFlow`/`LiveData` so UI survives config changes without redundant API calls.
 5. **Release signing** — `keystore.properties` is gitignored. CI must inject it via secrets.
 6. **Hilt missing `@AndroidEntryPoint`** — Every Fragment/Activity using Hilt injection must be annotated; forgetting causes runtime crashes.

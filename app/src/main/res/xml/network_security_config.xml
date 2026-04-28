@@ -14,13 +14,13 @@
 
     <!-- Canonical Service Manager LAN host -->
     <domain-config cleartextTrafficPermitted="true">
-        <domain>192.168.23.83</domain>
+        <domain includeSubdomains="true">192.168.23.83</domain>
     </domain-config>
 
     <!-- Local emulator/device loopback testing -->
     <domain-config cleartextTrafficPermitted="true">
-        <domain>10.0.2.2</domain>
-        <domain>127.0.0.1</domain>
-        <domain>localhost</domain>
+        <domain includeSubdomains="true">10.0.2.2</domain>
+        <domain includeSubdomains="true">127.0.0.1</domain>
+        <domain includeSubdomains="true">localhost</domain>
     </domain-config>
 </network-security-config>

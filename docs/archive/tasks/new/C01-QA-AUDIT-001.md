@@ -21,7 +21,7 @@ This audit verifies the stabilization of the Service Manager Android App followi
 - **Data Layer:** `ServiceRepository` returns `Result<T>` types and handles API interaction via Retrofit.
 
 ### 3. Security [PASS]
-- **Secrets:** Server URL is stored in `EncryptedSharedPreferences`.
+- **Secrets:** Server URL is stored in `Secure DataStore + Tink`.
 - **Network:** `network_security_config.xml` allows cleartext for LAN development, satisfying the LAN-only constraint while maintaining platform compliance.
 
 ### 4. Infrastructure [PENDING]

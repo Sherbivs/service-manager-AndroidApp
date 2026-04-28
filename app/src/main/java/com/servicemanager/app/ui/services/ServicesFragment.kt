@@ -13,6 +13,7 @@ import com.servicemanager.app.R
 import com.servicemanager.app.databinding.FragmentServicesBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import androidx.core.net.toUri
 
 @AndroidEntryPoint
 class ServicesFragment : Fragment(R.layout.fragment_services) {
@@ -26,7 +27,18 @@ class ServicesFragment : Fragment(R.layout.fragment_services) {
             onStart = { id -> viewModel.startService(id) },
             onStop = { id -> viewModel.stopService(id) },
             onRestart = { id -> viewModel.restartService(id) },
+            onVisit = { url -> openWebsite(url) },
+            onResetCb = { id -> viewModel.resetCircuitBreaker(id) },
         )
+
+    private fun openWebsite(url: String) {
+        try {
+            val intent = android.content.Intent(android.content.Intent.ACTION_VIEW, url.toUri())
+            startActivity(intent)
+        } catch (e: Exception) {
+            Snackbar.make(binding.root, R.string.error_open_url, Snackbar.LENGTH_SHORT).show()
+        }
+    }
 
     override fun onViewCreated(
         view: View,
@@ -87,14 +99,25 @@ class ServicesFragment : Fragment(R.layout.fragment_services) {
         when (state) {
             is ServicesUiState.Loading -> {
                 binding.textError.visibility = View.GONE
+                binding.emptyState.visibility = View.GONE
+                binding.recyclerView.visibility = View.VISIBLE
             }
             is ServicesUiState.Success -> {
                 binding.textError.visibility = View.GONE
-                adapter.submitList(state.services)
+                if (state.services.isEmpty()) {
+                    binding.emptyState.visibility = View.VISIBLE
+                    binding.recyclerView.visibility = View.GONE
+                } else {
+                    binding.emptyState.visibility = View.GONE
+                    binding.recyclerView.visibility = View.VISIBLE
+                    adapter.submitList(state.services)
+                }
             }
             is ServicesUiState.Error -> {
                 binding.textError.visibility = View.VISIBLE
                 binding.textError.text = state.message
+                binding.emptyState.visibility = View.GONE
+                binding.recyclerView.visibility = View.GONE
             }
         }
     }

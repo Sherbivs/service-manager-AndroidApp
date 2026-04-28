@@ -9,4 +9,4 @@
     android:paddingHorizontal="12dp"
     android:paddingVertical="3dp"
     android:textIsSelectable="false"
-    android:textSize="11sp" />
+    android:textSize="13sp" />

@@ -7,7 +7,7 @@ Last Updated (UTC): 2026-04-23T00:00:00Z
 Notes:
 - Root meta-router for the Android app project.
 - Language: Kotlin. Build system: Gradle. Architecture: MVVM.
-- All secrets stored in EncryptedSharedPreferences / Android Keystore.
+- All secrets stored in Secure DataStore + Tink / Android Keystore.
 - No server-side code in this repo; API server lives at Sherbivs/service-manager.
 
 Areas:

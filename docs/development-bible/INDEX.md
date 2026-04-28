@@ -5,10 +5,11 @@
 
 | # | Title | Status |
 |---|-------|--------|
-| 01 | [Local Setup](01-local-setup.md) | Pending |
-| 02 | [Coding Conventions](02-coding-conventions.md) | Pending |
-| 03 | [Testing Guide](03-testing.md) | Pending |
-| 04 | [Contributing Guide](04-contributing.md) | Pending |
+| 01 | [Local Setup](01-local-setup.md) | Active |
+| 02 | [Coding Conventions](02-coding-conventions.md) | Active |
+| 03 | [Testing Guide](03-testing.md) | Active |
+| 04 | [Contributing Guide](04-contributing.md) | Active |
+| 05 | [Product Readiness Roadmap](05-product-readiness-roadmap.md) | Active |
 
 ---
 
@@ -39,6 +40,7 @@ cd service-manager-AndroidApp
 - Static analysis by **detekt** — zero ERRORs policy, review WARNINGs
 
 ### Architecture Rules (hard constraints)
+
 | Location | Allowed | Forbidden |
 |----------|---------|----------|
 | Fragment/Activity | ViewBinding, click listeners, StateFlow collection | Business logic, coroutines, API calls |
@@ -94,6 +96,7 @@ viewLifecycleOwner.lifecycleScope.launch {
 ```
 
 ### Required test files per feature
+
 | Feature | Unit test | Integration test | UI test |
 |----------------|--------------------------|------------------------|---------------------|
 | ServicesScreen | `ServicesViewModelTest` | `ServiceRepositoryTest` | `ServicesFragmentTest` |
@@ -101,6 +104,7 @@ viewLifecycleOwner.lifecycleScope.launch {
 | LogsScreen | `LogsViewModelTest` | (covered by Repository test) | `LogsFragmentTest` |
 
 ### Coverage Targets
+
 | Class | Target |
 |-------------------|---------------------|
 | ViewModel classes | ≥ 80% line coverage |

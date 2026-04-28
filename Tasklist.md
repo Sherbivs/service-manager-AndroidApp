@@ -1,5 +1,5 @@
 # Tasklist.md — Service Manager Android App
-**Last Updated:** 2026-04-24
+**Last Updated:** 2026-04-28
 
 ---
 
@@ -9,7 +9,7 @@
 **Status:** DONE
 **Priority:** P0 — App is unusable without server URL
 **Acceptance Criteria:**
-- [x] `util/EncryptedPrefsHelper.kt` stores URL securely
+- [x] `util/SecurePrefsHelper.kt` stores URL securely
 - [x] Retrofit interceptor handles dynamic URL updates
 - [x] First-run: user prompted for server URL before navigating to main screen
 - [x] Settings screen accessible from main screen (bottom nav)
@@ -78,7 +78,7 @@
 - [x] ProGuard/R8 rules: keep Retrofit models, Gson annotations; strip logs in release
 - [x] `keystore.properties` pattern documented in `docs/operations-bible/`
 - [x] Verified: `./gradlew assembleRelease` succeeds with dummy keystore
-- [ ] Verified: no sensitive strings visible via `strings` tool on release APK
+- [x] Verified: no sensitive strings visible via `strings` tool on release APK
 
 ---
 
@@ -91,6 +91,17 @@
 ### SMA.011 — Testing Infrastructure
 ### SMA.012 — Code Quality Tooling (ktlint + detekt)
 ### SMA.013 — GitHub Actions CI/CD Pipeline
+### SMA.014 — QA and Dependency Maintenance (2026-04-24)
+### SMA.015 — Android UX/UI + Scalability QA (2026-04-28)
+- Added log archive project filter + pagination UX and page state visibility.
+- Added archive request cancellation and dialog collector lifecycle cleanup.
+- Added debounced/off-main log filtering and readability improvements.
+- Added services empty state, clearer error copy, haptic action feedback, and stopped-state clarity.
+- Verification: `assembleDebug` successful.
+
+### SMA.016 — Documentation Sync (2026-04-28)
+- Updated Prompt.md, Tasklist.md, and ops/NEXT.yaml to reflect completed work.
+- Updated development and architecture Bible documentation for API/log UX and product-readiness direction.
 
 ---
 
@@ -102,3 +113,6 @@
 - SMA.103 — Multi-server support (save multiple server URLs)
 - SMA.104 — Biometric lock for app access
 - SMA.105 — WorkManager: periodic background sync (requires battery impact review)
+- SMA.106 — Favorites + pinned services dashboard
+- SMA.107 — Batch service actions (multi-select Start/Stop/Restart)
+- SMA.108 — Role-aware UI gating (viewer/operator/admin)

@@ -35,6 +35,17 @@
                 android:clickable="false"
                 android:focusable="false" />
 
+            <ImageButton
+                android:id="@+id/btnVisit"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="8dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/action_visit"
+                android:src="@android:drawable/ic_menu_send"
+                android:visibility="gone"
+                app:tint="?attr/colorPrimary" />
+
         </LinearLayout>
 
         <TextView
@@ -78,12 +89,34 @@
 
         </LinearLayout>
 
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipCircuitBreaker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            style="@style/Widget.Material3.Chip.Suggestion"
+            android:text="@string/circuit_breaker_tripped"
+            android:clickable="false"
+            android:focusable="false"
+            android:visibility="gone"
+            app:chipBackgroundColor="@color/status_error_bg"
+            app:chipIconVisible="false" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="end"
             android:layout_marginTop="8dp"
             android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnResetCircuitBreaker"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:text="@string/action_reset_cb"
+                android:visibility="gone" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnStart"

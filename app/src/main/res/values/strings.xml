@@ -13,6 +13,9 @@
     <string name="action_start">Start</string>
     <string name="action_stop">Stop</string>
     <string name="action_restart">Restart</string>
+    <string name="action_visit">Visit Website</string>
+    <string name="action_reset_cb">Reset CB</string>
+    <string name="circuit_breaker_tripped">⚠ Circuit Breaker Tripped</string>
 
     <!-- System info labels -->
     <string name="section_server_info">Server Info</string>
@@ -29,6 +32,9 @@
     <string name="helper_server_url">e.g. http://192.168.1.100:3500</string>
     <string name="btn_save">Save</string>
     <string name="btn_test_connection">Test Connection</string>
+    <string name="btn_ping">Ping</string>
+    <string name="pinging">Pinging…</string>
+    <string name="format_ping_result">Min: %1$dms, Max: %2$dms, Avg: %3$dms\nSuccess: %4$d%%</string>
     <string name="btn_testing">Testing…</string>
     <string name="settings_saved">Settings saved</string>
     <string name="connection_success">Connection successful!</string>
@@ -39,16 +45,36 @@
     <string name="onboarding_subtitle">Please enter your Service Manager server URL to get started.</string>
 
     <!-- Logs -->
-    <string name="logs_empty">No logs available</string>
-    <string name="hint_service_id">Service ID</string>
+    <string name="hint_service_id">Service ID (optional — leave blank for global search)</string>
     <string name="hint_archive_query">Search archive…</string>
+    <string name="hint_log_level">Log level</string>
+    <string name="hint_project">Project (global search)</string>
+    <string name="hint_filter_logs">Filter logs…</string>
+    <string name="services_empty_title">No services configured</string>
+    <string name="services_empty_subtitle">Add services in services.json on the server, then pull to refresh.</string>
+    <string name="status_stopped_label">Stopped</string>
+    <string name="error_open_url">Could not open URL</string>
     <string name="btn_search_archive">Search Archive</string>
+    <string name="btn_archive">Archive</string>
     <string name="logs_copied">Logs copied to clipboard</string>
     <string name="archive_no_results">No archive results found</string>
+    <string name="archive_searching">Searching archive…</string>
+    <plurals name="archive_results_count">
+        <item quantity="one">%1$d archive result</item>
+        <item quantity="other">%1$d archive results</item>
+    </plurals>
+    <string name="archive_page_info">Showing %1$d-%2$d of %3$d</string>
+    <string name="archive_prev">Prev</string>
+    <string name="archive_next">Next</string>
+    <string name="level_all">All levels</string>
+    <string name="log_count_50">50</string>
+    <string name="log_count_100">100</string>
+    <string name="log_count_200">200</string>
+    <string name="log_count_500">500</string>
     <string name="content_description_copy_logs">Copy logs to clipboard</string>
-    <string name="error_network">Network error. Please check your connection.</string>
-    <string name="error_server">Server error (%1$d). Please try again later.</string>
-    <string name="error_timeout">Request timed out.</string>
+    <string name="error_network">Network error. Check your connection and verify server URL in Settings.</string>
+    <string name="error_server">Server error (%1$d). Service Manager may be offline.</string>
+    <string name="error_timeout">Request timed out. Try again and verify the server is reachable.</string>
     <string name="error_unknown">An unexpected error occurred.</string>
 
     <!-- Display format strings (C02-R05 SetTextI18n) -->

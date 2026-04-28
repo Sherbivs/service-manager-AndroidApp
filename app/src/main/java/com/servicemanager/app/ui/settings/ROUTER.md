@@ -9,6 +9,6 @@ Areas:
 - SettingsViewModel.kt: saveServerUrl (encrypts to prefs), testConnection (pings /api/system)
 
 Integration Points:
-- EncryptedPrefsHelper (util/) — persists server URL
+- SecurePrefsHelper (util/) — persists server URL
 - ServiceRepository (data/repository/) — pings /api/system for test connection
 - nav_graph.xml — settingsFragment destination (bottom nav)

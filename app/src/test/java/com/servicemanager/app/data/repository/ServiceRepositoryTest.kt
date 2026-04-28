@@ -116,4 +116,43 @@ class ServiceRepositoryTest {
             val result = repo.stopService("api")
             assertTrue(result.isFailure)
         }
+
+    @Test
+    fun `searchArchiveLogs maps rows to line strings`() =
+        runTest {
+            val json =
+                """
+                {
+                  "rows": [
+                    {"id":1,"line":"[INFO] Server started","archived_at":1714950000000},
+                    {"id":2,"line":"[WARN] High memory","archived_at":1714950001000}
+                  ],
+                  "total": 2,
+                  "limit": 100,
+                  "offset": 0
+                }
+                """.trimIndent()
+            server.enqueue(MockResponse().setBody(json).setResponseCode(200))
+            val result = repo.searchArchiveLogs("shopify", "Server")
+            assertTrue(result.isSuccess)
+            assertEquals(listOf("[INFO] Server started", "[WARN] High memory"), result.getOrThrow())
+        }
+
+    @Test
+    fun `searchArchiveLogs returns empty list when rows is empty`() =
+        runTest {
+            val json = """{"rows":[],"total":0,"limit":100,"offset":0}"""
+            server.enqueue(MockResponse().setBody(json).setResponseCode(200))
+            val result = repo.searchArchiveLogs("shopify", "nonexistent")
+            assertTrue(result.isSuccess)
+            assertEquals(emptyList<String>(), result.getOrThrow())
+        }
+
+    @Test
+    fun `searchArchiveLogs returns Failure on HTTP 503`() =
+        runTest {
+            server.enqueue(MockResponse().setBody("""{"error":"Archive DB not available"}""").setResponseCode(503))
+            val result = repo.searchArchiveLogs("shopify", "query")
+            assertTrue(result.isFailure)
+        }
 }

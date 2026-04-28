@@ -52,6 +52,7 @@ class SystemFragment : Fragment(R.layout.fragment_system) {
                 binding.scrollContent.visibility = View.GONE
                 binding.textError.visibility = View.VISIBLE
                 binding.textError.text = state.message
+                binding.textError.setTextIsSelectable(true)
             }
         }
     }

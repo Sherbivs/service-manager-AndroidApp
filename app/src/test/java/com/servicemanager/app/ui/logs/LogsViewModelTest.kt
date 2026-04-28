@@ -26,6 +26,7 @@ class LogsViewModelTest {
     @Before
     fun setUp() {
         coEvery { repo.getGlobalLogs(any()) } returns Result.success(fakeLines)
+        coEvery { repo.getServices() } returns Result.success(emptyList())
         viewModel = LogsViewModel(repo)
     }
 

@@ -2,12 +2,13 @@
 Title: Service Manager AndroidApp — Documentation Library
 Purpose: Bible documentation and audit archive system for the Android app.
 Owned Globs: docs/**
-Last Updated (UTC): 2026-04-23T00:00:00Z
+Last Updated (UTC): 2026-04-28T00:00:00Z
 
 Areas:
 - architecture-bible/   — System design, MVVM architecture, API integration patterns
 - operations-bible/     — Build, sign, release, keystore setup, Play Store deployment
 - development-bible/    — Local setup, coding conventions, contributing guide
+	- 05-product-readiness-roadmap.md — Productization direction after UX/scalability QA
 - archive/              — Audit and QA archive system with lifecycle stages
 	- ROUTER.md           — Archive router and rules
 	- tasks/ROUTER.md     — Parent router for task/audit lifecycle directories

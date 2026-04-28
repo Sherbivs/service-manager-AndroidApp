@@ -13,7 +13,7 @@ Last Updated (UTC): 2026-04-23T00:00:00Z
 - src/main/java/com/servicemanager/app/ui/settings/ — Server Settings
 - src/main/java/com/servicemanager/app/di/      — Hilt Modules
 - src/main/java/com/servicemanager/app/data/    — Repositories, DTOs, and API interfaces
-- src/main/java/com/servicemanager/app/util/    — Utilities (EncryptedPrefsHelper, etc.)
+- src/main/java/com/servicemanager/app/util/    — Utilities (SecurePrefsHelper, etc.)
 - src/main/res/layout/                          — ViewBinding XML layouts
 - src/main/res/navigation/                      — NavGraph (Navigation Component)
 - src/main/res/menu/                            — BottomNavigationView menus

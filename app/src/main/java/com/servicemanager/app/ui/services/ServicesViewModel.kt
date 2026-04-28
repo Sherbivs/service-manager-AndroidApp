@@ -77,8 +77,10 @@ class ServicesViewModel
          */
         fun loadServicesIfStale() {
             val dataIsFresh =
-                _uiState.value is ServicesUiState.Success &&
-                    System.currentTimeMillis() - lastFetchTimeMs < STALE_THRESHOLD_MS
+                (
+                    _uiState.value is ServicesUiState.Success &&
+                        System.currentTimeMillis() - lastFetchTimeMs < STALE_THRESHOLD_MS
+                )
             if (dataIsFresh) return
             viewModelScope.launch {
                 if (_uiState.value !is ServicesUiState.Success) {
@@ -126,6 +128,9 @@ class ServicesViewModel
         fun restartService(id: String) =
             triggerAction(id, repo::restartService, "Service restarted", "Failed to restart service")
 
+        fun resetCircuitBreaker(id: String) =
+            triggerAction(id, repo::resetCircuitBreaker, "Circuit breaker reset", "Failed to reset circuit breaker")
+
         private fun triggerAction(
             id: String,
             action: suspend (String) -> Result<Unit>,
@@ -134,14 +139,14 @@ class ServicesViewModel
         ) {
             val retryFn: () -> Unit = { triggerAction(id, action, successMessage, errorFallback) }
             viewModelScope.launch {
-                _pendingActions.value = _pendingActions.value + id
+                _pendingActions.value += id
                 action(id)
                     .onSuccess { _actionSuccess.emit(successMessage) }
                     .onFailure {
                         lastFailedAction = retryFn
                         _actionError.emit(it.message ?: errorFallback)
                     }
-                _pendingActions.value = _pendingActions.value - id
+                _pendingActions.value -= id
                 fetchServices()
             }
         }
