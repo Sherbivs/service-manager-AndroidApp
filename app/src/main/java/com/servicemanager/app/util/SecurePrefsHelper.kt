@@ -33,7 +33,8 @@ class SecurePrefsHelper
             private const val KEYSET_NAME = "master_keyset"
             private const val PREF_FILE_NAME = "master_key_preference"
             private const val MASTER_KEY_URI = "android-keystore://master_key"
-            const val DEFAULT_URL = "http://192.168.23.83:3500"
+            private const val LEGACY_DEFAULT_URL = "http://192.168.23.83:3500"
+            const val DEFAULT_URL = "http://192.168.23.99:3500"
         }
 
         private val aead: Aead by lazy {
@@ -47,6 +48,10 @@ class SecurePrefsHelper
                 .keysetHandle
                 .getPrimitive(RegistryConfiguration.get(), Aead::class.java)
         }
+
+            init {
+                migrateLegacyDefaultUrlIfNeeded()
+            }
 
         val serverUrlFlow: Flow<String> =
             context.dataStore.data.map { prefs ->
@@ -75,6 +80,19 @@ class SecurePrefsHelper
                     .first()
                     .contains(KEY_SERVER_URL)
             }
+
+        private fun migrateLegacyDefaultUrlIfNeeded() {
+            runBlocking {
+                context.dataStore.edit { prefs ->
+                    val encrypted = prefs[KEY_SERVER_URL] ?: return@edit
+                    val decrypted = decrypt(encrypted) ?: return@edit
+                    val normalized = decrypted.trim().trimEnd('/')
+                    if (normalized == LEGACY_DEFAULT_URL) {
+                        prefs[KEY_SERVER_URL] = encrypt(DEFAULT_URL)
+                    }
+                }
+            }
+        }
 
         private fun encrypt(plaintext: String): String {
             val ciphertext = aead.encrypt(plaintext.toByteArray(Charsets.UTF_8), null)
