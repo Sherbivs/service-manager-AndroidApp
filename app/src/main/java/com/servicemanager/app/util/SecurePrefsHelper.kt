@@ -34,7 +34,7 @@ class SecurePrefsHelper
             private const val PREF_FILE_NAME = "master_key_preference"
             private const val MASTER_KEY_URI = "android-keystore://master_key"
             private const val LEGACY_DEFAULT_URL = "http://192.168.23.83:3500"
-            const val DEFAULT_URL = "http://192.168.23.99:3500"
+            const val DEFAULT_URL = "http://192.168.23.103:3500"
         }
 
         private val aead: Aead by lazy {

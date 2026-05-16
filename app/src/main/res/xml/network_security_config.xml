@@ -14,7 +14,7 @@
 
     <!-- Canonical Service Manager LAN host -->
     <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">192.168.23.99</domain>
+        <domain includeSubdomains="true">192.168.23.103</domain>
     </domain-config>
 
     <!-- Local emulator/device loopback testing -->
