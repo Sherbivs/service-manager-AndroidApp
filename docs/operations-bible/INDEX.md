@@ -33,5 +33,6 @@ keyPassword=<key_password>
 
 ### Connecting to Service Manager
 1. Ensure the [Service Manager server](https://github.com/Sherbivs/service-manager) is running (`npm start`)
-2. Note the server's LAN IP address (shown in server startup output)
-3. On first app launch, enter: `http://<LAN_IP>:3500`
+2. Confirm the network endpoint details (scheme, host, and port) for your environment
+3. On first app launch, enter the endpoint in onboarding (example: `http://sensaimanager.drip:3500`)
+4. In Settings, adjust scheme/host/port and timeout values as needed for your LAN or reverse-proxy route

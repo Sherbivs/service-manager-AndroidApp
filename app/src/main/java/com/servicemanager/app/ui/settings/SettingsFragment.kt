@@ -7,6 +7,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.core.widget.doAfterTextChanged
 import com.google.android.material.snackbar.Snackbar
 import com.servicemanager.app.R
 import com.servicemanager.app.databinding.FragmentSettingsBinding
@@ -33,23 +34,50 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
     }
 
     private fun setupUI() {
-        binding.editServerUrl.setText(viewModel.currentUrl)
+        binding.editServerScheme.setText(viewModel.currentServerScheme)
+        binding.editServerHost.setText(viewModel.currentServerHost)
+        binding.editServerPort.setText(viewModel.currentServerPort.toString())
+        binding.editConnectTimeout.setText(viewModel.currentConnectTimeoutSeconds.toString())
+        binding.editReadTimeout.setText(viewModel.currentReadTimeoutSeconds.toString())
+        updateComposedUrlPreview()
+
+        binding.editServerScheme.doAfterTextChanged { updateComposedUrlPreview() }
+        binding.editServerHost.doAfterTextChanged { updateComposedUrlPreview() }
+        binding.editServerPort.doAfterTextChanged { updateComposedUrlPreview() }
     }
 
     private fun setupListeners() {
         binding.btnSave.setOnClickListener {
-            val url = validateUrl() ?: return@setOnClickListener
-            viewModel.saveServerUrl(url)
+            val settings = validateNetworkSettings() ?: return@setOnClickListener
+            viewModel.saveNetworkSettings(
+                serverScheme = settings.serverScheme,
+                serverHost = settings.serverHost,
+                serverPort = settings.serverPort,
+                connectTimeoutSeconds = settings.connectTimeoutSeconds,
+                readTimeoutSeconds = settings.readTimeoutSeconds,
+            )
         }
 
         binding.btnTestConnection.setOnClickListener {
-            val url = validateUrl() ?: return@setOnClickListener
-            viewModel.testConnection(url)
+            val settings = validateNetworkSettings() ?: return@setOnClickListener
+            viewModel.testConnection(
+                serverScheme = settings.serverScheme,
+                serverHost = settings.serverHost,
+                serverPort = settings.serverPort,
+                connectTimeoutSeconds = settings.connectTimeoutSeconds,
+                readTimeoutSeconds = settings.readTimeoutSeconds,
+            )
         }
 
         binding.btnPing.setOnClickListener {
-            val url = validateUrl() ?: return@setOnClickListener
-            viewModel.pingServer(url)
+            val settings = validateNetworkSettings() ?: return@setOnClickListener
+            viewModel.pingServer(
+                serverScheme = settings.serverScheme,
+                serverHost = settings.serverHost,
+                serverPort = settings.serverPort,
+                connectTimeoutSeconds = settings.connectTimeoutSeconds,
+                readTimeoutSeconds = settings.readTimeoutSeconds,
+            )
         }
     }
 
@@ -136,26 +164,125 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         }
     }
 
-    private fun validateUrl(): String? {
-        val url =
-            binding.editServerUrl.text
+    private fun validateNetworkSettings(): NetworkSettingsInput? {
+        val serverScheme =
+            binding.editServerScheme.text
+                ?.toString()
+                ?.trim()
+                ?.lowercase() ?: return null
+        val serverHost =
+            binding.editServerHost.text
                 ?.toString()
                 ?.trim() ?: return null
-        return when {
-            url.isBlank() -> {
-                binding.layoutServerUrl.error = getString(R.string.error_url_required)
-                null
+        val serverPort =
+            binding.editServerPort.text
+                ?.toString()
+                ?.trim()
+                ?.toIntOrNull()
+
+        val connectTimeout =
+            binding.editConnectTimeout.text
+                ?.toString()
+                ?.trim()
+                ?.toIntOrNull()
+        val readTimeout =
+            binding.editReadTimeout.text
+                ?.toString()
+                ?.trim()
+                ?.toIntOrNull()
+
+        val isSchemeValid =
+            when {
+            serverScheme.isBlank() -> {
+                binding.layoutServerScheme.error = getString(R.string.error_scheme_required)
+                false
             }
-            !url.startsWith("http://") && !url.startsWith("https://") -> {
-                binding.layoutServerUrl.error = getString(R.string.error_invalid_url)
-                null
+            serverScheme != "http" && serverScheme != "https" -> {
+                binding.layoutServerScheme.error = getString(R.string.error_scheme_invalid)
+                false
             }
             else -> {
-                binding.layoutServerUrl.error = null
-                url
+                binding.layoutServerScheme.error = null
+                true
             }
         }
+
+        val isHostValid =
+            when {
+            serverHost.isBlank() -> {
+                binding.layoutServerHost.error = getString(R.string.error_host_required)
+                false
+            }
+            !serverHost.matches(Regex("^[a-zA-Z0-9.-]+$")) -> {
+                binding.layoutServerHost.error = getString(R.string.error_host_invalid)
+                false
+            }
+            else -> {
+                binding.layoutServerHost.error = null
+                true
+            }
+        }
+
+        val isPortValid =
+            if (serverPort == null || serverPort !in 1..65535) {
+                binding.layoutServerPort.error = getString(R.string.error_port_range)
+                false
+            } else {
+                binding.layoutServerPort.error = null
+                true
+            }
+
+        val isConnectTimeoutValid =
+            if (connectTimeout == null || connectTimeout !in 1..120) {
+                binding.layoutConnectTimeout.error = getString(R.string.error_timeout_range)
+                false
+            } else {
+                binding.layoutConnectTimeout.error = null
+                true
+            }
+
+        val isReadTimeoutValid =
+            if (readTimeout == null || readTimeout !in 1..120) {
+                binding.layoutReadTimeout.error = getString(R.string.error_timeout_range)
+                false
+            } else {
+                binding.layoutReadTimeout.error = null
+                true
+            }
+
+        if (!isSchemeValid || !isHostValid || !isPortValid || !isConnectTimeoutValid || !isReadTimeoutValid) {
+            return null
+        }
+
+        return NetworkSettingsInput(
+            serverScheme = serverScheme,
+            serverHost = serverHost,
+            serverPort = serverPort!!,
+            connectTimeoutSeconds = connectTimeout!!,
+            readTimeoutSeconds = readTimeout!!,
+        )
     }
+
+    private fun updateComposedUrlPreview() {
+        val scheme = binding.editServerScheme.text?.toString()?.trim()?.lowercase().orEmpty()
+        val host = binding.editServerHost.text?.toString()?.trim().orEmpty()
+        val port = binding.editServerPort.text?.toString()?.trim().orEmpty()
+        val composed =
+            if ((scheme == "http" || scheme == "https") && host.isNotBlank() && port.isNotBlank()) {
+                "$scheme://$host:$port"
+            } else {
+                ""
+            }
+        binding.editServerUrl.setText(composed)
+    }
+
+    private data class NetworkSettingsInput(
+        val serverScheme: String,
+        val serverHost: String,
+        val serverPort: Int,
+        val connectTimeoutSeconds: Int,
+        val readTimeoutSeconds: Int,
+    )
 
     override fun onDestroyView() {
         super.onDestroyView()

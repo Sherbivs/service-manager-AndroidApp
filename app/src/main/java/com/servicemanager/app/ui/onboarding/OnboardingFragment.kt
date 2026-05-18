@@ -53,7 +53,11 @@ class OnboardingFragment : Fragment(R.layout.fragment_onboarding) {
                 return@setOnClickListener
             }
             binding.layoutServerUrl.error = null
-            viewModel.testConnection(url)
+            viewModel.testConnection(
+                url = url,
+                connectTimeoutSeconds = viewModel.currentConnectTimeoutSeconds,
+                readTimeoutSeconds = viewModel.currentReadTimeoutSeconds,
+            )
         }
     }
 
@@ -75,7 +79,11 @@ class OnboardingFragment : Fragment(R.layout.fragment_onboarding) {
             }
             is SettingsViewModel.ConnectionStatus.Success -> {
                 // Save and move to main
-                viewModel.saveServerUrl(binding.editServerUrl.text.toString())
+                viewModel.saveNetworkSettings(
+                    url = binding.editServerUrl.text.toString(),
+                    connectTimeoutSeconds = viewModel.currentConnectTimeoutSeconds,
+                    readTimeoutSeconds = viewModel.currentReadTimeoutSeconds,
+                )
                 findNavController().navigate(R.id.action_onboarding_to_services)
             }
             is SettingsViewModel.ConnectionStatus.Error -> {

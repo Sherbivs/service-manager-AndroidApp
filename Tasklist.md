@@ -1,5 +1,5 @@
 # Tasklist.md — Service Manager Android App
-**Last Updated:** 2026-04-28
+**Last Updated:** 2026-05-17
 
 ---
 
@@ -102,6 +102,23 @@
 ### SMA.016 — Documentation Sync (2026-04-28)
 - Updated Prompt.md, Tasklist.md, and ops/NEXT.yaml to reflect completed work.
 - Updated development and architecture Bible documentation for API/log UX and product-readiness direction.
+
+### SMA.017 — Network Settings Expansion + Router/Docs Refresh (2026-05-17)
+- Expanded settings persistence to support scheme/host/port and connect/read timeout configuration.
+- Updated network security host baseline to current environment (`sensaimanager.drip`, `tcb.drip`, `blt.drip`, `sensailinuxserver.drip`, LAN `192.168.23.106`).
+- Purged outdated endpoint references from relevant `ROUTER.md` and `docs/` files.
+- Fixed `LogsViewModelTest` archive contract assertions and stabilized test setup.
+- Verification: `:app:testDebugUnitTest --tests "com.servicemanager.app.ui.settings.SettingsViewModelTest" --tests "com.servicemanager.app.ui.logs.LogsViewModelTest"` passed.
+
+### SMA.018 — Router/Instruction Operational Sections Standardization (2026-05-17)
+- Added `## Tips`, `## Next Steps`, and `## Troubleshooting` sections to every `ROUTER.md` and core instruction contract (`AGENTS.md`, `.github/copilot-instructions.md`, `Patch.md`).
+- Standardized guidance to READY-task discipline, scoped implementation, focused validation, and metadata synchronization.
+- Validation: all targeted files in repository scope confirmed compliant.
+
+### SMA.019 — Role-Specific Router/Instruction Template Rewrite (2026-05-17)
+- Rewrote `Tips` / `Next Steps` / `Troubleshooting` content to be folder-role-specific while preserving section shape across all routers/instruction anchors.
+- Applied path-based variants for root, app, ui features, docs, docs/archive stages, ops, `.github`, and instruction contracts.
+- Validation: full compliance coverage across all targeted files after rewrite.
 
 ---
 

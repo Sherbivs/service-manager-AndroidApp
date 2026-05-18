@@ -1,7 +1,7 @@
 # Security Architecture
 **Project:** Service Manager Android App
 **Status:** Active
-**Last Updated:** 2026-04-28
+**Last Updated:** 2026-05-17
 
 ## Security Objectives
 - Prevent secret exposure in source, logs, and local storage.
@@ -10,7 +10,7 @@
 
 ## MASVS-Oriented Controls
 1. Storage (MASVS M2)
-- Server URL and sensitive app settings are stored using Secure DataStore + Tink.
+- Network settings (scheme/host/port and timeouts) and sensitive app settings are stored using Secure DataStore + Tink.
 - Encryption keys are managed through Android Keystore-backed mechanisms.
 
 2. Communication (MASVS M3)
@@ -32,8 +32,8 @@
 The app uses a deny-by-default cleartext posture and only permits LAN endpoints required for development and internal deployment scenarios.
 
 Current canonical LAN references for ops/audit context:
-- Service Manager API: http://192.168.23.83:3500
-- Shopify dev service: http://192.168.23.83:9292
+- Service Manager API: http://sensaimanager.drip:3500 (LAN IP: 192.168.23.106)
+- Shopify dev services: http://tcb.drip and http://blt.drip
 
 ## Operational Security Practices
 - Validate server reachability from Settings before adopting URL changes.

@@ -11,8 +11,22 @@ Notes:
 - Update this router, sub-routers, and the archive README index whenever files move stages.
 
 Areas:
-- README.md — Archive index, lifecycle workflow, and archival policy documentation.
-- new/ — Audit reports not yet started (new/ROUTER.md): C01-QA-AUDIT-001.md.
-- in-progress/ — Audit reports actively undergoing remediation (in-progress/ROUTER.md): C02-QA-AUDIT-002.md.
-- closed/ — Completed or substantially complete audit reports (closed/ROUTER.md).
-- canceled/ — Obsolete or superseded audit reports (canceled/ROUTER.md).
+- README.md ??? Archive index, lifecycle workflow, and archival policy documentation.
+- new/ ??? Audit reports not yet started (new/ROUTER.md): C01-QA-AUDIT-001.md.
+- in-progress/ ??? Audit reports actively undergoing remediation (in-progress/ROUTER.md): C02-QA-AUDIT-002.md.
+- closed/ ??? Completed or substantially complete audit reports (closed/ROUTER.md).
+- canceled/ ??? Obsolete or superseded audit reports (canceled/ROUTER.md).
+## Tips
+- Use archive stages to track audit lifecycle from new to in-progress to closed or canceled.
+- Keep audit artifacts immutable except for status transitions with evidence updates.
+- Ensure each report includes scope, findings, remediation, and verification outcome.
+
+## Next Steps
+1. Place new audits in the new stage with required naming conventions.
+2. Move to in-progress when remediation starts and update stage routers.
+3. Close or cancel with verification results and index synchronization.
+
+## Troubleshooting
+- If stage and index disagree, fix routing and index files in the same commit.
+- If evidence is missing, keep report in-progress and capture validation first.
+- If audit scope changed, create a superseding report and cross-link both entries.

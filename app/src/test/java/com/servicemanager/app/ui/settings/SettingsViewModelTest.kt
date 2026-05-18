@@ -39,42 +39,76 @@ class SettingsViewModelTest {
 
     @Before
     fun setUp() {
-        every { prefs.serverUrl } returns "http://192.168.23.83:3500"
+        every { prefs.serverUrl } returns "http://sensaimanager.drip:3500"
+        every { prefs.serverScheme } returns "http"
+        every { prefs.serverHost } returns "sensaimanager.drip"
+        every { prefs.serverPort } returns 3500
+        every { prefs.connectTimeoutSeconds } returns 10
+        every { prefs.readTimeoutSeconds } returns 10
         viewModel = SettingsViewModel(prefs, repo)
     }
 
     @Test
     fun `currentUrl delegates to prefs`() {
-        assertEquals("http://192.168.23.83:3500", viewModel.currentUrl)
+        assertEquals("http://sensaimanager.drip:3500", viewModel.currentUrl)
     }
 
     @Test
-    fun `saveServerUrl stores trimmed url and emits saved event`() =
+    fun `current timeouts delegate to prefs`() {
+        assertEquals("http", viewModel.currentServerScheme)
+        assertEquals("sensaimanager.drip", viewModel.currentServerHost)
+        assertEquals(3500, viewModel.currentServerPort)
+        assertEquals(10, viewModel.currentConnectTimeoutSeconds)
+        assertEquals(10, viewModel.currentReadTimeoutSeconds)
+    }
+
+    @Test
+    fun `saveNetworkSettings stores trimmed values and emits saved event`() =
         runTest {
             viewModel.saved.test {
-                viewModel.saveServerUrl("  http://192.168.23.83:3500  ")
+                viewModel.saveNetworkSettings(
+                    serverScheme = "http",
+                    serverHost = "sensaimanager.drip",
+                    serverPort = 3500,
+                    connectTimeoutSeconds = 15,
+                    readTimeoutSeconds = 20,
+                )
                 awaitItem()
                 cancelAndIgnoreRemainingEvents()
             }
-            verify { prefs.serverUrl = "http://192.168.23.83:3500" }
+            verify { prefs.serverScheme = "http" }
+            verify { prefs.serverHost = "sensaimanager.drip" }
+            verify { prefs.serverPort = 3500 }
+            verify { prefs.connectTimeoutSeconds = 15 }
+            verify { prefs.readTimeoutSeconds = 20 }
         }
 
     @Test
-    fun `saveServerUrl strips trailing slash`() =
+    fun `saveNetworkSettings strips trailing slash`() =
         runTest {
             viewModel.saved.test {
-                viewModel.saveServerUrl("http://192.168.23.83:3500/")
+                viewModel.saveNetworkSettings(
+                    url = "http://sensaimanager.drip:3500/",
+                    connectTimeoutSeconds = 10,
+                    readTimeoutSeconds = 10,
+                )
                 awaitItem()
                 cancelAndIgnoreRemainingEvents()
             }
-            verify { prefs.serverUrl = "http://192.168.23.83:3500" }
+            verify { prefs.serverUrl = "http://sensaimanager.drip:3500" }
         }
 
     @Test
     fun `testConnection reaches Success state on successful ping`() =
         runTest {
             coEvery { repo.getSystemInfo() } returns Result.success(fakeSystemInfo)
-            viewModel.testConnection("http://192.168.23.83:3500")
+            viewModel.testConnection(
+                serverScheme = "http",
+                serverHost = "sensaimanager.drip",
+                serverPort = 3500,
+                connectTimeoutSeconds = 10,
+                readTimeoutSeconds = 10,
+            )
             viewModel.connectionTestStatus.test {
                 assertEquals(SettingsViewModel.ConnectionStatus.Success, awaitItem())
                 cancelAndIgnoreRemainingEvents()
@@ -85,7 +119,13 @@ class SettingsViewModelTest {
     fun `testConnection reaches Error state on failed ping`() =
         runTest {
             coEvery { repo.getSystemInfo() } returns Result.failure(RuntimeException("Connection refused"))
-            viewModel.testConnection("http://192.168.23.83:3500")
+            viewModel.testConnection(
+                serverScheme = "http",
+                serverHost = "sensaimanager.drip",
+                serverPort = 3500,
+                connectTimeoutSeconds = 10,
+                readTimeoutSeconds = 10,
+            )
             viewModel.connectionTestStatus.test {
                 val state = awaitItem()
                 assertTrue(state is SettingsViewModel.ConnectionStatus.Error)
@@ -97,10 +137,18 @@ class SettingsViewModelTest {
     @Test
     fun `testConnection restores original url on failure`() =
         runTest {
-            val originalUrl = "http://192.168.23.83:3500"
+            val originalUrl = "http://sensaimanager.drip:3500"
             every { prefs.serverUrl } returns originalUrl
+            every { prefs.connectTimeoutSeconds } returns 10
+            every { prefs.readTimeoutSeconds } returns 10
             coEvery { repo.getSystemInfo() } returns Result.failure(RuntimeException("Timeout"))
-            viewModel.testConnection("http://10.0.0.99:3500")
+            viewModel.testConnection(
+                url = "http://192.168.23.106:3500",
+                connectTimeoutSeconds = 5,
+                readTimeoutSeconds = 5,
+            )
             verify { prefs.serverUrl = originalUrl }
+            verify { prefs.connectTimeoutSeconds = 10 }
+            verify { prefs.readTimeoutSeconds = 10 }
         }
 }

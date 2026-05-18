@@ -24,6 +24,11 @@ class SettingsViewModel
         private val repository: ServiceRepository,
     ) : ViewModel() {
         val currentUrl: String get() = prefs.serverUrl
+        val currentServerScheme: String get() = prefs.serverScheme
+        val currentServerHost: String get() = prefs.serverHost
+        val currentServerPort: Int get() = prefs.serverPort
+        val currentConnectTimeoutSeconds: Int get() = prefs.connectTimeoutSeconds
+        val currentReadTimeoutSeconds: Int get() = prefs.readTimeoutSeconds
 
         private val _saved = MutableSharedFlow<Unit>(replay = 0)
         val saved: SharedFlow<Unit> = _saved.asSharedFlow()
@@ -34,16 +39,59 @@ class SettingsViewModel
         private val _pingResult = MutableStateFlow<PingStatus>(PingStatus.Idle)
         val pingResult: StateFlow<PingStatus> = _pingResult.asStateFlow()
 
-        fun saveServerUrl(url: String) {
-            prefs.serverUrl = url.trim().trimEnd('/')
+        fun saveNetworkSettings(
+            serverScheme: String,
+            serverHost: String,
+            serverPort: Int,
+            connectTimeoutSeconds: Int,
+            readTimeoutSeconds: Int,
+        ) {
+            prefs.serverScheme = serverScheme
+            prefs.serverHost = serverHost
+            prefs.serverPort = serverPort
+            prefs.connectTimeoutSeconds = connectTimeoutSeconds
+            prefs.readTimeoutSeconds = readTimeoutSeconds
             viewModelScope.launch { _saved.emit(Unit) }
         }
 
-        fun testConnection(url: String) {
+        fun saveNetworkSettings(
+            url: String,
+            connectTimeoutSeconds: Int,
+            readTimeoutSeconds: Int,
+        ) {
+            prefs.serverUrl = url.trim().trimEnd('/')
+            prefs.connectTimeoutSeconds = connectTimeoutSeconds
+            prefs.readTimeoutSeconds = readTimeoutSeconds
+            viewModelScope.launch { _saved.emit(Unit) }
+        }
+
+        fun testConnection(
+            serverScheme: String,
+            serverHost: String,
+            serverPort: Int,
+            connectTimeoutSeconds: Int,
+            readTimeoutSeconds: Int,
+        ) {
+            testConnection(
+                url = composeUrl(serverScheme, serverHost, serverPort),
+                connectTimeoutSeconds = connectTimeoutSeconds,
+                readTimeoutSeconds = readTimeoutSeconds,
+            )
+        }
+
+        fun testConnection(
+            url: String,
+            connectTimeoutSeconds: Int,
+            readTimeoutSeconds: Int,
+        ) {
             viewModelScope.launch {
                 _connectionTestStatus.value = ConnectionStatus.Loading
                 val originalUrl = prefs.serverUrl
+                val originalConnectTimeoutSeconds = prefs.connectTimeoutSeconds
+                val originalReadTimeoutSeconds = prefs.readTimeoutSeconds
                 prefs.serverUrl = url.trim().trimEnd('/')
+                prefs.connectTimeoutSeconds = connectTimeoutSeconds
+                prefs.readTimeoutSeconds = readTimeoutSeconds
 
                 repository
                     .getSystemInfo()
@@ -52,15 +100,39 @@ class SettingsViewModel
                     }.onFailure {
                         _connectionTestStatus.value = ConnectionStatus.Error(it.message ?: "Unknown error")
                         prefs.serverUrl = originalUrl
+                        prefs.connectTimeoutSeconds = originalConnectTimeoutSeconds
+                        prefs.readTimeoutSeconds = originalReadTimeoutSeconds
                     }
             }
         }
 
-        fun pingServer(url: String) {
+        fun pingServer(
+            serverScheme: String,
+            serverHost: String,
+            serverPort: Int,
+            connectTimeoutSeconds: Int,
+            readTimeoutSeconds: Int,
+        ) {
+            pingServer(
+                url = composeUrl(serverScheme, serverHost, serverPort),
+                connectTimeoutSeconds = connectTimeoutSeconds,
+                readTimeoutSeconds = readTimeoutSeconds,
+            )
+        }
+
+        fun pingServer(
+            url: String,
+            connectTimeoutSeconds: Int,
+            readTimeoutSeconds: Int,
+        ) {
             viewModelScope.launch {
                 _pingResult.value = PingStatus.Loading
                 val originalUrl = prefs.serverUrl
+                val originalConnectTimeoutSeconds = prefs.connectTimeoutSeconds
+                val originalReadTimeoutSeconds = prefs.readTimeoutSeconds
                 prefs.serverUrl = url.trim().trimEnd('/')
+                prefs.connectTimeoutSeconds = connectTimeoutSeconds
+                prefs.readTimeoutSeconds = readTimeoutSeconds
 
                 val latencies = mutableListOf<Long>()
                 var successCount = 0
@@ -94,9 +166,17 @@ class SettingsViewModel
                 // Don't restore original URL if it was actually reachable
                 if (successCount == 0) {
                     prefs.serverUrl = originalUrl
+                    prefs.connectTimeoutSeconds = originalConnectTimeoutSeconds
+                    prefs.readTimeoutSeconds = originalReadTimeoutSeconds
                 }
             }
         }
+
+        private fun composeUrl(
+            scheme: String,
+            host: String,
+            port: Int,
+        ): String = "${scheme.trim().lowercase()}://${host.trim()}:$port"
 
         sealed class ConnectionStatus {
             object Idle : ConnectionStatus()

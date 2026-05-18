@@ -1,12 +1,13 @@
 # Task Archive — Service Manager Android App
 
 Location: docs/archive/tasks/
-Last Updated: 2026-04-23
+Last Updated: 2026-05-17
 
 ## Environment Baseline
 
-- Service Manager API: http://192.168.23.83:3500
-- Shopify Dev Service (TCB Party Rental): http://192.168.23.83:9292
+- Service Manager API: http://sensaimanager.drip:3500 (LAN IP: 192.168.23.106)
+- Shopify Dev Service (TCB Party Rental): http://tcb.drip
+- Shopify Dev Service (Boss Lady Transportation): http://blt.drip
 
 Use these endpoints as the canonical baseline when creating and reviewing audits tied to the active LAN environment.
 

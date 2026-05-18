@@ -26,10 +26,64 @@
                 android:padding="16dp">
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layoutServerScheme"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hint_server_scheme"
+                    app:helperText="@string/helper_server_scheme">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editServerScheme"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textNoSuggestions"
+                        android:singleLine="true" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layoutServerHost"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:hint="@string/hint_server_host"
+                    app:helperText="@string/helper_server_host">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editServerHost"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textUri"
+                        android:singleLine="true" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layoutServerPort"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:hint="@string/hint_server_port"
+                    app:helperText="@string/helper_server_port">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editServerPort"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:singleLine="true" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/layoutServerUrl"
                     style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:hint="@string/hint_server_url"
                     app:helperText="@string/helper_server_url">
 
@@ -37,7 +91,45 @@
                         android:id="@+id/editServerUrl"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:enabled="false"
+                        android:focusable="false"
                         android:inputType="textUri"
+                        android:singleLine="true" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layoutConnectTimeout"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:hint="@string/hint_connect_timeout"
+                    app:helperText="@string/helper_timeout_seconds">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editConnectTimeout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:singleLine="true" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layoutReadTimeout"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:hint="@string/hint_read_timeout"
+                    app:helperText="@string/helper_timeout_seconds">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editReadTimeout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
                         android:singleLine="true" />
 
                 </com.google.android.material.textfield.TextInputLayout>

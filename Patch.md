@@ -1,4 +1,4 @@
-# Patch.md — AI Project Manager Contract
+# Patch.md ??? AI Project Manager Contract
 **Project:** Service Manager Android App  
 **Repo:** Sherbivs/service-manager-AndroidApp  
 **Last Updated:** 2026-04-22
@@ -20,7 +20,7 @@
 
 ### Before Starting Any Task
 1. Read this file completely.
-2. Check `ops/NEXT.yaml` — confirm the task is READY.
+2. Check `ops/NEXT.yaml` ??? confirm the task is READY.
 3. Read `Prompt.md` for current project state.
 4. Check `Tasklist.md` for acceptance criteria and dependencies.
 
@@ -32,8 +32,8 @@
 
 ### Before Finishing
 1. Update `Prompt.md` with a PATCHSET echo of what changed.
-2. Update `ops/NEXT.yaml` — mark the task complete, point to next READY task.
-3. Update `Tasklist.md` — move task to DONE, update status of dependents.
+2. Update `ops/NEXT.yaml` ??? mark the task complete, point to next READY task.
+3. Update `Tasklist.md` ??? move task to DONE, update status of dependents.
 4. Commit with message format: `[Task SMA.XXX] Brief summary`
 
 ---
@@ -41,8 +41,8 @@
 ## Task ID Format
 
 ```
-SMA.NNN        — Main feature/fix task
-SMA.NNN.QQQ    — Sub-task or quick fix under a main task
+SMA.NNN        ??? Main feature/fix task
+SMA.NNN.QQQ    ??? Sub-task or quick fix under a main task
 ```
 
 ---
@@ -50,26 +50,40 @@ SMA.NNN.QQQ    — Sub-task or quick fix under a main task
 ## PATCHSET Echo Template (for Prompt.md updates)
 
 ```
-PATCHSET SMA.XXX — <task title>
+PATCHSET SMA.XXX ??? <task title>
 Date: YYYY-MM-DD
 Files Changed:
   - path/to/file.kt  (added/modified/deleted)
   - ...
 Summary: <one paragraph of what changed and why>
 Testing: <how it was verified>
-Next: SMA.YYY — <next task title>
+Next: SMA.YYY ??? <next task title>
 ```
 
 ---
 
 ## Recovery Protocol
 
-If a run gets stuck (same error ≥2 times, no progress in 3 steps):
-1. **Shrink scope** — attempt only the smallest failing unit
-2. **Swap strategy** — try a different implementation approach
-3. **Reset context** — clear working memory, re-read AGENTS.md
-4. **Escalate** — document the blocker in `Tasklist.md`, ask the user
+If a run gets stuck (same error ???2 times, no progress in 3 steps):
+1. **Shrink scope** ??? attempt only the smallest failing unit
+2. **Swap strategy** ??? try a different implementation approach
+3. **Reset context** ??? clear working memory, re-read AGENTS.md
+4. **Escalate** ??? document the blocker in `Tasklist.md`, ask the user
 
 ---
 
-**Document Version:** 1.0 (2026-04-22) — Initial Android bootstrap
+**Document Version:** 1.0 (2026-04-22) ??? Initial Android bootstrap
+## Tips
+- Treat this contract as mandatory execution policy for every task run.
+- Keep rules deterministic, testable, and aligned to current governance files.
+- Add or revise absolutes only when they reflect durable operational truth.
+
+## Next Steps
+1. Confirm preflight requirements and active task readiness.
+2. Execute scoped changes with validation evidence captured.
+3. Synchronize task state, routing, and prompt history before exit.
+
+## Troubleshooting
+- If a rule conflicts with runtime reality, document evidence and update contract promptly.
+- If tasks stall, apply shrink, swap, reset, and escalate recovery order.
+- If queue state is invalid, repair READY pointer before ending the run.

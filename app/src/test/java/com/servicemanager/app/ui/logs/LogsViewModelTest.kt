@@ -1,6 +1,8 @@
 package com.servicemanager.app.ui.logs
 
 import app.cash.turbine.test
+import com.servicemanager.app.data.model.ArchiveResponseDto
+import com.servicemanager.app.data.model.ArchiveRowDto
 import com.servicemanager.app.data.repository.ServiceRepository
 import com.servicemanager.app.util.MainDispatcherRule
 import io.mockk.coEvery
@@ -27,6 +29,7 @@ class LogsViewModelTest {
     fun setUp() {
         coEvery { repo.getGlobalLogs(any()) } returns Result.success(fakeLines)
         coEvery { repo.getServices() } returns Result.success(emptyList())
+        coEvery { repo.getLogProjects() } returns Result.success(emptyList())
         viewModel = LogsViewModel(repo)
     }
 
@@ -70,14 +73,41 @@ class LogsViewModelTest {
     @Test
     fun `searchArchive emits Success with results`() =
         runTest {
-            val archiveLines = listOf("[INFO] archived log entry")
-            coEvery { repo.searchArchiveLogs("shopify", "error") } returns Result.success(archiveLines)
+            val archiveRows =
+                listOf(
+                    ArchiveRowDto(
+                        id = 1L,
+                        serviceId = "shopify",
+                        project = "TCB Party Rental",
+                        logLevel = "info",
+                        line = "[INFO] archived log entry",
+                        archivedAt = 1715985600000L,
+                    ),
+                )
+            val archiveResponse =
+                ArchiveResponseDto(
+                    rows = archiveRows,
+                    total = archiveRows.size,
+                    limit = 100,
+                    offset = 0,
+                )
+            coEvery {
+                repo.searchArchiveLogs(
+                    serviceId = "shopify",
+                    query = "error",
+                    level = "",
+                    from = 0,
+                    to = 0,
+                    limit = 100,
+                    offset = 0,
+                )
+            } returns Result.success(archiveResponse)
             viewModel.searchArchive("shopify", "error")
 
             viewModel.archiveState.test {
                 val state = awaitItem()
                 assertTrue(state is ArchiveUiState.Success)
-                assertEquals(archiveLines, (state as ArchiveUiState.Success).lines)
+                assertEquals(archiveRows, (state as ArchiveUiState.Success).rows)
                 cancelAndIgnoreRemainingEvents()
             }
         }

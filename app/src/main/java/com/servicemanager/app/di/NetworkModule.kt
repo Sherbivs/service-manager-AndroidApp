@@ -17,8 +17,8 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
-    private const val CONNECT_TIMEOUT_SECONDS = 10L
-    private const val READ_TIMEOUT_SECONDS = 10L
+    private const val MIN_TIMEOUT_SECONDS = 1
+    private const val MAX_TIMEOUT_SECONDS = 120
 
     @Provides
     @Singleton
@@ -34,9 +34,17 @@ object NetworkModule {
             .addInterceptor { chain ->
                 val request = chain.request()
                 val serverUrl = prefsHelper.serverUrl.trimEnd('/')
+                val connectTimeoutSeconds =
+                    prefsHelper.connectTimeoutSeconds.coerceIn(MIN_TIMEOUT_SECONDS, MAX_TIMEOUT_SECONDS)
+                val readTimeoutSeconds =
+                    prefsHelper.readTimeoutSeconds.coerceIn(MIN_TIMEOUT_SECONDS, MAX_TIMEOUT_SECONDS)
+                val timeoutChain =
+                    chain
+                        .withConnectTimeout(connectTimeoutSeconds, TimeUnit.SECONDS)
+                        .withReadTimeout(readTimeoutSeconds, TimeUnit.SECONDS)
                 val parsed =
                     "$serverUrl/".toHttpUrlOrNull()
-                        ?: return@addInterceptor chain.proceed(request)
+                        ?: return@addInterceptor timeoutChain.proceed(request)
                 val newUrl =
                     request.url
                         .newBuilder()
@@ -44,10 +52,10 @@ object NetworkModule {
                         .host(parsed.host)
                         .port(parsed.port)
                         .build()
-                chain.proceed(request.newBuilder().url(newUrl).build())
+                timeoutChain.proceed(request.newBuilder().url(newUrl).build())
             }.addInterceptor(logging)
-            .connectTimeout(CONNECT_TIMEOUT_SECONDS, TimeUnit.SECONDS)
-            .readTimeout(READ_TIMEOUT_SECONDS, TimeUnit.SECONDS)
+            .connectTimeout(SecurePrefsHelper.DEFAULT_CONNECT_TIMEOUT_SECONDS.toLong(), TimeUnit.SECONDS)
+            .readTimeout(SecurePrefsHelper.DEFAULT_READ_TIMEOUT_SECONDS.toLong(), TimeUnit.SECONDS)
             .build()
     }
 

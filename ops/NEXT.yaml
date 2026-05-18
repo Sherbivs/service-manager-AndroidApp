@@ -1,10 +1,28 @@
 tasks:
-  - id: SMA.016
-    title: Documentation Sync After UX and Scalability QA
+  - id: SMA.019
+    title: Role-Specific Router and Instruction Template Rewrite
     status: DONE
     priority: P1
     description: >
-      Synced Prompt.md, Tasklist.md, and Bible documentation to reflect completed
-      Android UX/UI and log scalability work. Added updated product-readiness roadmap
-      and documented current API/log interaction patterns.
-    acceptance_criteria_ref: "Tasklist.md#SMA.016"
+      Rewrote Tips/Next Steps/Troubleshooting section content by folder role while
+      preserving section shape across all routers and instruction contracts.
+    acceptance_criteria_ref: "Tasklist.md#SMA.019"
+
+  - id: SMA.018
+    title: Router and Instruction Operational Sections Standardization
+    status: DONE
+    priority: P1
+    description: >
+      Added standardized Tips/Next Steps/Troubleshooting sections to all ROUTER.md files
+      and instruction contracts to reduce ambiguity and improve reproducibility for AI runs.
+    acceptance_criteria_ref: "Tasklist.md#SMA.018"
+
+  - id: SMA.017
+    title: Network Settings Expansion and Router/Docs Endpoint Purge
+    status: DONE
+    priority: P1
+    description: >
+      Expanded settings to persistent scheme/host/port + timeout controls, refreshed
+      network security baseline hosts, purged stale endpoint references across
+      relevant ROUTER.md/docs files, and stabilized targeted unit tests.
+    acceptance_criteria_ref: "Tasklist.md#SMA.017"

@@ -1,13 +1,15 @@
 # API Integration
 **Project:** Service Manager Android App
 **Status:** Active
-**Last Updated:** 2026-04-28
+**Last Updated:** 2026-05-17
 
 ## Overview
 The Android app integrates with the Service Manager REST API using Retrofit + OkHttp.
 
 Integration design goals:
 - dynamic base URL resolution from secure local storage
+- durable network endpoint settings (scheme/host/port) editable from app settings
+- dynamic timeout behavior tuned by saved network settings
 - predictable error mapping into user-facing messages
 - support for high-volume archive workflows through pagination and filtering
 
@@ -18,8 +20,19 @@ Integration design goals:
 
 Key behavior:
 - Retrofit singleton uses a placeholder base URL.
-- OkHttp interceptor rewrites scheme/host/port on each request using the saved server URL.
+- OkHttp interceptor rewrites scheme/host/port on each request using persisted endpoint settings.
+- OkHttp applies connect/read timeouts per request from persisted settings (clamped to safe bounds).
 - HTTP logging is disabled for performance-sensitive mobile operation.
+
+## Settings Integration
+Network settings are managed by Settings UI and persisted via SecurePrefsHelper:
+- server scheme (`http` or `https`)
+- server host (hostname or LAN IP)
+- server port
+- connect timeout seconds
+- read timeout seconds
+
+For compatibility, a composed URL string is still persisted and consumed where URL-based flows remain.
 
 ## Endpoint Coverage
 Core service control:

@@ -1,4 +1,4 @@
-# Copilot Instructions — Service Manager Android App
+# Copilot Instructions ??? Service Manager Android App
 
 ## Project Overview
 
@@ -6,27 +6,27 @@ This is a **native Android companion app** for the [Service Manager](https://git
 
 **Stack:** Kotlin, MVVM, Retrofit + OkHttp, ViewBinding, Material 3, `androidx.security.crypto`  
 **Build:** Gradle (no Node.js, no web build step)  
-**Min SDK:** 24 (Android 7.0) | **Target SDK:** 34 (Android 14)
+**Min SDK:** 24 (Android 7.0) | **Target SDK:** 37
 
 ## Critical: Start Here Before Any Work
 
 ### Orientation Flow (Required Reading)
-1. **`Patch.md`** — AI Project Manager Contract. Defines Absolutes, workflow, task discipline.
-2. **`Prompt.md`** — Current timestamp, recent changes, PATCHSET echo template.
-3. **`Tasklist.md`** — Active backlog with READY queue, dependencies, acceptance criteria.
-4. **`ops/NEXT.yaml`** — Current task pointer (must point to READY task).
-5. **`AGENTS.md`** — Comprehensive operations guide.
+1. **`Patch.md`** ??? AI Project Manager Contract. Defines Absolutes, workflow, task discipline.
+2. **`Prompt.md`** ??? Current timestamp, recent changes, PATCHSET echo template.
+3. **`Tasklist.md`** ??? Active backlog with READY queue, dependencies, acceptance criteria.
+4. **`ops/NEXT.yaml`** ??? Current task pointer (must point to READY task).
+5. **`AGENTS.md`** ??? Comprehensive operations guide.
 
 ### Router Navigation System
-- **`ROUTER.md`** — Root router. Start here to locate any file.
-- **`ops/ROUTER.yaml`** — Machine-readable canonical routing map.
+- **`ROUTER.md`** ??? Root router. Start here to locate any file.
+- **`ops/ROUTER.yaml`** ??? Machine-readable canonical routing map.
 - **Every directory has `ROUTER.md`** documenting its purpose and owned files.
 - When touching code: update parent + child routers in the same commit.
 
 ### Core Control Documents (Never Rename/Delete)
-- `Patch.md`, `Tasklist.md`, `Prompt.md` — Meta workflow coordination
-- `ROUTER.md`, `ops/ROUTER.yaml` — Routing manifests
-- Any `ROUTER.md` file — Subsystem documentation
+- `Patch.md`, `Tasklist.md`, `Prompt.md` ??? Meta workflow coordination
+- `ROUTER.md`, `ops/ROUTER.yaml` ??? Routing manifests
+- Any `ROUTER.md` file ??? Subsystem documentation
 
 ## Architecture Essentials
 
@@ -34,49 +34,49 @@ This is a **native Android companion app** for the [Service Manager](https://git
 ```
 app/src/main/
   java/com/servicemanager/app/
-    MainActivity.kt       — Single activity; hosts NavHostFragment
-    di/                   — Hilt modules (NetworkModule, AppModule)
+    MainActivity.kt       ??? Single activity; hosts NavHostFragment
+    di/                   ??? Hilt modules (NetworkModule, AppModule)
     ui/
-      services/           — ServicesFragment, ServicesViewModel
-      system/             — SystemFragment, SystemViewModel
-      logs/               — LogsFragment, LogsViewModel
-      settings/           — SettingsFragment, SettingsViewModel
+      services/           ??? ServicesFragment, ServicesViewModel
+      system/             ??? SystemFragment, SystemViewModel
+      logs/               ??? LogsFragment, LogsViewModel
+      settings/           ??? SettingsFragment, SettingsViewModel
     data/
-      api/                — ApiService.kt (Retrofit interface)
-      model/              — DTOs (ServiceDto, SystemInfoDto, etc.)
-      repository/         — ServiceRepository.kt
-    domain/               — Use Cases (optional; only for complex shared logic)
-    util/                 — SecurePrefsHelper, Extensions
+      api/                ??? ApiService.kt (Retrofit interface)
+      model/              ??? DTOs (ServiceDto, SystemInfoDto, etc.)
+      repository/         ??? ServiceRepository.kt
+    domain/               ??? Use Cases (optional; only for complex shared logic)
+    util/                 ??? SecurePrefsHelper, Extensions
   res/
-    layout/               — XML layouts
-    navigation/           — nav_graph.xml (Navigation Component)
-    values/               — strings, colors, themes
-    xml/                  — network_security_config.xml
+    layout/               ??? XML layouts
+    navigation/           ??? nav_graph.xml (Navigation Component)
+    values/               ??? strings, colors, themes
+    xml/                  ??? network_security_config.xml
   AndroidManifest.xml
-ops/             — Governance (NEXT.yaml, ROUTER.yaml, TOUCHMAP.yaml)
-docs/            — Bible documentation
+ops/             ??? Governance (NEXT.yaml, ROUTER.yaml, TOUCHMAP.yaml)
+docs/            ??? Bible documentation
 ```
 
 ### Key Design Principles
-- **MVVM + UDF** — State flows *down* (ViewModel → UI); events flow *up* (UI → ViewModel).
-- **Single activity** — `MainActivity` hosts a `NavHostFragment`. All screens are Fragments.
-- **Hilt DI** — All dependencies injected via Hilt. No manual `new Retrofit(...)` in ViewModels.
-- **Configurable base URL** — Never hardcode server IP. Read from `Secure DataStore + Tink`.
-- **No coroutines in Activities** — Always use `viewModelScope` for coroutine launches.
-- **ViewBinding only** — No `findViewById`, no data binding.
-- **One `StateFlow<UiState>` per screen** — ViewModel exposes a single sealed-class UiState.
+- **MVVM + UDF** ??? State flows *down* (ViewModel ??? UI); events flow *up* (UI ??? ViewModel).
+- **Single activity** ??? `MainActivity` hosts a `NavHostFragment`. All screens are Fragments.
+- **Hilt DI** ??? All dependencies injected via Hilt. No manual `new Retrofit(...)` in ViewModels.
+- **Configurable endpoint settings** ??? Never hardcode server IP. Read scheme/host/port and timeout settings from `Secure DataStore + Tink`.
+- **No coroutines in Activities** ??? Always use `viewModelScope` for coroutine launches.
+- **ViewBinding only** ??? No `findViewById`, no data binding.
+- **One `StateFlow<UiState>` per screen** ??? ViewModel exposes a single sealed-class UiState.
 
-### Unidirectional Data Flow (UDF) — Required Pattern
+### Unidirectional Data Flow (UDF) ??? Required Pattern
 
 ```kotlin
-// Sealed UiState — one per screen
+// Sealed UiState ??? one per screen
 sealed class ServicesUiState {
     object Loading : ServicesUiState()
     data class Success(val services: List<ServiceModel>) : ServicesUiState()
     data class Error(val message: String) : ServicesUiState()
 }
 
-// ViewModel — private mutable, public immutable StateFlow
+// ViewModel ??? private mutable, public immutable StateFlow
 @HiltViewModel
 class ServicesViewModel @Inject constructor(
     private val repo: ServiceRepository
@@ -92,7 +92,7 @@ class ServicesViewModel @Inject constructor(
     }
 }
 
-// Fragment — collect with lifecycle awareness (REQUIRED — prevents background collection)
+// Fragment ??? collect with lifecycle awareness (REQUIRED ??? prevents background collection)
 viewLifecycleOwner.lifecycleScope.launch {
     repeatOnLifecycle(Lifecycle.State.STARTED) {
         viewModel.uiState.collect { render(it) }
@@ -100,7 +100,7 @@ viewLifecycleOwner.lifecycleScope.launch {
 }
 ```
 
-### Dependency Injection — Hilt (Required)
+### Dependency Injection ??? Hilt (Required)
 
 ```kotlin
 @HiltAndroidApp class ServiceManagerApp : Application()
@@ -122,10 +122,10 @@ object NetworkModule {
 class ServicesViewModel @Inject constructor(private val repo: ServiceRepository) : ViewModel()
 ```
 
-### Navigation — Jetpack Navigation Component (Required)
+### Navigation ??? Jetpack Navigation Component (Required)
 - Single `NavHostFragment` in `MainActivity`
 - All screens are Fragments; navigation declared in `res/navigation/nav_graph.xml`
-- Use `findNavController().navigate(R.id.action_*)` — never `startActivity()` for in-app navigation
+- Use `findNavController().navigate(R.id.action_*)` ??? never `startActivity()` for in-app navigation
 - Use Safe Args plugin for type-safe argument passing between destinations
 
 ### Service Manager API (what this app calls)
@@ -145,7 +145,7 @@ class ServicesViewModel @Inject constructor(private val repo: ServiceRepository)
 ### Mandatory Rules
 - **Never hardcode** server URLs, API tokens, or credentials in source code or resources.
 - **Store secrets** in Jetpack DataStore + Google Tink or Android Keystore.
-- **Network:** HTTPS enforced via `network_security_config.xml`. For LAN HTTP, add an explicit `<domain>` exception — do NOT set `usesCleartextTraffic="true"` globally.
+- **Network:** HTTPS enforced via `network_security_config.xml`. For LAN HTTP, add an explicit `<domain>` exception ??? do NOT set `usesCleartextTraffic="true"` globally.
 - **Manifest:** `android:exported="false"` on all components not requiring external launch.
 - **Release builds:** `minifyEnabled true`, `shrinkResources true`, `debuggable false`.
 - **Keystore:** `keystore.properties` and `*.jks`/`*.keystore` are gitignored. Never commit them.
@@ -161,7 +161,7 @@ class ServicesViewModel @Inject constructor(private val repo: ServiceRepository)
 
 Every feature is **NOT DONE** until it has tests. Required per feature:
 
-### Unit Tests (`app/src/test/`) — JUnit 4, MockK, Turbine, kotlinx-coroutines-test
+### Unit Tests (`app/src/test/`) ??? JUnit 4, MockK, Turbine, kotlinx-coroutines-test
 ```kotlin
 @Test fun `load services emits Success`() = runTest {
     val repo = mockk<ServiceRepository> {
@@ -182,13 +182,13 @@ Every feature is **NOT DONE** until it has tests. Required per feature:
 - Test `ServiceRepository` with real Retrofit + fake server
 - Assert JSON parsing, HTTP error handling (4xx, 5xx, timeouts)
 
-### UI / Instrumented Tests (`app/src/androidTest/`) — Espresso + FragmentScenario
-- `FragmentScenario.launchInContainer<ServicesFragment>()` — test in isolation
+### UI / Instrumented Tests (`app/src/androidTest/`) ??? Espresso + FragmentScenario
+- `FragmentScenario.launchInContainer<ServicesFragment>()` ??? test in isolation
 - Only assert user-visible behaviour (text, button states)
 
 ### Coverage Targets
-- ViewModel classes: ≥80% line coverage
-- Repository classes: ≥80% line coverage
+- ViewModel classes: ???80% line coverage
+- Repository classes: ???80% line coverage
 
 ## Code Quality Gates (Required Before Any Merge)
 
@@ -247,14 +247,28 @@ Testing: How verified
 ```
 
 ## Common Pitfalls
-1. **LAN HTTP** — Use a domain exception in `network_security_config.xml`, not global cleartext.
-2. **ViewModel scope** — `viewModelScope.launch {}` only. Never `GlobalScope` or `lifecycleScope` from Activity.
-3. **Base URL trailing slash** — Retrofit requires base URL to end with `/`.
-4. **Missing `repeatOnLifecycle`** — Without it, StateFlow collection continues in background, draining battery.
-5. **Hilt missing `@AndroidEntryPoint`** — Forgetting this annotation causes runtime crashes.
-6. **Navigation with `startActivity()`** — Use `findNavController().navigate(R.id.action_*)` instead.
-7. **Missing ProGuard rules** — Retrofit/Gson model classes get stripped without explicit keep rules.
-8. **Flow test without Turbine** — Never `collect` in a `launch` in tests; use Turbine.
-9. **Rotation** — ViewModel survives rotation; don't re-fetch if data is fresh.
-10. **Keystore** — `keystore.properties` must never be committed. Document format in `docs/operations-bible/`.
+1. **LAN HTTP** ??? Use a domain exception in `network_security_config.xml`, not global cleartext.
+2. **ViewModel scope** ??? `viewModelScope.launch {}` only. Never `GlobalScope` or `lifecycleScope` from Activity.
+3. **Base URL trailing slash** ??? Retrofit requires base URL to end with `/`.
+4. **Endpoint model drift** ??? Keep settings aligned with scheme/host/port + timeout persistence model; avoid URL-only assumptions.
+5. **Missing `repeatOnLifecycle`** ??? Without it, StateFlow collection continues in background, draining battery.
+6. **Hilt missing `@AndroidEntryPoint`** ??? Forgetting this annotation causes runtime crashes.
+7. **Navigation with `startActivity()`** ??? Use `findNavController().navigate(R.id.action_*)` instead.
+8. **Missing ProGuard rules** ??? Retrofit/Gson model classes get stripped without explicit keep rules.
+9. **Flow test without Turbine** ??? Never `collect` in a `launch` in tests; use Turbine.
+10. **Rotation** ??? ViewModel survives rotation; don't re-fetch if data is fresh.
+11. **Keystore** ??? `keystore.properties` must never be committed. Document format in `docs/operations-bible/`.
+## Tips
+- Keep this file as the canonical AI execution contract for standardized work.
+- Encode procedures as stepwise, verifiable instructions with explicit outputs.
+- Maintain environment and migration guidance in lockstep with operational docs.
 
+## Next Steps
+1. Run mandatory orientation sequence before implementation.
+2. Execute preflight, implement, verify, sync, and close loop for each task.
+3. Confirm completion gates with direct evidence before marking done.
+
+## Troubleshooting
+- If instructions are ambiguous, replace prose with deterministic command-style steps.
+- If docs and runtime diverge, prioritize runtime evidence and update both in one change.
+- If baseline drift is detected, update scripts, docs, and instruction contracts together.

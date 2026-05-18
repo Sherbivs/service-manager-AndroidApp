@@ -1,4 +1,4 @@
-# Service Manager Android App — Agent Operations Guide
+# Service Manager Android App ??? Agent Operations Guide
 
 ## Mission
 Build a secure, native Android companion app for the Service Manager dashboard. The app connects to the Node.js service manager API over LAN, displaying service status and allowing start/stop/restart actions from any Android device.
@@ -9,36 +9,36 @@ Build a secure, native Android companion app for the Service Manager dashboard. 
 - See `Tasklist.md` for READY queue, dependencies, acceptance criteria
 - See `Prompt.md` for current state, PATCHSET echo, recent changes
 - See `README.md` for getting started guide
-- **Service Manager API:** `http://192.168.23.83:3500/api/` — see [Sherbivs/service-manager](https://github.com/Sherbivs/service-manager)
-- **Shopify Dev Service (TCB Party Rental):** `http://192.168.23.83:9292`
+- **Service Manager API:** `http://sensaimanager.drip:3500/api/` ??? see [Sherbivs/service-manager](https://github.com/Sherbivs/service-manager)
+- **Shopify Dev Services:** `http://tcb.drip` and `http://blt.drip`
 
 ## Repo Map
 ```
-app/                    — Android application module
+app/                    ??? Android application module
   src/main/
-    AndroidManifest.xml — Permissions, activities, network config reference
+    AndroidManifest.xml ??? Permissions, activities, network config reference
     java/com/servicemanager/app/
-      MainActivity.kt   — Single activity; hosts NavHostFragment
-      di/               — Hilt modules (NetworkModule, AppModule)
+      MainActivity.kt   ??? Single activity; hosts NavHostFragment
+      di/               ??? Hilt modules (NetworkModule, AppModule)
       ui/
-        services/       — ServicesFragment, ServicesViewModel
-        system/         — SystemFragment, SystemViewModel
-        logs/           — LogsFragment, LogsViewModel
-        settings/       — SettingsFragment, SettingsViewModel
+        services/       ??? ServicesFragment, ServicesViewModel
+        system/         ??? SystemFragment, SystemViewModel
+        logs/           ??? LogsFragment, LogsViewModel
+        settings/       ??? SettingsFragment, SettingsViewModel
       data/
-        api/            — ApiService.kt (Retrofit interface)
-        model/          — DTOs (ServiceDto, SystemInfoDto, etc.)
-        repository/     — ServiceRepository.kt
-      domain/           — Use Cases (optional; add when logic is shared/complex)
-      util/             — SecurePrefsHelper, Extensions
+        api/            ??? ApiService.kt (Retrofit interface)
+        model/          ??? DTOs (ServiceDto, SystemInfoDto, etc.)
+        repository/     ??? ServiceRepository.kt
+      domain/           ??? Use Cases (optional; add when logic is shared/complex)
+      util/             ??? SecurePrefsHelper, Extensions
     res/
-      navigation/       — nav_graph.xml (Navigation Component)
-      xml/              — network_security_config.xml
-build.gradle            — Root Gradle config (plugin versions, Hilt classpath)
-app/build.gradle        — App module config, signing, dependencies
-ops/                    — Governance surface (NEXT pointer, routing)
-docs/                   — Bible documentation
-.github/                — Copilot/AI agent instructions
+      navigation/       ??? nav_graph.xml (Navigation Component)
+      xml/              ??? network_security_config.xml
+build.gradle            ??? Root Gradle config (plugin versions, Hilt classpath)
+app/build.gradle        ??? App module config, signing, dependencies
+ops/                    ??? Governance surface (NEXT pointer, routing)
+docs/                   ??? Bible documentation
+.github/                ??? Copilot/AI agent instructions
 ```
 
 ## Orientation Flow
@@ -52,35 +52,35 @@ docs/                   — Bible documentation
 ## How to Build & Run
 - **Open in:** Android Studio (Hedgehog 2023.1.1+) or IntelliJ IDEA
 - **Build:** `./gradlew assembleDebug`
-- **Run on device/emulator:** Android Studio → Run, or `./gradlew installDebug`
+- **Run on device/emulator:** Android Studio ??? Run, or `./gradlew installDebug`
 - **API min SDK:** 24 (Android 7.0)
-- **Target SDK:** 36 (Android 16)
+- **Target SDK:** 37
 - **Language:** Kotlin
-- **Requires:** Service Manager server running on LAN at `http://192.168.23.83:3500`
+- **Requires:** Service Manager server running on LAN at `http://sensaimanager.drip:3500` (host `192.168.23.106`)
 
 ## Architecture Overview
 
 ```
 Android App (Kotlin, MVVM + UDF)
-  ↕ Retrofit / OkHttp
+  ??? Retrofit / OkHttp
 Service Manager API (Node.js, port 3500)
-  ↕
+  ???
 Managed Service Processes
 ```
 
 ### Layered Architecture (Official Android / Sherbivs Standard)
 
 ```
-UI Layer          — Activities, Fragments, ViewBinding, Material 3
-     ↕  StateFlow<UiState> (down)  /  user events (up)
-ViewModel Layer   — State holder, coroutine launches, UDF orchestration
-     ↕  sealed Result<T>
-[Domain Layer]    — Use Cases (optional; add only for complex reusable logic)
-     ↕  DTOs
-Data Layer        — ServiceRepository → ApiService (Retrofit) + EncryptedPrefs
+UI Layer          ??? Activities, Fragments, ViewBinding, Material 3
+     ???  StateFlow<UiState> (down)  /  user events (up)
+ViewModel Layer   ??? State holder, coroutine launches, UDF orchestration
+     ???  sealed Result<T>
+[Domain Layer]    ??? Use Cases (optional; add only for complex reusable logic)
+     ???  DTOs
+Data Layer        ??? ServiceRepository ??? ApiService (Retrofit) + EncryptedPrefs
 ```
 
-### Unidirectional Data Flow (UDF) — Required Pattern
+### Unidirectional Data Flow (UDF) ??? Required Pattern
 State flows **down** from ViewModel to UI; events flow **up** from UI to ViewModel. The ViewModel holds a single `StateFlow<UiState>` and never exposes mutable state directly.
 
 ```kotlin
@@ -107,7 +107,7 @@ viewLifecycleOwner.lifecycleScope.launch {
 }
 ```
 
-### Dependency Injection — Hilt (Required)
+### Dependency Injection ??? Hilt (Required)
 Use **Hilt** (official Android DI library) for all dependency wiring. Never construct repositories or API clients manually inside ViewModels or Activities.
 
 ```kotlin
@@ -128,16 +128,16 @@ class ServicesViewModel @Inject constructor(
 ) : ViewModel()
 ```
 
-### Navigation — Jetpack Navigation Component (Required)
+### Navigation ??? Jetpack Navigation Component (Required)
 Single-activity architecture with `NavHostFragment`. Each screen is a Fragment. Navigation declared in `res/navigation/nav_graph.xml`. Use Safe Args for type-safe argument passing. No `startActivity()` for in-app navigation.
 
 ### Key Components
-- **UI Layer** — Fragments + ViewBinding; Material 3; collects StateFlow via `repeatOnLifecycle`
-- **ViewModel Layer** — `@HiltViewModel`; exposes `StateFlow<UiState>`; no `Context` access
-- **Repository** — `@Singleton`; wraps `ApiService`; returns `Result<T>` sealed types
-- **API Client** — Retrofit + OkHttp via Hilt `NetworkModule`; base URL from `Secure DataStore + Tink`
-- **DI Modules** — `di/NetworkModule.kt`, `di/AppModule.kt` wired via Hilt
-- **SecurePrefs** — `util/SecurePrefsHelper.kt`; stores server URL via Jetpack DataStore + Google Tink
+- **UI Layer** ??? Fragments + ViewBinding; Material 3; collects StateFlow via `repeatOnLifecycle`
+- **ViewModel Layer** ??? `@HiltViewModel`; exposes `StateFlow<UiState>`; no `Context` access
+- **Repository** ??? `@Singleton`; wraps `ApiService`; returns `Result<T>` sealed types
+- **API Client** ??? Retrofit + OkHttp via Hilt `NetworkModule`; endpoint (scheme/host/port) + timeouts from `Secure DataStore + Tink`
+- **DI Modules** ??? `di/NetworkModule.kt`, `di/AppModule.kt` wired via Hilt
+- **SecurePrefs** ??? `util/SecurePrefsHelper.kt`; stores endpoint settings (scheme/host/port) and timeout values via Jetpack DataStore + Google Tink
 
 ### Service Manager API Quick Reference
 
@@ -172,10 +172,10 @@ Single-activity architecture with `NavHostFragment`. Each screen is a Fragment. 
 
 ## Safety Invariants
 - Never exfiltrate secrets in outputs.
-- Never hardcode API keys, tokens, or server URLs in source code — use `Secure DataStore + Tink`.
+- Never hardcode API keys, tokens, or server URLs in source code ??? use `Secure DataStore + Tink`.
 - `android:debuggable` must be `false` in release builds.
 - Never commit `keystore.properties`, `*.jks`, or `*.keystore` files.
-- All network traffic must use HTTPS (TLS 1.2+) — no `usesCleartextTraffic` except for LAN development builds.
+- All network traffic must use HTTPS (TLS 1.2+) ??? no `usesCleartextTraffic` except for LAN development builds.
 - Request only declared permissions; never request more than needed.
 - On error, self-forgive: reset working memory, keep the log, try a smaller step.
 - Keep every change reversible and minimal.
@@ -186,7 +186,7 @@ Single-activity architecture with `NavHostFragment`. Each screen is a Fragment. 
 - **Permissions:** Declare only required permissions in manifest; use runtime permission flow for dangerous permissions.
 - **Manifest:** `android:exported="false"` on all components not intended for external launch.
 - **Build:** `minifyEnabled true` + `shrinkResources true` on release builds. R8/ProGuard obfuscation enabled.
-- **Signing:** Release keystore managed via `keystore.properties` (gitignored) or CI secrets — never committed.
+- **Signing:** Release keystore managed via `keystore.properties` (gitignored) or CI secrets ??? never committed.
 - **Logging:** No sensitive data (URLs with tokens, credentials, PII) in Logcat in release builds.
 
 ## Testing Standards (Required)
@@ -195,16 +195,16 @@ Every feature task must include tests before it can be marked DONE.
 
 ### Testing Pyramid
 ```
-         [UI Tests]          — Espresso / FragmentScenario (fewest, slowest)
-      [Integration Tests]    — MockWebServer + Repository (medium)
-   [Unit Tests]              — JUnit + MockK + Turbine (most, fastest)
+         [UI Tests]          ??? Espresso / FragmentScenario (fewest, slowest)
+      [Integration Tests]    ??? MockWebServer + Repository (medium)
+   [Unit Tests]              ??? JUnit + MockK + Turbine (most, fastest)
 ```
 
 ### Unit Tests (`app/src/test/`)
 - **Scope:** ViewModel, Repository, Use Cases, utility classes
 - **Libraries:** JUnit 4/5, MockK (Kotlin-native mocks), `kotlinx-coroutines-test`, Turbine (for Flow)
 - **Pattern:** Each ViewModel has a corresponding `*ViewModelTest.kt`; each Repository has `*RepositoryTest.kt`
-- **Coverage target:** ≥80% line coverage on ViewModel and Repository classes
+- **Coverage target:** ???80% line coverage on ViewModel and Repository classes
 - **Setup required:** `TestCoroutineDispatcher` / `UnconfinedTestDispatcher` in test rules
 
 ```kotlin
@@ -227,7 +227,7 @@ Every feature task must include tests before it can be marked DONE.
 ### UI / Instrumented Tests (`app/src/androidTest/`)
 - Use `FragmentScenario` to launch individual Fragments in isolation
 - Use `Espresso` for view interactions and assertions
-- Only test user-visible behaviour — not implementation details
+- Only test user-visible behaviour ??? not implementation details
 
 ## Code Quality Standards (Required)
 
@@ -242,16 +242,16 @@ All PRs and task completions must pass quality gates before merging.
 | detekt | Kotlin static analysis (complexity, smell detection) | `./gradlew detekt` |
 
 ### Rules
-- **No lint errors** — `lintOptions { abortOnError true }` enforced in CI
-- **ktlint** — Format before commit: `./gradlew ktlintFormat`
-- **detekt** — Max complexity threshold enforced; any `detekt` ERROR is a blocker
-- **Zero `TODO` comments** in merged code — use Tasklist.md instead
+- **No lint errors** ??? `lintOptions { abortOnError true }` enforced in CI
+- **ktlint** ??? Format before commit: `./gradlew ktlintFormat`
+- **detekt** ??? Max complexity threshold enforced; any `detekt` ERROR is a blocker
+- **Zero `TODO` comments** in merged code ??? use Tasklist.md instead
 - **No `@SuppressWarnings` / `@Suppress` without a comment** explaining why
 
 ## Stuckness Detection & Recovery
 A run is **stuck** if:
 - No new artifact or state change in 3 consecutive steps
-- Same error seen ≥2 times in 10 minutes
+- Same error seen ???2 times in 10 minutes
 - Budget exceeded without milestone progress
 
 Recovery (in order):
@@ -262,9 +262,9 @@ Recovery (in order):
 
 ## Documentation Standards
 - All knowledge flows into the Bible system:
-  - `docs/architecture-bible/` — System design, MVVM+UDF+DI patterns, API integration
-  - `docs/operations-bible/` — Build, sign, release, keystore setup, Play Store deployment
-  - `docs/development-bible/` — Setup, coding conventions, testing, contributing
+  - `docs/architecture-bible/` ??? System design, MVVM+UDF+DI patterns, API integration
+  - `docs/operations-bible/` ??? Build, sign, release, keystore setup, Play Store deployment
+  - `docs/development-bible/` ??? Setup, coding conventions, testing, contributing
 - Audit and QA artifacts flow into the archive system under `docs/archive/tasks/`.
 - Transient notes go in `Tasklist.md` or `Prompt.md`, NOT standalone docs.
 - Every directory has a `ROUTER.md`.
@@ -311,21 +311,21 @@ On every audit create/move/close action, update all of the following in the same
 - Do not store transient planning chatter inside archive reports.
 
 ### Environment Baseline Rules (for audit context)
-- Service Manager API endpoint: `http://192.168.23.83:3500`
-- Shopify dev service endpoint: `http://192.168.23.83:9292`
+- Service Manager API endpoint: `http://sensaimanager.drip:3500` (host `192.168.23.106`)
+- Shopify dev service endpoints: `http://tcb.drip` and `http://blt.drip`
 - Preserve these endpoints in audit evidence unless the environment is intentionally changed.
 
 ## Common Pitfalls
-1. **LAN HTTP** — The service manager runs plain HTTP on LAN. Use `network_security_config.xml` with a `<domain>` exception for the LAN host rather than enabling cleartext globally.
-2. **ViewModel scope** — Don't launch coroutines from Activity; always use `viewModelScope`.
-3. **Base URL** — The server IP is user-configurable; never hardcode `192.168.x.x`. Read from `Secure DataStore + Tink`.
-4. **Rotation** — Use `StateFlow`/`LiveData` so UI survives config changes without redundant API calls.
-5. **Release signing** — `keystore.properties` is gitignored. CI must inject it via secrets.
-6. **Hilt missing `@AndroidEntryPoint`** — Every Fragment/Activity using Hilt injection must be annotated; forgetting causes runtime crashes.
-7. **Missing `repeatOnLifecycle`** — Collecting StateFlow without `repeatOnLifecycle(STARTED)` keeps collecting in background, draining battery.
-8. **Navigation with `startActivity()`** — Use `findNavController().navigate(R.id.action_*)` instead.
-9. **Missing ProGuard rules** — Retrofit/Gson model classes get stripped without explicit keep rules in `proguard-rules.pro`.
-10. **Flow test without Turbine** — Never `collect` in a launch in tests; use `turbine` or `toList()` with `take()`.
+1. **LAN HTTP** ??? The service manager runs plain HTTP on LAN. Use `network_security_config.xml` with a `<domain>` exception for the LAN host rather than enabling cleartext globally.
+2. **ViewModel scope** ??? Don't launch coroutines from Activity; always use `viewModelScope`.
+3. **Base URL** ??? The server IP is user-configurable; never hardcode `192.168.x.x`. Read from `Secure DataStore + Tink`.
+4. **Rotation** ??? Use `StateFlow`/`LiveData` so UI survives config changes without redundant API calls.
+5. **Release signing** ??? `keystore.properties` is gitignored. CI must inject it via secrets.
+6. **Hilt missing `@AndroidEntryPoint`** ??? Every Fragment/Activity using Hilt injection must be annotated; forgetting causes runtime crashes.
+7. **Missing `repeatOnLifecycle`** ??? Collecting StateFlow without `repeatOnLifecycle(STARTED)` keeps collecting in background, draining battery.
+8. **Navigation with `startActivity()`** ??? Use `findNavController().navigate(R.id.action_*)` instead.
+9. **Missing ProGuard rules** ??? Retrofit/Gson model classes get stripped without explicit keep rules in `proguard-rules.pro`.
+10. **Flow test without Turbine** ??? Never `collect` in a launch in tests; use `turbine` or `toList()` with `take()`.
 
 ## Checklist Before Exit
 - `Prompt.md` updated with accurate summary and NEXT pointer status.
@@ -343,5 +343,19 @@ On every audit create/move/close action, update all of the following in the same
 - Prompt.md PATCHSET echo current.
 
 ---
-**Document Version:** 1.2 (2026-04-23) — Added explicit audit system rules and lifecycle governance
-**Last Updated:** 2026-04-23T00:00:00Z
+**Document Version:** 1.3 (2026-05-17) ??? Endpoint baseline and settings model alignment update
+**Last Updated:** 2026-05-17T00:00:00Z
+## Tips
+- Use this guide as the operational playbook for agent behavior and routing discipline.
+- Keep capability guidance aligned with current architecture and task workflow.
+- Ensure every new process is reproducible and linked to validation evidence.
+
+## Next Steps
+1. Follow orientation flow before selecting implementation actions.
+2. Apply deterministic task template sections in each run.
+3. Close with synced docs, routers, and queue state updates.
+
+## Troubleshooting
+- If routing is unclear, resolve through canonical router manifests first.
+- If agent outcomes differ, compare against this guide and tighten missing constraints.
+- If repeated errors occur, invoke stuckness recovery and record blockers.
